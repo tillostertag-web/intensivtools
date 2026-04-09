@@ -734,31 +734,335 @@
 
     <!-- TAB: ARDS START -->
     <div id="ards" class="tab-panel">
+
+      <div class="hinweis hinweis-info">
+        <strong>Leitlinie:</strong> Berlin-Definition 2012 · ARDSNet Protocol 2000 · ATS/ERS/ESICM 2017
+      </div>
+
+      <!-- A) Berlin-Klassifikation -->
       <div class="card">
-        <h2>ARDSScan</h2>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">
-          Berlin-Klassifikation, Beatmungsziele und Rescue-Therapien.
+        <h2>A) Berlin-Klassifikation</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Voraussetzungen: Akuter Beginn (&le;7d), beidseitige Infiltrate im Roentgen/CT, nicht vollstaendig durch Herzinsuffizienz/Volumenueberladung erklaerbar.
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="ards-infiltrate" onchange="IntensivTools.calcBerlin()">
+            Beidseitige Infiltrate (Roentgen/CT)
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="ards-peep" onchange="IntensivTools.calcBerlin()">
+            PEEP &ge;5 cmH&#8322;O
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="ards-noncardiac" onchange="IntensivTools.calcBerlin()">
+            Kein primaer kardiogenes Oedem
+          </label>
+        </div>
+        <div class="input-group" style="max-width: 280px;">
+          <label>PaO&#8322;/FiO&#8322;-Ratio (Horovitz-Index)</label>
+          <input type="number" id="ards-pfratio" min="0" max="700" step="1" placeholder="z.B. 180" onchange="IntensivTools.calcBerlin()">
+        </div>
+        <div id="ards-berlin-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Kriterien angeben
+        </div>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Berlin-Klassifikation — Uebersicht</div>
+          <div class="score-body hidden">
+            <table>
+              <tr><th>Schweregrad</th><th>PaO&#8322;/FiO&#8322;</th><th>Mortalitaet</th></tr>
+              <tr><td><span class="ampel ampel-gelb">Mild</span></td><td>200–300</td><td>27%</td></tr>
+              <tr><td><span class="ampel ampel-orange">Moderat</span></td><td>100–200</td><td>32%</td></tr>
+              <tr><td><span class="ampel ampel-rot">Schwer</span></td><td>&lt;100</td><td>45%</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- B) Idealgewichts-Rechner + Tidalvolumen -->
+      <div class="card">
+        <h2>B) Idealgewicht &amp; Tidalvolumen (ARDSNet)</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Geschlecht</label>
+            <select id="ards-geschlecht" onchange="IntensivTools.calcIBW()">
+              <option value="">-- waehlen --</option>
+              <option value="m">Maennlich</option>
+              <option value="f">Weiblich</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Koerpergroesse (cm)</label>
+            <input type="number" id="ards-groesse" min="100" max="230" step="1" placeholder="z.B. 175" onchange="IntensivTools.calcIBW()">
+          </div>
+        </div>
+        <div id="ards-ibw-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Geschlecht und Groesse angeben
+        </div>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; ARDSNet-Formel</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <p><strong>Maenner:</strong> IBW = 50 + 0,91 &times; (Groesse cm &minus; 152,4)</p>
+            <p><strong>Frauen:</strong> IBW = 45,5 + 0,91 &times; (Groesse cm &minus; 152,4)</p>
+            <p style="margin-top: 8px;"><strong>Tidalvolumen-Ziel:</strong> 6 ml/kg IBW (Bereich: 4–8 ml/kg)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- C) Beatmungsziele -->
+      <div class="card">
+        <h2>C) Beatmungsziele (ARDSNet)</h2>
+        <table>
+          <tr><th>Parameter</th><th>Zielwert</th><th>Anmerkung</th></tr>
+          <tr><td>Tidalvolumen</td><td>6 ml/kg IBW</td><td>Bereich 4–8 ml/kg, Ziel 6 ml/kg</td></tr>
+          <tr><td>Plateaudruck</td><td>&le;30 cmH&#8322;O</td><td>Reduktion Vt wenn Pplat &gt;30</td></tr>
+          <tr><td>Driving Pressure</td><td>&lt;15 cmH&#8322;O</td><td>Pplat &minus; PEEP</td></tr>
+          <tr><td>Atemfrequenz</td><td>14–35/min</td><td>pH-Ziel 7,30–7,45</td></tr>
+          <tr><td>SpO&#8322;-Ziel</td><td>88–95%</td><td>Permissive Hypoxaemie</td></tr>
+          <tr><td>pH-Ziel</td><td>7,30–7,45</td><td>Permissive Hyperkapnie akzeptabel</td></tr>
+        </table>
+      </div>
+
+      <!-- D) PEEP/FiO2-Tabelle -->
+      <div class="card">
+        <h2>D) PEEP/FiO&#8322;-Tabelle (ARDSNet)</h2>
+        <h3>Low-PEEP-Strategie</h3>
+        <table style="font-size: 0.78rem;">
+          <tr><th>FiO&#8322;</th><td>0,3</td><td>0,4</td><td>0,5</td><td>0,6</td><td>0,7</td><td>0,8</td><td>0,9</td><td>1,0</td></tr>
+          <tr><th>PEEP</th><td>5</td><td>5–8</td><td>8–10</td><td>10</td><td>10–14</td><td>14</td><td>14–18</td><td>18–24</td></tr>
+        </table>
+        <h3 style="margin-top: 12px;">High-PEEP-Strategie</h3>
+        <table style="font-size: 0.78rem;">
+          <tr><th>FiO&#8322;</th><td>0,3</td><td>0,4</td><td>0,5</td><td>0,6</td><td>0,7</td><td>0,8</td><td>0,9</td><td>1,0</td></tr>
+          <tr><th>PEEP</th><td>5–14</td><td>14–16</td><td>16–18</td><td>18–20</td><td>20</td><td>20–22</td><td>22</td><td>22–24</td></tr>
+        </table>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
+          High-PEEP bevorzugt bei schwerem ARDS (PF-Ratio &lt;150). Individuelle Anpassung nach Haemodynamik und Compliance.
         </p>
       </div>
-      <div class="hinweis hinweis-info">
-        <strong>Leitlinie:</strong> Berlin-Definition 2012 · ARDSNet · ATS/ERS/ESICM 2017
+
+      <!-- E) Driving Pressure Rechner -->
+      <div class="card">
+        <h2>E) Driving Pressure Rechner</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Plateaudruck (cmH&#8322;O)</label>
+            <input type="number" id="ards-pplat" min="0" max="60" step="1" placeholder="z.B. 28" onchange="IntensivTools.calcDrivingPressure()">
+          </div>
+          <div class="input-group">
+            <label>PEEP (cmH&#8322;O)</label>
+            <input type="number" id="ards-peep-val" min="0" max="30" step="1" placeholder="z.B. 12" onchange="IntensivTools.calcDrivingPressure()">
+          </div>
+        </div>
+        <div id="ards-dp-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Plateau und PEEP eingeben
+        </div>
       </div>
-      <!-- Klinischer Inhalt folgt in Phase 3 -->
+
+      <!-- F) Rescue-Therapien -->
+      <div class="card">
+        <h2>F) Rescue-Therapien (schweres ARDS)</h2>
+        <div class="hinweis hinweis-kritisch" style="margin-bottom: 12px;">
+          <strong>Nur bei schwerem ARDS</strong> (PF-Ratio &lt;100) und nach Optimierung der Standardtherapie!
+        </div>
+        <table>
+          <tr><th>Stufe</th><th>Massnahme</th><th>Evidenz</th><th>Details</th></tr>
+          <tr>
+            <td>1</td>
+            <td><strong>Bauchlagerung</strong></td>
+            <td><span class="ampel ampel-gruen">Empfehlung A</span></td>
+            <td>&ge;16h/d, fruehzeitig bei PF &lt;150</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Neuromusk. Blockade</td>
+            <td><span class="ampel ampel-gelb">Empfehlung B</span></td>
+            <td>Cisatracurium, erste 48h, nur bei tiefem PF</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>iNO (Stickstoffmonoxid)</td>
+            <td><span class="ampel ampel-orange">Bridge</span></td>
+            <td>Ueberbrueckung, kein Mortalitaetsvorteil</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><strong>ECMO</strong></td>
+            <td><span class="ampel ampel-rot">Rescue</span></td>
+            <td>Murray-Score &ge;3 oder pH &lt;7,2 trotz Maximaltherapie</td>
+          </tr>
+        </table>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; ECMO-Kriterien (Orientierung)</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <ul style="padding-left: 16px;">
+              <li>Murray Lung Injury Score &ge;3,0</li>
+              <li>pH &lt;7,20 trotz optimierter Beatmung</li>
+              <li>PaO&#8322;/FiO&#8322; &lt;80 trotz Bauchlage + PEEP &ge;15</li>
+              <li>Hyperkapnie mit Pplat &gt;30 cmH&#8322;O</li>
+              <li>Frueher Kontakt mit ECMO-Zentrum empfohlen!</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Export -->
+      <div style="text-align: center; margin-top: 8px;">
+        <button class="export-btn" onclick="IntensivTools.exportBefund('ards')">
+          Befund kopieren
+        </button>
+      </div>
+
     </div>
     <!-- TAB: ARDS END -->
 
     <!-- TAB: AKI START -->
     <div id="aki" class="tab-panel">
-      <div class="card">
-        <h2>AKIScan</h2>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">
-          KDIGO-Staging, RRT-Indikationen und Flussigkeitsmanagement.
-        </p>
-      </div>
+
       <div class="hinweis hinweis-info">
-        <strong>Leitlinie:</strong> KDIGO AKI 2012 · KDIGO AKD 2020
+        <strong>Leitlinie:</strong> KDIGO AKI 2012 · KDIGO AKD 2020 · EuReCa
       </div>
-      <!-- Klinischer Inhalt folgt in Phase 4 -->
+
+      <!-- A) KDIGO-Staging -->
+      <div class="card">
+        <h2>A) KDIGO-Staging</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Staging nach dem schlechteren Kriterium (Kreatinin ODER Urinausscheidung).
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Kreatinin-Kriterium</label>
+            <select id="aki-krea" onchange="IntensivTools.calcKDIGO()">
+              <option value="0">Kein AKI-Kriterium erfuellt</option>
+              <option value="1">Stadium 1: &times;1,5–1,9 Baseline oder +0,3 mg/dl in 48h</option>
+              <option value="2">Stadium 2: &times;2,0–2,9 Baseline</option>
+              <option value="3">Stadium 3: &times;3 / &ge;4 mg/dl / Dialysebeginn</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Urinausscheidungs-Kriterium</label>
+            <select id="aki-urin" onchange="IntensivTools.calcKDIGO()">
+              <option value="0">Kein AKI-Kriterium erfuellt</option>
+              <option value="1">Stadium 1: &lt;0,5 ml/kg/h &times; 6–12h</option>
+              <option value="2">Stadium 2: &lt;0,5 ml/kg/h &times; &ge;12h</option>
+              <option value="3">Stadium 3: &lt;0,3 ml/kg/h &times; &ge;24h oder Anurie &ge;12h</option>
+            </select>
+          </div>
+        </div>
+        <div id="aki-kdigo-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Kriterien waehlen
+        </div>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; KDIGO-Stadien — Uebersicht</div>
+          <div class="score-body hidden">
+            <table>
+              <tr><th>Stadium</th><th>Kreatinin</th><th>Urinausscheidung</th><th>Ampel</th></tr>
+              <tr><td>1</td><td>&times;1,5–1,9 oder +0,3 mg/dl in 48h</td><td>&lt;0,5 ml/kg/h &times; 6–12h</td><td><span class="ampel ampel-gelb">Gelb</span></td></tr>
+              <tr><td>2</td><td>&times;2,0–2,9 Baseline</td><td>&lt;0,5 ml/kg/h &times; &ge;12h</td><td><span class="ampel ampel-orange">Orange</span></td></tr>
+              <tr><td>3</td><td>&times;3 / &ge;4 mg/dl / RRT</td><td>&lt;0,3 ml/kg/h &times; &ge;24h / Anurie &ge;12h</td><td><span class="ampel ampel-rot">Rot</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- B) Ursachen-Screening -->
+      <div class="card">
+        <h2>B) Ursachen-Screening</h2>
+        <table>
+          <tr><th>Kategorie</th><th>Ursachen</th><th>Diagnostik</th></tr>
+          <tr>
+            <td><strong>Praerenal</strong> (70%)</td>
+            <td>Hypovolaemie, Sepsis, Herzinsuffizienz, Leberversagen</td>
+            <td>Volumenstatus, Haemodynamik, Laktat</td>
+          </tr>
+          <tr>
+            <td><strong>Renal</strong> (20%)</td>
+            <td>ATN, Glomerulonephritis, interstitielle Nephritis, toxisch</td>
+            <td>Urinstatus, Sediment, Eosinophile, Komplement</td>
+          </tr>
+          <tr>
+            <td><strong>Postrenal</strong> (10%)</td>
+            <td>Harnleitersteine, Tumorkompression, Katheterobstruktion</td>
+            <td>Sonographie (Harnstau?)</td>
+          </tr>
+        </table>
+        <div class="hinweis hinweis-warnung" style="margin-top: 12px;">
+          <strong>Nephrotoxische Medikamente pruefen:</strong> NSAID, ACE-Hemmer/ARB, Aminoglykoside, Vancomycin, Kontrastmittel, Amphotericin B &rarr; Pausieren/Dosisanpassung?
+        </div>
+      </div>
+
+      <!-- C) Fluessigkeitsmanagement -->
+      <div class="card">
+        <h2>C) Fluessigkeitsmanagement</h2>
+        <table>
+          <tr><th>KDIGO-Stadium</th><th>Strategie</th><th>Ziel</th></tr>
+          <tr>
+            <td><span class="ampel ampel-gelb">Stadium 1</span></td>
+            <td>Vorsichtiger Volumenversuch bei praerenaler Genese</td>
+            <td>Euvolaemie, Diurese &ge;0,5 ml/kg/h</td>
+          </tr>
+          <tr>
+            <td><span class="ampel ampel-orange">Stadium 2</span></td>
+            <td>Bilanzierung, Schleifendiuretika bei Ueberladung</td>
+            <td>Negative Bilanz bei Hypervolaemie</td>
+          </tr>
+          <tr>
+            <td><span class="ampel ampel-rot">Stadium 3</span></td>
+            <td>Restriktiv, RRT erwägen</td>
+            <td>Kumulative Bilanz &lt;10% KG</td>
+          </tr>
+        </table>
+        <div class="hinweis hinweis-kritisch" style="margin-top: 12px;">
+          <strong>Cave:</strong> Hypervolaemie ist ein unabhaengiger Risikofaktor fuer Mortalitaet bei AKI! Kumulative Fluessigkeitsbilanz &gt;10% KG vermeiden.
+        </div>
+      </div>
+
+      <!-- D) RRT-Indikationen -->
+      <div class="card">
+        <h2>D) RRT-Indikationen (Nierenersatztherapie)</h2>
+        <div class="hinweis hinweis-kritisch" style="margin-bottom: 12px;">
+          <strong>Absolute Indikationen</strong> — sofortige RRT-Einleitung bei refraktaerem Verlauf:
+        </div>
+        <ul class="checklist" id="rrt-checklist">
+          <li><input type="checkbox" id="rrt-k"> Hyperkaliämie &ge;6,5 mmol/l (refraktaer auf konservative Therapie)</li>
+          <li><input type="checkbox" id="rrt-ph"> Metabolische Azidose pH &lt;7,15 (refraktaer auf Bikarbonat)</li>
+          <li><input type="checkbox" id="rrt-uraemie"> Uraemische Symptome (Perikarditis, Enzephalopathie, Blutung)</li>
+          <li><input type="checkbox" id="rrt-fluid"> Fluessigkeitsueberladung mit Lungenoedem (refraktaer auf Diuretika)</li>
+          <li><input type="checkbox" id="rrt-intox"> Dialysierbare Intoxikation (Lithium, Methanol, Ethylenglykol)</li>
+        </ul>
+        <div id="rrt-status" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+          0/5 Indikationen zutreffend
+        </div>
+      </div>
+
+      <!-- E) CRRT-Dosierung -->
+      <div class="card">
+        <h2>E) CRRT-Dosierung</h2>
+        <div class="input-group" style="max-width: 280px;">
+          <label>Koerpergewicht (kg)</label>
+          <input type="number" id="aki-gewicht" min="30" max="250" step="1" placeholder="z.B. 80" onchange="IntensivTools.calcCRRT()">
+        </div>
+        <div id="aki-crrt-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Koerpergewicht eingeben
+        </div>
+        <table style="margin-top: 12px;">
+          <tr><th>Parameter</th><th>Empfehlung (KDIGO)</th></tr>
+          <tr><td>Effluentrate</td><td>20–25 ml/kg/h</td></tr>
+          <tr><td>Modus</td><td>CVVHDF bevorzugt</td></tr>
+          <tr><td>Antikoagulation</td><td>Regionale Citrat-Antikoagulation bevorzugt</td></tr>
+        </table>
+        <div class="hinweis hinweis-warnung" style="margin-top: 12px;">
+          <strong>Antibiotika bei CRRT:</strong> Viele Antibiotika werden durch CRRT eliminiert — Dosisanpassung erforderlich! Ruecksprache Apotheke/Nephrologie.
+        </div>
+      </div>
+
+      <!-- Export -->
+      <div style="text-align: center; margin-top: 8px;">
+        <button class="export-btn" onclick="IntensivTools.exportBefund('aki')">
+          Befund kopieren
+        </button>
+      </div>
+
     </div>
     <!-- TAB: AKI END -->
 
@@ -918,6 +1222,180 @@
         }
       },
 
+      /* === ARDS-LOGIK === */
+
+      /* --- Berlin-Klassifikation --- */
+      _ardsGrad: null,
+      calcBerlin() {
+        var infiltrate = document.getElementById('ards-infiltrate').checked;
+        var peep = document.getElementById('ards-peep').checked;
+        var noncardiac = document.getElementById('ards-noncardiac').checked;
+        var pfInput = document.getElementById('ards-pfratio').value;
+        var pf = pfInput ? parseFloat(pfInput) : null;
+        var el = document.getElementById('ards-berlin-ergebnis');
+
+        if (!infiltrate || !peep || !noncardiac || pf === null) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte alle Voraussetzungen pruefen und PF-Ratio eingeben';
+          this._ardsGrad = null;
+          return;
+        }
+
+        if (pf > 300) {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = 'PF-Ratio ' + pf + ' — ' + this.ampel('gruen', 'Kein ARDS') + ' (PF &gt;300)';
+          this._ardsGrad = 'Kein ARDS';
+        } else if (pf >= 200) {
+          el.style.background = 'var(--yellow-bg)';
+          el.style.color = 'var(--yellow)';
+          el.innerHTML = 'PF-Ratio ' + pf + ' — ' + this.ampel('gelb', 'Mildes ARDS') + ' (200–300, Mortalitaet ~27%)';
+          this._ardsGrad = 'Mild';
+        } else if (pf >= 100) {
+          el.style.background = 'var(--orange-bg)';
+          el.style.color = 'var(--orange)';
+          el.innerHTML = 'PF-Ratio ' + pf + ' — ' + this.ampel('orange', 'Moderates ARDS') + ' (100–200, Mortalitaet ~32%)';
+          this._ardsGrad = 'Moderat';
+        } else {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = 'PF-Ratio ' + pf + ' — ' + this.ampel('rot', 'Schweres ARDS') + ' (&lt;100, Mortalitaet ~45%) &rarr; Rescue-Therapien pruefen!';
+          this._ardsGrad = 'Schwer';
+        }
+      },
+
+      /* --- Idealgewicht + Tidalvolumen --- */
+      _ibw: null,
+      calcIBW() {
+        var geschlecht = document.getElementById('ards-geschlecht').value;
+        var groesse = parseFloat(document.getElementById('ards-groesse').value);
+        var el = document.getElementById('ards-ibw-ergebnis');
+
+        if (!geschlecht || !groesse || groesse < 100) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte Geschlecht und Groesse angeben';
+          this._ibw = null;
+          return;
+        }
+
+        var ibw;
+        if (geschlecht === 'm') {
+          ibw = 50 + 0.91 * (groesse - 152.4);
+        } else {
+          ibw = 45.5 + 0.91 * (groesse - 152.4);
+        }
+        ibw = Math.round(ibw * 10) / 10;
+        this._ibw = ibw;
+
+        var vt6 = Math.round(ibw * 6);
+        var vt4 = Math.round(ibw * 4);
+        var vt8 = Math.round(ibw * 8);
+
+        el.style.background = 'var(--accent-light)';
+        el.style.color = 'var(--accent)';
+        el.innerHTML = '<strong>IBW: ' + ibw + ' kg</strong><br>' +
+          'Tidalvolumen-Ziel: <strong>' + vt6 + ' ml</strong> (6 ml/kg)<br>' +
+          '<span style="font-size:0.85rem;">Bereich: ' + vt4 + '–' + vt8 + ' ml (4–8 ml/kg IBW)</span>';
+      },
+
+      /* --- Driving Pressure --- */
+      calcDrivingPressure() {
+        var pplat = parseFloat(document.getElementById('ards-pplat').value);
+        var peep = parseFloat(document.getElementById('ards-peep-val').value);
+        var el = document.getElementById('ards-dp-ergebnis');
+
+        if (isNaN(pplat) || isNaN(peep)) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte Plateau und PEEP eingeben';
+          return;
+        }
+
+        var dp = pplat - peep;
+        if (dp < 15) {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = 'Driving Pressure: <strong>' + dp + ' cmH&#8322;O</strong> — ' + this.ampel('gruen', 'Im Zielbereich (&lt;15)');
+        } else {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = 'Driving Pressure: <strong>' + dp + ' cmH&#8322;O</strong> — ' + this.ampel('rot', 'Erhoht (&ge;15)') + ' &rarr; Vt reduzieren!';
+        }
+
+        if (pplat > 30) {
+          el.innerHTML += '<br><span class="ampel ampel-rot">Pplat &gt;30 cmH&#8322;O!</span> Tidalvolumen reduzieren.';
+        }
+      },
+
+      /* === AKI-LOGIK === */
+
+      /* --- KDIGO-Staging --- */
+      _akiStadium: 0,
+      calcKDIGO() {
+        var krea = parseInt(document.getElementById('aki-krea').value, 10);
+        var urin = parseInt(document.getElementById('aki-urin').value, 10);
+        var stadium = Math.max(krea, urin);
+        this._akiStadium = stadium;
+        var el = document.getElementById('aki-kdigo-ergebnis');
+
+        if (stadium === 0) {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = this.ampel('gruen', 'Kein AKI') + ' — KDIGO-Kriterien nicht erfuellt';
+        } else if (stadium === 1) {
+          el.style.background = 'var(--yellow-bg)';
+          el.style.color = 'var(--yellow)';
+          el.innerHTML = this.ampel('gelb', 'AKI Stadium 1') + ' — Nephrotoxische Medikamente pruefen, Volumenstatus optimieren';
+        } else if (stadium === 2) {
+          el.style.background = 'var(--orange-bg)';
+          el.style.color = 'var(--orange)';
+          el.innerHTML = this.ampel('orange', 'AKI Stadium 2') + ' — Nephrologie-Konsil erwaegen, Bilanzierung, Ursache klaeren';
+        } else {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = this.ampel('rot', 'AKI Stadium 3') + ' — Nephrologie-Konsil! RRT-Indikation pruefen!';
+        }
+      },
+
+      /* --- RRT-Zaehler --- */
+      updateRRTStatus() {
+        var checks = document.querySelectorAll('#rrt-checklist input[type="checkbox"]');
+        var done = 0;
+        checks.forEach(function(c) { if (c.checked) done++; });
+        var el = document.getElementById('rrt-status');
+        if (done > 0) {
+          el.style.color = 'var(--red)';
+          el.style.fontWeight = '700';
+          el.textContent = done + '/5 Indikationen zutreffend — RRT-Einleitung pruefen!';
+        } else {
+          el.style.color = 'var(--text-muted)';
+          el.style.fontWeight = 'normal';
+          el.textContent = '0/5 Indikationen zutreffend';
+        }
+      },
+
+      /* --- CRRT-Dosierung --- */
+      calcCRRT() {
+        var kg = parseFloat(document.getElementById('aki-gewicht').value);
+        var el = document.getElementById('aki-crrt-ergebnis');
+
+        if (isNaN(kg) || kg < 30) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte Koerpergewicht eingeben';
+          return;
+        }
+
+        var low = Math.round(kg * 20);
+        var high = Math.round(kg * 25);
+        el.style.background = 'var(--accent-light)';
+        el.style.color = 'var(--accent)';
+        el.innerHTML = '<strong>Effluentrate-Ziel: ' + low + '–' + high + ' ml/h</strong><br>' +
+          '<span style="font-size:0.85rem;">(20–25 ml/kg/h bei ' + kg + ' kg KG)</span>';
+      },
+
       /* --- Befund-Text generieren --- */
       generateBefundText(tab) {
         var now = new Date();
@@ -965,7 +1443,51 @@
           ].join('\n');
         }
 
-        return 'IntensivScan1 — ' + tab.toUpperCase() + '\nZeitstempel: ' + ts + '\n\n[Befunddaten folgen]';
+        if (tab === 'ards') {
+          var pf = document.getElementById('ards-pfratio').value || '-';
+          var grad = this._ardsGrad || 'Nicht bewertet';
+          var ibw = this._ibw ? (this._ibw + ' kg') : '-';
+          var vt = this._ibw ? (Math.round(this._ibw * 6) + ' ml') : '-';
+          var ppVal = document.getElementById('ards-pplat').value;
+          var peepVal = document.getElementById('ards-peep-val').value;
+          var dp = (ppVal && peepVal) ? (parseFloat(ppVal) - parseFloat(peepVal)) + ' cmH2O' : '-';
+
+          return [
+            'IntensivScan1 — ARDS-ASSESSMENT',
+            'Zeitstempel: ' + ts,
+            '',
+            'PaO2/FiO2-Ratio: ' + pf,
+            'Berlin-Klassifikation: ' + grad,
+            'Idealgewicht (IBW): ' + ibw,
+            'Tidalvolumen-Ziel (6ml/kg): ' + vt,
+            'Driving Pressure: ' + dp,
+            '',
+            'Quelle: Berlin-Definition 2012 / ARDSNet'
+          ].join('\n');
+        }
+
+        if (tab === 'aki') {
+          var stadium = this._akiStadium;
+          var stadiumText = stadium === 0 ? 'Kein AKI' : 'Stadium ' + stadium;
+          var kg = document.getElementById('aki-gewicht').value;
+          var crrt = kg ? (Math.round(parseFloat(kg) * 20) + '–' + Math.round(parseFloat(kg) * 25) + ' ml/h') : '-';
+          var rrtChecks = document.querySelectorAll('#rrt-checklist input[type="checkbox"]');
+          var rrtCount = 0;
+          rrtChecks.forEach(function(c) { if (c.checked) rrtCount++; });
+
+          return [
+            'IntensivScan1 — AKI-ASSESSMENT',
+            'Zeitstempel: ' + ts,
+            '',
+            'KDIGO-Stadium: ' + stadiumText,
+            'RRT-Indikationen: ' + rrtCount + '/5 zutreffend',
+            'CRRT-Effluentrate-Ziel: ' + crrt,
+            '',
+            'Quelle: KDIGO AKI 2012'
+          ].join('\n');
+        }
+
+        return 'IntensivScan1 — ' + tab.toUpperCase() + '\nZeitstempel: ' + ts;
       },
 
       /* --- Befund in Zwischenablage kopieren --- */
@@ -989,11 +1511,14 @@
 
       /* --- Init --- */
       init() {
-        // Bundle-Checklist Event-Listener
-        var checks = document.querySelectorAll('#bundle-checklist input[type="checkbox"]');
         var self = this;
-        checks.forEach(function(c) {
+        // Bundle-Checklist Event-Listener
+        document.querySelectorAll('#bundle-checklist input[type="checkbox"]').forEach(function(c) {
           c.addEventListener('change', function() { self.updateBundleStatus(); });
+        });
+        // RRT-Checklist Event-Listener
+        document.querySelectorAll('#rrt-checklist input[type="checkbox"]').forEach(function(c) {
+          c.addEventListener('change', function() { self.updateRRTStatus(); });
         });
       }
     };
