@@ -1897,6 +1897,105 @@
         </div>
       </div>
 
+      <!-- H) Edwards Lifesciences Haemodynamik-Monitor -->
+      <div class="card">
+        <h2>H) Edwards Haemodynamik-Interpreter</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Werte vom FloTrac/EV1000/HemoSphere/Swan-Ganz eingeben — automatische Interpretation mit Therapieempfehlung.
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>CI — Cardiac Index (l/min/m&sup2;)</label>
+            <input type="number" id="edw-ci" min="0" max="8" step="0.1" placeholder="z.B. 2.8" onchange="IntensivTools.calcEdwards()">
+          </div>
+          <div class="input-group">
+            <label>SVRI (dyn&middot;s/cm&sup5;/m&sup2;)</label>
+            <input type="number" id="edw-svri" min="200" max="5000" step="10" placeholder="z.B. 1800" onchange="IntensivTools.calcEdwards()">
+          </div>
+          <div class="input-group">
+            <label>SVI — Stroke Vol. Index (ml/m&sup2;)</label>
+            <input type="number" id="edw-svi" min="10" max="80" step="1" placeholder="z.B. 38" onchange="IntensivTools.calcEdwards()">
+          </div>
+          <div class="input-group">
+            <label>SVV — Stroke Vol. Variation (%)</label>
+            <input type="number" id="edw-svv" min="0" max="50" step="1" placeholder="z.B. 14" onchange="IntensivTools.calcEdwards()">
+          </div>
+          <div class="input-group">
+            <label>ScvO&#8322; / SvO&#8322; (%)</label>
+            <input type="number" id="edw-svo2" min="20" max="95" step="1" placeholder="z.B. 68" onchange="IntensivTools.calcEdwards()">
+          </div>
+          <div class="input-group">
+            <label>MAP (mmHg)</label>
+            <input type="number" id="edw-map" min="20" max="160" step="1" placeholder="z.B. 62" onchange="IntensivTools.calcEdwards()">
+          </div>
+        </div>
+
+        <h3 style="margin-top: 12px;">Swan-Ganz (optional)</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>PCWP / PAOP (mmHg)</label>
+            <input type="number" id="edw-pcwp" min="0" max="40" step="1" placeholder="z.B. 14" onchange="IntensivTools.calcEdwards()">
+          </div>
+          <div class="input-group">
+            <label>PAP mean (mmHg)</label>
+            <input type="number" id="edw-pap" min="5" max="80" step="1" placeholder="z.B. 25" onchange="IntensivTools.calcEdwards()">
+          </div>
+          <div class="input-group">
+            <label>CVP / ZVD (mmHg)</label>
+            <input type="number" id="edw-cvp" min="0" max="30" step="1" placeholder="z.B. 8" onchange="IntensivTools.calcEdwards()">
+          </div>
+        </div>
+
+        <div id="edw-ergebnis" style="margin-top: 12px;"></div>
+        <div id="edw-profil" class="ergebnis" style="background: var(--bg); color: var(--text-muted); margin-top: 8px;">
+          Bitte mindestens CI und SVRI eingeben
+        </div>
+
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Referenzbereiche Edwards/Swan-Ganz</div>
+          <div class="score-body hidden">
+            <table style="font-size: 0.82rem;">
+              <tr><th>Parameter</th><th>Normal</th><th>&darr; Niedrig</th><th>&uarr; Hoch</th></tr>
+              <tr><td><strong>CI</strong></td><td>2,5–4,0 l/min/m&sup2;</td><td>&lt;2,2: Low-Output</td><td>&gt;4,5: Hyperdynam</td></tr>
+              <tr><td><strong>SVRI</strong></td><td>1700–2400</td><td>&lt;1400: Vasodilatation</td><td>&gt;2600: Vasokonstriktion</td></tr>
+              <tr><td><strong>SVI</strong></td><td>33–47 ml/m&sup2;</td><td>&lt;30: Volumenmangel/Pumpversagen</td><td>&gt;50: Hyperdynam</td></tr>
+              <tr><td><strong>SVV</strong></td><td>&lt;12%</td><td>—</td><td>&gt;13%: Volumenresponsiv</td></tr>
+              <tr><td><strong>ScvO&#8322;</strong></td><td>70–80%</td><td>&lt;65%: O&#8322;-Schuld</td><td>&gt;80%: Verwertungsstoerung</td></tr>
+              <tr><td><strong>PCWP</strong></td><td>6–12 mmHg</td><td>&lt;6: Hypovolaemie</td><td>&gt;18: Linksherzversagen</td></tr>
+              <tr><td><strong>PAP mean</strong></td><td>10–20 mmHg</td><td>—</td><td>&gt;25: Pulmonale Hypertonie</td></tr>
+              <tr><td><strong>CVP</strong></td><td>2–8 mmHg</td><td>&lt;2: Hypovolaemie</td><td>&gt;12: Stauung/RV-Versagen</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="score-card">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Haemodynamische Profile (CI + SVRI Kombination)</div>
+          <div class="score-body hidden">
+            <table style="font-size: 0.82rem;">
+              <tr><th></th><th>SVR/SVRI &darr; (niedrig)</th><th>SVR/SVRI normal</th><th>SVR/SVRI &uarr; (hoch)</th></tr>
+              <tr>
+                <td><strong>CI &uarr;</strong></td>
+                <td><span class="ampel ampel-orange">Hyperdynam-distributiv</span><br>Fruehe Sepsis, Leber, Anaphylaxie</td>
+                <td><span class="ampel ampel-gelb">Kompensiert</span><br>Stress, Fieber</td>
+                <td><span class="ampel ampel-gelb">Hyperdynam + Vasokonstriktion</span><br>Schmerz, Katecholamine</td>
+              </tr>
+              <tr>
+                <td><strong>CI normal</strong></td>
+                <td><span class="ampel ampel-gelb">Vasodilatation</span><br>Medikamente, Analgosedierung</td>
+                <td><span class="ampel ampel-gruen">Normal</span></td>
+                <td><span class="ampel ampel-gelb">Erhoehte Nachlast</span><br>Hypertonie, Katecholamine</td>
+              </tr>
+              <tr>
+                <td><strong>CI &darr;</strong></td>
+                <td><span class="ampel ampel-rot">Spaete Sepsis / gemischter Schock</span><br>Vasodilatation + Pumpversagen</td>
+                <td><span class="ampel ampel-rot">Kardiogener Schock</span><br>Inotropika + Nachlastsenkung</td>
+                <td><span class="ampel ampel-rot">Schweres Pumpversagen</span><br>Nachlast zu hoch &rarr; Vasodilatatoren + Inotropika</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- Export -->
       <div style="text-align: center; margin-top: 8px;">
         <button class="export-btn" onclick="IntensivTools.exportBefund('kardio')">
@@ -3408,6 +3507,144 @@
       /* === HAMILTON MONITORING === */
 
       /* === SCHOCK-DIFFERENZIAL === */
+
+      /* === EDWARDS HAEMODYNAMIK === */
+
+      calcEdwards: function() {
+        var ci = parseFloat(document.getElementById('edw-ci').value);
+        var svri = parseFloat(document.getElementById('edw-svri').value);
+        var svi = parseFloat(document.getElementById('edw-svi').value);
+        var svv = parseFloat(document.getElementById('edw-svv').value);
+        var svo2 = parseFloat(document.getElementById('edw-svo2').value);
+        var map = parseFloat(document.getElementById('edw-map').value);
+        var pcwp = parseFloat(document.getElementById('edw-pcwp').value);
+        var pap = parseFloat(document.getElementById('edw-pap').value);
+        var cvp = parseFloat(document.getElementById('edw-cvp').value);
+
+        var el = document.getElementById('edw-ergebnis');
+        var profilEl = document.getElementById('edw-profil');
+        var results = [];
+        var self = this;
+
+        // CI
+        if (!isNaN(ci)) {
+          if (ci < 2.2) results.push(self.ampel('rot', 'CI ' + ci + ' l/min/m\u00B2 \u2193\u2193') + ' <span style="font-size:0.82rem;">Low-Output — Inotropika? Volumen? Nachlast senken?</span>');
+          else if (ci < 2.5) results.push(self.ampel('gelb', 'CI ' + ci + ' l/min/m\u00B2 \u2193') + ' <span style="font-size:0.82rem;">Grenzwertig — Trend beobachten, Ursache suchen</span>');
+          else if (ci <= 4.0) results.push(self.ampel('gruen', 'CI ' + ci + ' l/min/m\u00B2') + ' <span style="font-size:0.82rem;">Normal</span>');
+          else results.push(self.ampel('orange', 'CI ' + ci + ' l/min/m\u00B2 \u2191') + ' <span style="font-size:0.82rem;">Hyperdynam — Sepsis? Leber? Shunt? Fieber?</span>');
+        }
+
+        // SVRI
+        if (!isNaN(svri)) {
+          if (svri < 1400) results.push(self.ampel('rot', 'SVRI ' + svri + ' \u2193\u2193') + ' <span style="font-size:0.82rem;">Vasodilatation — Vasopressor (Noradrenalin)!</span>');
+          else if (svri < 1700) results.push(self.ampel('gelb', 'SVRI ' + svri + ' \u2193') + ' <span style="font-size:0.82rem;">Leicht erniedrigt — Trend? Sedierung? Fieber?</span>');
+          else if (svri <= 2400) results.push(self.ampel('gruen', 'SVRI ' + svri) + ' <span style="font-size:0.82rem;">Normal</span>');
+          else results.push(self.ampel('orange', 'SVRI ' + svri + ' \u2191') + ' <span style="font-size:0.82rem;">Vasokonstriktion — Schmerz? Katecholamine? Nachlast erhoht &rarr; Vasodilatatoren?</span>');
+        }
+
+        // SVI
+        if (!isNaN(svi)) {
+          if (svi < 25) results.push(self.ampel('rot', 'SVI ' + svi + ' ml/m\u00B2 \u2193\u2193') + ' <span style="font-size:0.82rem;">Schwer reduziert — Vorlast? Kontraktilitaet? Nachlast?</span>');
+          else if (svi < 33) results.push(self.ampel('gelb', 'SVI ' + svi + ' ml/m\u00B2 \u2193') + ' <span style="font-size:0.82rem;">Reduziert — Volumen-Challenge bei SVV &gt;13%</span>');
+          else if (svi <= 47) results.push(self.ampel('gruen', 'SVI ' + svi + ' ml/m\u00B2') + ' <span style="font-size:0.82rem;">Normal</span>');
+          else results.push(self.ampel('gelb', 'SVI ' + svi + ' ml/m\u00B2 \u2191') + ' <span style="font-size:0.82rem;">Erhoht — hyperdynamer Kreislauf</span>');
+        }
+
+        // SVV
+        if (!isNaN(svv)) {
+          if (svv <= 12) results.push(self.ampel('gruen', 'SVV ' + svv + '%') + ' <span style="font-size:0.82rem;">Nicht volumenresponsiv — kein weiteres Volumen</span>');
+          else results.push(self.ampel('orange', 'SVV ' + svv + '% \u2191') + ' <span style="font-size:0.82rem;">Volumenresponsiv (&gt;12%) — Fluid Challenge erwaegen (250 ml, SV-Anstieg?)</span>');
+        }
+
+        // ScvO2
+        if (!isNaN(svo2)) {
+          if (svo2 < 60) results.push(self.ampel('rot', 'ScvO\u2082 ' + svo2 + '% \u2193\u2193') + ' <span style="font-size:0.82rem;">Schwere O\u2082-Schuld! CO zu niedrig oder O\u2082-Verbrauch zu hoch. Inotropika + Transfusion + Beatmung optimieren</span>');
+          else if (svo2 < 65) results.push(self.ampel('orange', 'ScvO\u2082 ' + svo2 + '% \u2193') + ' <span style="font-size:0.82rem;">O\u2082-Extraction erhoht — CO optimieren, Hb pruefen</span>');
+          else if (svo2 <= 80) results.push(self.ampel('gruen', 'ScvO\u2082 ' + svo2 + '%') + ' <span style="font-size:0.82rem;">Normal (65–80%)</span>');
+          else results.push(self.ampel('gelb', 'ScvO\u2082 ' + svo2 + '% \u2191') + ' <span style="font-size:0.82rem;">Erhoht — Mikrozirkulationsstoerung? Zellen koennen O\u2082 nicht verwerten (Sepsis, Zyanid)</span>');
+        }
+
+        // MAP
+        if (!isNaN(map)) {
+          if (map < 60) results.push(self.ampel('rot', 'MAP ' + map + ' mmHg \u2193\u2193') + ' <span style="font-size:0.82rem;">Kritisch! Organperfusion gefaehrdet. Vasopressor + Volumen!</span>');
+          else if (map < 65) results.push(self.ampel('orange', 'MAP ' + map + ' mmHg \u2193') + ' <span style="font-size:0.82rem;">Unter Ziel (&lt;65). Ursache: CI niedrig? SVR niedrig? Beides?</span>');
+          else if (map <= 90) results.push(self.ampel('gruen', 'MAP ' + map + ' mmHg') + ' <span style="font-size:0.82rem;">Im Zielbereich</span>');
+          else results.push(self.ampel('gelb', 'MAP ' + map + ' mmHg \u2191') + ' <span style="font-size:0.82rem;">Erhoht — Schmerz? Sedierung insuffizient? Antihypertensiva?</span>');
+        }
+
+        // PCWP
+        if (!isNaN(pcwp)) {
+          if (pcwp < 6) results.push(self.ampel('orange', 'PCWP ' + pcwp + ' mmHg \u2193') + ' <span style="font-size:0.82rem;">Niedrig — Vorlast reduziert, Volumengabe erwaegen</span>');
+          else if (pcwp <= 12) results.push(self.ampel('gruen', 'PCWP ' + pcwp + ' mmHg') + ' <span style="font-size:0.82rem;">Normal</span>');
+          else if (pcwp <= 18) results.push(self.ampel('gelb', 'PCWP ' + pcwp + ' mmHg \u2191') + ' <span style="font-size:0.82rem;">Erhoht — LV-Vorlast hoch, vorsichtig mit Volumen</span>');
+          else results.push(self.ampel('rot', 'PCWP ' + pcwp + ' mmHg \u2191\u2191') + ' <span style="font-size:0.82rem;">Linksherzversagen / Lungenoedem! Diuretika + Nachlastsenkung</span>');
+        }
+
+        // PAP
+        if (!isNaN(pap)) {
+          if (pap <= 20) results.push(self.ampel('gruen', 'PAP mean ' + pap + ' mmHg') + ' <span style="font-size:0.82rem;">Normal</span>');
+          else if (pap <= 30) results.push(self.ampel('orange', 'PAP mean ' + pap + ' mmHg \u2191') + ' <span style="font-size:0.82rem;">Pulmonale Hypertonie — ARDS? LE? Linksherzversagen?</span>');
+          else results.push(self.ampel('rot', 'PAP mean ' + pap + ' mmHg \u2191\u2191') + ' <span style="font-size:0.82rem;">Schwere PH! RV-Versagen droht. iNO? Prostazyklin? Milrinon?</span>');
+        }
+
+        // CVP
+        if (!isNaN(cvp)) {
+          if (cvp < 2) results.push(self.ampel('orange', 'CVP ' + cvp + ' mmHg \u2193') + ' <span style="font-size:0.82rem;">Niedrig — Hypovolaemie wahrscheinlich</span>');
+          else if (cvp <= 8) results.push(self.ampel('gruen', 'CVP ' + cvp + ' mmHg') + ' <span style="font-size:0.82rem;">Normal (nur als Trend verwenden!)</span>');
+          else if (cvp <= 12) results.push(self.ampel('gelb', 'CVP ' + cvp + ' mmHg \u2191') + ' <span style="font-size:0.82rem;">Erhoht — Stauung? RV-Versagen? Beatmung? IAH?</span>');
+          else results.push(self.ampel('rot', 'CVP ' + cvp + ' mmHg \u2191\u2191') + ' <span style="font-size:0.82rem;">Deutlich erhoht — RV-Versagen, Tamponade, Spannungspneu ausschliessen!</span>');
+        }
+
+        // Render parameter results
+        if (results.length > 0) {
+          el.innerHTML = results.map(function(r) {
+            return '<div style="padding:6px 0;border-bottom:1px solid var(--border);">' + r + '</div>';
+          }).join('');
+        } else {
+          el.innerHTML = '';
+        }
+
+        // Haemodynamisches Profil (CI + SVRI Kombination)
+        if (!isNaN(ci) && !isNaN(svri)) {
+          var ciLow = ci < 2.5;
+          var ciHigh = ci > 4.0;
+          var svriLow = svri < 1400;
+          var svriHigh = svri > 2600;
+
+          if (ciLow && svriLow) {
+            profilEl.style.background = 'var(--red-bg)'; profilEl.style.color = 'var(--red)';
+            profilEl.innerHTML = self.ampel('rot', 'PROFIL: Spaete Sepsis / gemischter Schock') +
+              '<br><span style="font-size:0.85rem;font-weight:normal;">CI\u2193 + SVR\u2193 = Vasodilatation + Pumpversagen. <strong>Therapie:</strong> Noradrenalin + Dobutamin/Levosimendan. Volumenstatus reevaluieren. Hydrocortison erwaegen. Schlechteste Prognose!</span>';
+          } else if (ciLow && svriHigh) {
+            profilEl.style.background = 'var(--red-bg)'; profilEl.style.color = 'var(--red)';
+            profilEl.innerHTML = self.ampel('rot', 'PROFIL: Kardiogener Schock (klassisch)') +
+              '<br><span style="font-size:0.85rem;font-weight:normal;">CI\u2193 + SVR\u2191 = Pumpversagen mit kompensatorischer Vasokonstriktion. <strong>Therapie:</strong> Dobutamin/Levosimendan (Inotropie + Nachlastsenkung). KEIN Noradrenalin-Mono! Volumen nur wenn PCWP &lt;12. MCS erwaegen bei SCAI &ge;C.</span>';
+          } else if (ciLow && !svriLow && !svriHigh) {
+            profilEl.style.background = 'var(--orange-bg)'; profilEl.style.color = 'var(--orange)';
+            profilEl.innerHTML = self.ampel('orange', 'PROFIL: Low-Output (SVR noch kompensiert)') +
+              '<br><span style="font-size:0.85rem;font-weight:normal;">CI\u2193 bei normalem SVR. <strong>Therapie:</strong> Vorlast optimieren (SVV? PLR?). Wenn vorlast-optimiert: Dobutamin. Echo: LV-Funktion?</span>';
+          } else if (ciHigh && svriLow) {
+            profilEl.style.background = 'var(--orange-bg)'; profilEl.style.color = 'var(--orange)';
+            profilEl.innerHTML = self.ampel('orange', 'PROFIL: Hyperdynam-distributiv') +
+              '<br><span style="font-size:0.85rem;font-weight:normal;">CI\u2191 + SVR\u2193 = typisch fruehe Sepsis, Leberversagen, Anaphylaxie. <strong>Therapie:</strong> Noradrenalin. Fokussuche! Trotz hohem CI kann Mikrozirkulation gestoert sein (ScvO\u2082 + Laktat pruefen).</span>';
+          } else if (!ciLow && !ciHigh && svriLow) {
+            profilEl.style.background = 'var(--yellow-bg)'; profilEl.style.color = 'var(--yellow)';
+            profilEl.innerHTML = self.ampel('gelb', 'PROFIL: Vasodilatation (CI kompensiert)') +
+              '<br><span style="font-size:0.85rem;font-weight:normal;">SVR\u2193 bei noch normalem CI. <strong>Therapie:</strong> Niedrigdosiert Noradrenalin. Ursache: Sedierung? Fieber? Fruehe Sepsis?</span>';
+          } else if (!ciLow && !ciHigh && !svriLow && !svriHigh) {
+            profilEl.style.background = 'var(--green-bg)'; profilEl.style.color = 'var(--green)';
+            profilEl.innerHTML = self.ampel('gruen', 'PROFIL: Normal') +
+              '<br><span style="font-size:0.85rem;font-weight:normal;">CI und SVRI im Normbereich. Klinischen Verlauf + Laktat + ScvO\u2082 weiter monitoren.</span>';
+          } else {
+            profilEl.style.background = 'var(--yellow-bg)'; profilEl.style.color = 'var(--yellow)';
+            profilEl.innerHTML = self.ampel('gelb', 'PROFIL: Atypisch') +
+              '<br><span style="font-size:0.85rem;font-weight:normal;">CI ' + ci + ' / SVRI ' + svri + ' — Konstellation passt nicht in klassisches Muster. Klinischen Kontext pruefen. Artefakt? Messfehler? Gemischtes Bild?</span>';
+          }
+        } else {
+          profilEl.style.background = 'var(--bg)'; profilEl.style.color = 'var(--text-muted)';
+          profilEl.innerHTML = 'Bitte mindestens CI und SVRI eingeben fuer Profilanalyse';
+        }
+      },
 
       calcSchockTyp: function() {
         var typ = document.getElementById('schock-typ').value;
