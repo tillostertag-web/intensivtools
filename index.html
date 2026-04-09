@@ -92,8 +92,8 @@
     }
 
     .tab-btn {
-      flex: 1;
-      padding: 12px 8px;
+      flex: 0 0 auto;
+      padding: 12px 14px;
       border: none;
       background: transparent;
       font-size: 0.95rem;
@@ -493,6 +493,9 @@
     <button class="tab-btn" onclick="IntensivTools.showTab('gerinnung', this)">Gerinnung</button>
     <button class="tab-btn" onclick="IntensivTools.showTab('stoffwechsel', this)">Stoffwechsel</button>
     <button class="tab-btn" onclick="IntensivTools.showTab('sedierung', this)">Sedierung</button>
+    <button class="tab-btn" onclick="IntensivTools.showTab('neuro', this)">Neuro</button>
+    <button class="tab-btn" onclick="IntensivTools.showTab('notfall', this)">Notfall</button>
+    <button class="tab-btn" onclick="IntensivTools.showTab('infektio', this)">Infektio</button>
   </div>
 
   <!-- MAIN -->
@@ -2504,6 +2507,330 @@
     </div>
     <!-- TAB: SEDIERUNG END -->
 
+    <!-- ============================================================ -->
+    <!-- TAB: NEURO START -->
+    <!-- ============================================================ -->
+    <div id="neuro" class="tab-panel">
+
+      <div class="hinweis hinweis-info">
+        <strong>Leitlinie:</strong> DGN/DGNI 2023 · Brain Trauma Foundation 2020 · ERC/ESICM Post-ROSC 2021
+      </div>
+
+      <!-- A) GCS-Rechner -->
+      <div class="card">
+        <h2>A) GCS-Rechner</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Augenoeffnung</label>
+            <select id="gcs-eye" onchange="IntensivTools.calcGCS()">
+              <option value="4">4 — Spontan</option>
+              <option value="3">3 — Auf Ansprache</option>
+              <option value="2">2 — Auf Schmerzreiz</option>
+              <option value="1">1 — Keine</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Verbale Reaktion</label>
+            <select id="gcs-verbal" onchange="IntensivTools.calcGCS()">
+              <option value="5">5 — Orientiert</option>
+              <option value="4">4 — Verwirrt</option>
+              <option value="3">3 — Unzusammenhaengend</option>
+              <option value="2">2 — Unverstaendlich</option>
+              <option value="1">1 — Keine</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Motorik (beste Antwort)</label>
+            <select id="gcs-motor" onchange="IntensivTools.calcGCS()">
+              <option value="6">6 — Befolgt Aufforderungen</option>
+              <option value="5">5 — Gezielte Schmerzabwehr</option>
+              <option value="4">4 — Ungezielte Abwehr</option>
+              <option value="3">3 — Beugesynergismen</option>
+              <option value="2">2 — Strecksynergismen</option>
+              <option value="1">1 — Keine</option>
+            </select>
+          </div>
+        </div>
+        <div id="gcs-ergebnis" class="ergebnis" style="background: var(--green-bg); color: var(--green);">
+          GCS: 15/15 (E4 V5 M6) — Voll orientiert
+        </div>
+      </div>
+
+      <!-- B) Pupillen-Check -->
+      <div class="card">
+        <h2>B) Pupillen-Check</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Pupille RECHTS (mm)</label>
+            <input type="number" id="pup-r" min="1" max="9" step="0.5" placeholder="z.B. 3" onchange="IntensivTools.calcPupillen()">
+          </div>
+          <div class="input-group">
+            <label>Pupille LINKS (mm)</label>
+            <input type="number" id="pup-l" min="1" max="9" step="0.5" placeholder="z.B. 3" onchange="IntensivTools.calcPupillen()">
+          </div>
+          <div class="input-group">
+            <label>Lichtreaktion RECHTS</label>
+            <select id="pup-r-licht" onchange="IntensivTools.calcPupillen()">
+              <option value="prompt">Prompt</option>
+              <option value="traege">Traege</option>
+              <option value="keine">Keine</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Lichtreaktion LINKS</label>
+            <select id="pup-l-licht" onchange="IntensivTools.calcPupillen()">
+              <option value="prompt">Prompt</option>
+              <option value="traege">Traege</option>
+              <option value="keine">Keine</option>
+            </select>
+          </div>
+        </div>
+        <div id="pup-ergebnis" style="margin-top: 12px;"></div>
+      </div>
+
+      <!-- C) ICP-Management -->
+      <div class="card">
+        <h2>C) ICP-Stufentherapie</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          ICP-Wert eingeben — Tool zeigt die passende Therapiestufe (Brain Trauma Foundation).
+        </p>
+        <div class="input-group" style="max-width: 280px;">
+          <label>ICP (mmHg)</label>
+          <input type="number" id="icp-wert" min="0" max="80" step="1" placeholder="z.B. 25" onchange="IntensivTools.calcICP()">
+        </div>
+        <div id="icp-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte ICP-Wert eingeben
+        </div>
+      </div>
+
+      <!-- D) Status epilepticus -->
+      <div class="card">
+        <h2>D) Status epilepticus — Zeitbasierter Algorithmus</h2>
+        <div class="input-group" style="max-width: 320px;">
+          <label>Minuten seit Krampfbeginn</label>
+          <input type="number" id="se-minuten" min="0" max="180" step="1" placeholder="z.B. 15" onchange="IntensivTools.calcStatusEpilepticus()">
+        </div>
+        <div class="input-group" style="max-width: 280px;">
+          <label>Koerpergewicht (kg)</label>
+          <input type="number" id="se-kg" min="30" max="200" step="1" placeholder="z.B. 80" onchange="IntensivTools.calcStatusEpilepticus()">
+        </div>
+        <div id="se-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Minuten und Gewicht eingeben
+        </div>
+      </div>
+
+      <!-- Export -->
+      <div style="text-align: center; margin-top: 8px;">
+        <button class="export-btn" onclick="IntensivTools.exportBefund('neuro')">Befund kopieren</button>
+      </div>
+    </div>
+    <!-- TAB: NEURO END -->
+
+    <!-- ============================================================ -->
+    <!-- TAB: NOTFALL START -->
+    <!-- ============================================================ -->
+    <div id="notfall" class="tab-panel">
+
+      <div class="hinweis hinweis-kritisch">
+        <strong>NOTFALL-ALGORITHMEN</strong> — Zeitkritische Entscheidungen. ERC 2021 · DGAI · DAS 2015
+      </div>
+
+      <!-- A) Reanimation -->
+      <div class="card">
+        <h2>A) Reanimation (ALS)</h2>
+        <div class="input-group">
+          <label>Initialer Rhythmus</label>
+          <select id="rea-rhythmus" onchange="IntensivTools.calcReanimation()">
+            <option value="">-- waehlen --</option>
+            <option value="vfvt">VF / pulslose VT (schockbar)</option>
+            <option value="pea">PEA (nicht schockbar)</option>
+            <option value="asystolie">Asystolie (nicht schockbar)</option>
+          </select>
+        </div>
+        <div id="rea-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Rhythmus waehlen
+        </div>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Reversible Ursachen (4H + 4T)</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div>
+                <strong>4H:</strong>
+                <ul style="padding-left: 16px;"><li>Hypoxie</li><li>Hypovolaemie</li><li>Hypo-/Hyperkaliämie</li><li>Hypothermie</li></ul>
+              </div>
+              <div>
+                <strong>4T:</strong>
+                <ul style="padding-left: 16px;"><li>Thrombose (koronar / pulmonal)</li><li>Tamponade (Perikard)</li><li>Toxine (Intoxikation)</li><li>Tension (Spannungspneu)</li></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B) Anaphylaxie-Doser -->
+      <div class="card">
+        <h2>B) Anaphylaxie — Dosis nach Schweregrad</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Schweregrad</label>
+            <select id="ana-grad" onchange="IntensivTools.calcAnaphylaxie()">
+              <option value="">-- waehlen --</option>
+              <option value="1">Grad I — Haut (Urtikaria, Flush)</option>
+              <option value="2">Grad II — + GI/Kreislauf leicht (Tachykardie, Uebelkeit)</option>
+              <option value="3">Grad III — Schock (Hypotonie, Bronchospasmus)</option>
+              <option value="4">Grad IV — Kreislaufstillstand</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Koerpergewicht (kg)</label>
+            <input type="number" id="ana-kg" min="3" max="200" step="1" placeholder="z.B. 75" onchange="IntensivTools.calcAnaphylaxie()">
+          </div>
+        </div>
+        <div id="ana-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Schweregrad und Gewicht eingeben
+        </div>
+      </div>
+
+      <!-- C) Lungenembolie -->
+      <div class="card">
+        <h2>C) Lungenembolie — Risiko &amp; Therapie</h2>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="le-instabil" onchange="IntensivTools.calcLE()">
+            Haemodynamisch instabil (RR syst &lt;90 oder Vasopressor)
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="le-rvdys" onchange="IntensivTools.calcLE()">
+            RV-Dysfunktion (Echo/CT: RV/LV &gt;0,9)
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="le-trop" onchange="IntensivTools.calcLE()">
+            Troponin erhoht
+          </label>
+        </div>
+        <div id="le-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte klinische Kriterien angeben
+        </div>
+      </div>
+
+      <!-- D) Schwieriger Atemweg -->
+      <div class="card">
+        <h2>D) Schwieriger Atemweg — Plan A/B/C/D</h2>
+        <div class="input-group">
+          <label>Aktuelle Situation</label>
+          <select id="aw-plan" onchange="IntensivTools.calcAtemweg()">
+            <option value="">-- waehlen --</option>
+            <option value="A">Plan A — Intubationsversuch (max. 3x)</option>
+            <option value="B">Plan B — Supraglottischer Atemweg (Larynxmaske)</option>
+            <option value="C">Plan C — Masken-/Beutelbeatmung</option>
+            <option value="D">Plan D — CICO (Can't intubate, can't oxygenate)</option>
+          </select>
+        </div>
+        <div id="aw-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Plan waehlen
+        </div>
+      </div>
+
+      <!-- Export -->
+      <div style="text-align: center; margin-top: 8px;">
+        <button class="export-btn" onclick="IntensivTools.exportBefund('notfall')">Befund kopieren</button>
+      </div>
+    </div>
+    <!-- TAB: NOTFALL END -->
+
+    <!-- ============================================================ -->
+    <!-- TAB: INFEKTIO START -->
+    <!-- ============================================================ -->
+    <div id="infektio" class="tab-panel">
+
+      <div class="hinweis hinweis-info">
+        <strong>Leitlinie:</strong> PEG 2022 · ESCMID · IDSA · S3 HAP/VAP 2024 · AWMF
+      </div>
+
+      <!-- A) Fokus → Antibiotikum -->
+      <div class="card">
+        <h2>A) Empirische Antibiotikatherapie nach Fokus</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Infektionsfokus</label>
+            <select id="abx-fokus" onchange="IntensivTools.calcABX()">
+              <option value="">-- waehlen --</option>
+              <option value="cap">Pneumonie — ambulant erworben (CAP)</option>
+              <option value="hap">Pneumonie — nosokomial (HAP)</option>
+              <option value="vap">Ventilator-assoziiert (VAP)</option>
+              <option value="uro">Urosepsis</option>
+              <option value="abdo">Abdominelle Infektion</option>
+              <option value="haut">Haut-/Weichteil (nekrotisierend)</option>
+              <option value="zns">ZNS (Meningitis/Enzephalitis)</option>
+              <option value="katheter">Katheter-assoziiert (CLABSI)</option>
+              <option value="unbekannt">Fokus unklar / FUO</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Risikofaktoren</label>
+            <select id="abx-risiko" onchange="IntensivTools.calcABX()">
+              <option value="standard">Standard (keine MRE-Risiken)</option>
+              <option value="mre">MRE-Risiko (Voraufenthalt, Antibiotika &lt;90d, Reise)</option>
+              <option value="immunsupp">Immunsupprimiert (Neutropenie, Transplantation)</option>
+            </select>
+          </div>
+        </div>
+        <div id="abx-ergebnis" style="margin-top: 12px;"></div>
+      </div>
+
+      <!-- B) Candida-Score -->
+      <div class="card">
+        <h2>B) Candida-Score</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Prediktionsscore fuer invasive Candidose bei nicht-neutropenischen ICU-Patienten (Leon et al., Crit Care Med 2006).
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="cand-tpn" onchange="IntensivTools.calcCandida()"> Totale parenterale Ernaehrung (1 Pkt)
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="cand-op" onchange="IntensivTools.calcCandida()"> Chirurgie bei Aufnahme (1 Pkt)
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="cand-multi" onchange="IntensivTools.calcCandida()"> Multifokale Candida-Kolonisation (1 Pkt)
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="cand-sepsis" onchange="IntensivTools.calcCandida()"> Schwere Sepsis (2 Pkt)
+          </label>
+        </div>
+        <div id="cand-ergebnis" class="ergebnis" style="background: var(--green-bg); color: var(--green);">
+          Candida-Score: 0 — <span class="ampel ampel-gruen">Niedriges Risiko</span>
+        </div>
+      </div>
+
+      <!-- C) PCT-Interpreter -->
+      <div class="card">
+        <h2>C) PCT-Interpreter</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Procalcitonin (ng/ml)</label>
+            <input type="number" id="pct-wert" min="0" max="500" step="0.01" placeholder="z.B. 2.5" onchange="IntensivTools.calcPCT()">
+          </div>
+          <div class="input-group">
+            <label>Klinische Fragestellung</label>
+            <select id="pct-frage" onchange="IntensivTools.calcPCT()">
+              <option value="start">Antibiotika starten?</option>
+              <option value="stop">Antibiotika stoppen?</option>
+            </select>
+          </div>
+        </div>
+        <div id="pct-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte PCT-Wert eingeben
+        </div>
+      </div>
+
+      <!-- Export -->
+      <div style="text-align: center; margin-top: 8px;">
+        <button class="export-btn" onclick="IntensivTools.exportBefund('infektio')">Befund kopieren</button>
+      </div>
+    </div>
+    <!-- TAB: INFEKTIO END -->
+
   </main>
 
   <!-- FOOTER -->
@@ -3160,6 +3487,276 @@
           el.style.background = 'var(--green-bg)';
           el.style.color = 'var(--green)';
           el.innerHTML = this.ampel('gruen', 'CAM-ICU negativ — kein Delir') + '<br><span style="font-size:0.85rem;font-weight:normal;">Weiter praeventive Massnahmen (ABCDEF-Bundle). Naechstes Screening in 8h.</span>';
+        }
+      },
+
+      /* === NEURO-LOGIK === */
+
+      calcGCS: function() {
+        var e = parseInt(document.getElementById('gcs-eye').value, 10);
+        var v = parseInt(document.getElementById('gcs-verbal').value, 10);
+        var m = parseInt(document.getElementById('gcs-motor').value, 10);
+        var gcs = e + v + m;
+        var el = document.getElementById('gcs-ergebnis');
+        var code = 'E' + e + ' V' + v + ' M' + m;
+        if (gcs >= 13) {
+          el.style.background = 'var(--green-bg)'; el.style.color = 'var(--green)';
+          el.innerHTML = 'GCS: ' + gcs + '/15 (' + code + ') — ' + this.ampel('gruen', 'Leichtes SHT / wach');
+        } else if (gcs >= 9) {
+          el.style.background = 'var(--yellow-bg)'; el.style.color = 'var(--yellow)';
+          el.innerHTML = 'GCS: ' + gcs + '/15 (' + code + ') — ' + this.ampel('gelb', 'Mittelschweres SHT') + '<br><span style="font-size:0.82rem;font-weight:normal;">Intensivueberwachung. CT-Kontrolle. Intubationsbereitschaft bei GCS-Verschlechterung.</span>';
+        } else if (gcs >= 4) {
+          el.style.background = 'var(--orange-bg)'; el.style.color = 'var(--orange)';
+          el.innerHTML = 'GCS: ' + gcs + '/15 (' + code + ') — ' + this.ampel('orange', 'Schweres SHT') + '<br><span style="font-size:0.82rem;font-weight:normal;">Intubation + Beatmung! ICP-Monitoring erwaegen. Neurochirurgie informieren.</span>';
+        } else {
+          el.style.background = 'var(--red-bg)'; el.style.color = 'var(--red)';
+          el.innerHTML = 'GCS: ' + gcs + '/15 (' + code + ') — ' + this.ampel('rot', 'Kritisch') + '<br><span style="font-size:0.82rem;font-weight:normal;">Intubation obligat. Hirntoddiagnostik erwaegen bei persistierendem GCS 3.</span>';
+        }
+        if (gcs <= 8) {
+          el.innerHTML += '<br><span class="ampel ampel-rot">GCS &le;8 = Intubationsindikation (Atemwegsschutz!)</span>';
+        }
+      },
+
+      calcPupillen: function() {
+        var r = parseFloat(document.getElementById('pup-r').value);
+        var l = parseFloat(document.getElementById('pup-l').value);
+        var rLicht = document.getElementById('pup-r-licht').value;
+        var lLicht = document.getElementById('pup-l-licht').value;
+        var el = document.getElementById('pup-ergebnis');
+        if (isNaN(r) || isNaN(l)) { el.innerHTML = ''; return; }
+        var results = [];
+        var diff = Math.abs(r - l);
+        if (diff > 1) {
+          results.push(this.ampel('rot', 'Anisokorie ' + diff.toFixed(1) + ' mm') + ' <span style="font-size:0.82rem;">Seitendifferenz &gt;1mm — <strong>Einklemmung?</strong> Sofort CT + Neurochirurgie!</span>');
+        } else if (diff > 0.5) {
+          results.push(this.ampel('gelb', 'Leichte Anisokorie ' + diff.toFixed(1) + ' mm') + ' <span style="font-size:0.82rem;">Grenzwertig — engmaschig kontrollieren, physiologisch moeglich</span>');
+        } else {
+          results.push(this.ampel('gruen', 'Isokor ' + r + '/' + l + ' mm'));
+        }
+        if (r > 5 && l > 5) {
+          results.push(this.ampel('rot', 'Beidseits dilatiert (&gt;5mm)') + ' <span style="font-size:0.82rem;">Hirnstammschaeden? Adrenalin? Atropin? Medikamente pruefen!</span>');
+        }
+        if (rLicht === 'keine' || lLicht === 'keine') {
+          var seite = rLicht === 'keine' && lLicht === 'keine' ? 'beidseits' : (rLicht === 'keine' ? 'rechts' : 'links');
+          results.push(this.ampel('rot', 'Lichtreaktion fehlend ' + seite) + ' <span style="font-size:0.82rem;">Afferente oder efferente Stoerung — Einklemmung ausschliessen!</span>');
+        } else if (rLicht === 'traege' || lLicht === 'traege') {
+          results.push(this.ampel('orange', 'Traege Lichtreaktion') + ' <span style="font-size:0.82rem;">Beginnende Dysfunktion? Sedierung? ICP erhoht?</span>');
+        }
+        el.innerHTML = results.length > 0 ? results.map(function(r) {
+          return '<div style="padding:6px 0;border-bottom:1px solid var(--border);">' + r + '</div>';
+        }).join('') : '';
+      },
+
+      calcICP: function() {
+        var icp = parseFloat(document.getElementById('icp-wert').value);
+        var el = document.getElementById('icp-ergebnis');
+        if (isNaN(icp)) { el.style.background = 'var(--bg)'; el.style.color = 'var(--text-muted)'; el.innerHTML = 'Bitte ICP-Wert eingeben'; return; }
+        if (icp <= 15) {
+          el.style.background = 'var(--green-bg)'; el.style.color = 'var(--green)';
+          el.innerHTML = 'ICP ' + icp + ' mmHg — ' + this.ampel('gruen', 'Normal (&le;15)') + '<br><span style="font-size:0.82rem;font-weight:normal;">Basistherapie: Oberkoerper 30&deg;, Kopf gerade, Fieber vermeiden, Normoventilation (pCO&#8322; 35–40).</span>';
+        } else if (icp <= 20) {
+          el.style.background = 'var(--yellow-bg)'; el.style.color = 'var(--yellow)';
+          el.innerHTML = 'ICP ' + icp + ' mmHg — ' + this.ampel('gelb', 'Grenzwertig (16–20)') + '<br><span style="font-size:0.82rem;font-weight:normal;"><strong>Stufe 1:</strong> Basistherapie optimieren. Sedierung vertiefen (Propofol/Midazolam). Osmotherapie vorbereiten. CT-Kontrolle bei Verschlechterung.</span>';
+        } else if (icp <= 25) {
+          el.style.background = 'var(--orange-bg)'; el.style.color = 'var(--orange)';
+          el.innerHTML = 'ICP ' + icp + ' mmHg — ' + this.ampel('orange', 'Erhoht (21–25)') + '<br><span style="font-size:0.82rem;font-weight:normal;"><strong>Stufe 2:</strong> <strong>Mannitol 20%</strong> 0,25–1 g/kg i.v. Bolus (Osmolalitaet &lt;320!) ODER <strong>NaCl 3%</strong> 150 ml ueber 20 min. Liquordrainage wenn EVD liegt. CT!</span>';
+        } else if (icp <= 35) {
+          el.style.background = 'var(--red-bg)'; el.style.color = 'var(--red)';
+          el.innerHTML = 'ICP ' + icp + ' mmHg — ' + this.ampel('rot', 'Kritisch (>25)') + '<br><span style="font-size:0.82rem;font-weight:normal;"><strong>Stufe 3:</strong> Tiefe Sedierung + Relaxierung. Hyperventilation kurzfristig (pCO&#8322; 30–35, max. 1–2h!). <strong>Thiopental-Narkose</strong> erwaegen. Neurochirurgie: <strong>Dekompressive Kraniektomie?</strong></span>';
+        } else {
+          el.style.background = 'var(--red-bg)'; el.style.color = 'var(--red)';
+          el.innerHTML = 'ICP ' + icp + ' mmHg — ' + this.ampel('rot', 'Lebensbedrohlich (>35)') + '<br><span style="font-size:0.82rem;font-weight:normal;"><strong>NOTFALL!</strong> Maximale Osmotherapie + Thiopental + sofortige neurochirurgische Intervention. Dekompression? Prognose reevaluieren.</span>';
+        }
+      },
+
+      calcStatusEpilepticus: function() {
+        var min = parseFloat(document.getElementById('se-minuten').value);
+        var kg = parseFloat(document.getElementById('se-kg').value);
+        var el = document.getElementById('se-ergebnis');
+        if (isNaN(min) || isNaN(kg)) { el.style.background = 'var(--bg)'; el.style.color = 'var(--text-muted)'; el.innerHTML = 'Bitte Minuten und Gewicht eingeben'; return; }
+        var loraz = Math.min(Math.round(kg * 0.1 * 10) / 10, 4);
+        var diaz = Math.min(Math.round(kg * 0.15 * 10) / 10, 10);
+        var lev = Math.round(kg * 30);
+        var val = Math.round(kg * 30);
+        var propDose = Math.round(kg * 2);
+        if (min < 5) {
+          el.style.background = 'var(--yellow-bg)'; el.style.color = 'var(--yellow)';
+          el.innerHTML = this.ampel('gelb', 'Frueher Anfall (' + min + ' min)') + '<br><span style="font-size:0.82rem;font-weight:normal;">Beobachten, Schutz, Sauerstoff. Noch kein Status epilepticus (&lt;5 min). Bei Persistenz &ge;5 min: Stufe 1 beginnen.</span>';
+        } else if (min < 20) {
+          el.style.background = 'var(--orange-bg)'; el.style.color = 'var(--orange)';
+          el.innerHTML = this.ampel('orange', 'Stufe 1: Benzodiazepin (' + min + ' min)') + '<br><span style="font-size:0.82rem;font-weight:normal;"><strong>Lorazepam</strong> ' + loraz + ' mg i.v. (0,1 mg/kg, max 4mg) ODER <strong>Diazepam</strong> ' + diaz + ' mg i.v. (0,15 mg/kg). Wiederholung 1x nach 5 min wenn keine Besserung. Atemwegsmanagement bereithalten!</span>';
+        } else if (min < 40) {
+          el.style.background = 'var(--red-bg)'; el.style.color = 'var(--red)';
+          el.innerHTML = this.ampel('rot', 'Stufe 2: Antikonvulsivum (' + min + ' min)') + '<br><span style="font-size:0.82rem;font-weight:normal;"><strong>Levetiracetam</strong> ' + lev + ' mg i.v. ueber 10 min (30 mg/kg) ODER <strong>Valproat</strong> ' + val + ' mg i.v. ueber 5 min (30 mg/kg) ODER <strong>Phenytoin</strong> 20 mg/kg ueber 20 min (Cave: Bradykardie!). Intubationsbereitschaft!</span>';
+        } else {
+          el.style.background = 'var(--red-bg)'; el.style.color = 'var(--red)';
+          el.innerHTML = this.ampel('rot', 'Stufe 3: Refraktaer — Narkose (' + min + ' min)') + '<br><span style="font-size:0.82rem;font-weight:normal;"><strong>Intubation + Narkose!</strong><br>Propofol ' + propDose + ' mg Bolus (2 mg/kg) dann 2–10 mg/kg/h ODER Midazolam 0,2 mg/kg Bolus dann 0,1–0,5 mg/kg/h ODER Thiopental 3–5 mg/kg Bolus. EEG-Monitoring (Burst-Suppression Ziel). Neurologie-Konsil!</span>';
+        }
+      },
+
+      /* === NOTFALL-LOGIK === */
+
+      calcReanimation: function() {
+        var rhythmus = document.getElementById('rea-rhythmus').value;
+        var el = document.getElementById('rea-ergebnis');
+        if (!rhythmus) { el.style.background = 'var(--bg)'; el.style.color = 'var(--text-muted)'; el.innerHTML = 'Bitte Rhythmus waehlen'; return; }
+        el.style.background = 'var(--red-bg)'; el.style.color = 'var(--red)';
+        if (rhythmus === 'vfvt') {
+          el.innerHTML = this.ampel('rot', 'VF/pVT — SCHOCKBAR') +
+            '<br><span style="font-size:0.85rem;font-weight:normal;">' +
+            '<strong>1.</strong> Defibrillation <strong>sofort</strong> (biphasisch 150–200 J, dann max. Energie)<br>' +
+            '<strong>2.</strong> CPR 30:2 fuer 2 min, dann Rhythmus-Check<br>' +
+            '<strong>3.</strong> Nach 3. Schock: <strong>Adrenalin 1 mg i.v.</strong> + <strong>Amiodaron 300 mg</strong> i.v.<br>' +
+            '<strong>4.</strong> Adrenalin alle 3–5 min. Amiodaron 150 mg nach 5. Schock.<br>' +
+            '<strong>5.</strong> Reversible Ursachen suchen (4H/4T)!</span>';
+        } else if (rhythmus === 'pea') {
+          el.innerHTML = this.ampel('rot', 'PEA — NICHT SCHOCKBAR') +
+            '<br><span style="font-size:0.85rem;font-weight:normal;">' +
+            '<strong>1.</strong> CPR sofort 30:2 fuer 2 min<br>' +
+            '<strong>2.</strong> <strong>Adrenalin 1 mg i.v. sofort</strong>, dann alle 3–5 min<br>' +
+            '<strong>3.</strong> Rhythmus-Check alle 2 min<br>' +
+            '<strong>4.</strong> <strong>Ursache suchen!</strong> PEA hat meist behandelbare Ursache:<br>' +
+            '&nbsp;&nbsp;Hypovolaemie &rarr; Volumen | LE &rarr; Lyse | Tamponade &rarr; Punktion | Spannungspneu &rarr; Entlastung<br>' +
+            'KEIN Amiodaron bei PEA!</span>';
+        } else {
+          el.innerHTML = this.ampel('rot', 'ASYSTOLIE — NICHT SCHOCKBAR') +
+            '<br><span style="font-size:0.85rem;font-weight:normal;">' +
+            '<strong>1.</strong> CPR sofort 30:2 fuer 2 min<br>' +
+            '<strong>2.</strong> <strong>Adrenalin 1 mg i.v. sofort</strong>, dann alle 3–5 min<br>' +
+            '<strong>3.</strong> Asystolie in &ge;2 Ableitungen bestaetigen (kein feines VF?)<br>' +
+            '<strong>4.</strong> Reversible Ursachen? Wenn nein: Prognose nach 20 min reeval.<br>' +
+            'KEIN Schock bei Asystolie!</span>';
+        }
+      },
+
+      calcAnaphylaxie: function() {
+        var grad = document.getElementById('ana-grad').value;
+        var kg = parseFloat(document.getElementById('ana-kg').value);
+        var el = document.getElementById('ana-ergebnis');
+        if (!grad || isNaN(kg)) { el.style.background = 'var(--bg)'; el.style.color = 'var(--text-muted)'; el.innerHTML = 'Bitte Schweregrad und Gewicht eingeben'; return; }
+        var vol = Math.round(kg * 20);
+        if (grad === '1') {
+          el.style.background = 'var(--yellow-bg)'; el.style.color = 'var(--yellow)';
+          el.innerHTML = this.ampel('gelb', 'Grad I — Haut') + '<br><span style="font-size:0.85rem;font-weight:normal;"><strong>Allergen stoppen.</strong> Dimetinden 4 mg + Ranitidin 50 mg i.v. Prednisolon 250 mg i.v. Ueberwachung 6–24h.</span>';
+        } else if (grad === '2') {
+          el.style.background = 'var(--orange-bg)'; el.style.color = 'var(--orange)';
+          el.innerHTML = this.ampel('orange', 'Grad II — Systemisch') + '<br><span style="font-size:0.85rem;font-weight:normal;"><strong>Adrenalin 0,5 mg i.m.</strong> (Oberschenkel!). Volumen: ' + vol + ' ml kristalloid (20 ml/kg). H1+H2-Blocker + Prednisolon 500 mg i.v. Salbutamol inh. bei Bronchospasmus. Monitoring!</span>';
+        } else if (grad === '3') {
+          el.style.background = 'var(--red-bg)'; el.style.color = 'var(--red)';
+          el.innerHTML = this.ampel('rot', 'Grad III — Schock') + '<br><span style="font-size:0.85rem;font-weight:normal;"><strong>Adrenalin 0,5 mg i.m. SOFORT</strong> (alle 5 min wiederholen wenn keine Besserung!). Volumen: ' + vol + ' ml Bolus, Wiederholung. Bei refraktaerer Hypotonie: <strong>Adrenalin-Perfusor 0,05–1 &mu;g/kg/min</strong>. Intubationsbereitschaft! H1+H2 + Prednisolon 1g i.v.</span>';
+        } else {
+          el.style.background = 'var(--red-bg)'; el.style.color = 'var(--red)';
+          el.innerHTML = this.ampel('rot', 'Grad IV — Kreislaufstillstand') + '<br><span style="font-size:0.85rem;font-weight:normal;"><strong>CPR starten! Adrenalin 1 mg i.v.</strong> alle 3–5 min (ALS-Algorithmus). Volumen aggressiv. Intubation. Erwaege Glucagon 1–5 mg i.v. bei Betablocker-Medikation.</span>';
+        }
+      },
+
+      calcLE: function() {
+        var instabil = document.getElementById('le-instabil').checked;
+        var rvdys = document.getElementById('le-rvdys').checked;
+        var trop = document.getElementById('le-trop').checked;
+        var el = document.getElementById('le-ergebnis');
+        if (instabil) {
+          el.style.background = 'var(--red-bg)'; el.style.color = 'var(--red)';
+          el.innerHTML = this.ampel('rot', 'HOCHRISIKO-LE — Systemische Thrombolyse!') + '<br><span style="font-size:0.85rem;font-weight:normal;"><strong>Alteplase 100 mg i.v. ueber 2h</strong> (oder 0,6 mg/kg ueber 15 min bei CPR). Heparin parallel/danach. Bei CPR: Lyse erwaegen, CPR 60–90 min nach Lyse fortsetzen! Chirurgische Embolektomie / kathetergestuetzt wenn Lyse KI.</span>';
+        } else if (rvdys && trop) {
+          el.style.background = 'var(--orange-bg)'; el.style.color = 'var(--orange)';
+          el.innerHTML = this.ampel('orange', 'INTERMEDIAR-HOCH — Engmaschiges Monitoring') + '<br><span style="font-size:0.85rem;font-weight:normal;">RV-Dysfunktion + Troponin positiv = intermediar-hohes Risiko. <strong>Antikoagulation</strong> (Heparin i.v.). ICU-Ueberwachung. Rescue-Thrombolyse bei haemodynamischer Verschlechterung vorbereiten.</span>';
+        } else if (rvdys || trop) {
+          el.style.background = 'var(--yellow-bg)'; el.style.color = 'var(--yellow)';
+          el.innerHTML = this.ampel('gelb', 'INTERMEDIAR-NIEDRIG') + '<br><span style="font-size:0.82rem;font-weight:normal;">Ein Risikofaktor positiv. Antikoagulation (Heparin). Monitoring. Keine primaere Lyse. Reevaluation bei Verschlechterung.</span>';
+        } else {
+          el.style.background = 'var(--green-bg)'; el.style.color = 'var(--green)';
+          el.innerHTML = this.ampel('gruen', 'NIEDRIGES RISIKO') + '<br><span style="font-size:0.82rem;font-weight:normal;">Haemodynamisch stabil, keine RV-Dysfunktion, Troponin negativ. Antikoagulation. Reevaluation: sPESI fuer ambulante vs. stationaere Therapie.</span>';
+        }
+      },
+
+      calcAtemweg: function() {
+        var plan = document.getElementById('aw-plan').value;
+        var el = document.getElementById('aw-ergebnis');
+        if (!plan) { el.style.background = 'var(--bg)'; el.style.color = 'var(--text-muted)'; el.innerHTML = 'Bitte Plan waehlen'; return; }
+        var map = {
+          'A': { level: 'gelb', html: '<strong>Plan A — Intubation (max. 3 Versuche + 1 Experte)</strong><br>Videolaryngoskop bevorzugt. Bougie bereithalten. Optimale Lagerung (Rampe/Kopfhoch). Gummielastischer Bougie bei Cormack III. Nach 3 Fehlversuchen: STOPP &rarr; Plan B!' },
+          'B': { level: 'orange', html: '<strong>Plan B — Supraglottischer Atemweg</strong><br>Larynxmaske (2. Gen., z.B. i-gel) einlegen. Max. 3 Versuche. Oxygenierung sichern. Wenn Ventilation moeglich: Stabilisierung, dann Wach-Intubation planen oder chirurgischer Atemweg.' },
+          'C': { level: 'orange', html: '<strong>Plan C — Masken-/Beutelbeatmung</strong><br>Esmarch + oropharyngealer Tubus (Guedel). 2-Personen-Technik. Relaxierung wenn noch nicht erfolgt. Oxygenierung ist das Ziel! Patient aufwachen lassen wenn moeglich.' },
+          'D': { level: 'rot', html: '<strong>Plan D — CICO: Chirurgischer Atemweg JETZT!</strong><br><span class="ampel ampel-rot">NOTFALL-KONIOTOMIE!</span> Skalpell-Bougie-Technik: Membrana cricothyroidea tasten, horizontaler Schnitt, Bougie einfuehren, Tubus 6.0 ueber Bougie. KEIN Zoegern — jede Sekunde zaehlt!' }
+        };
+        var m = map[plan];
+        var bgMap = { gelb: '--yellow-bg', orange: '--orange-bg', rot: '--red-bg' };
+        var colMap = { gelb: '--yellow', orange: '--orange', rot: '--red' };
+        el.style.background = 'var(' + bgMap[m.level] + ')';
+        el.style.color = 'var(' + colMap[m.level] + ')';
+        el.innerHTML = '<span style="font-size:0.85rem;font-weight:normal;">' + m.html + '</span>';
+      },
+
+      /* === INFEKTIO-LOGIK === */
+
+      calcABX: function() {
+        var fokus = document.getElementById('abx-fokus').value;
+        var risiko = document.getElementById('abx-risiko').value;
+        var el = document.getElementById('abx-ergebnis');
+        if (!fokus) { el.innerHTML = ''; return; }
+        var r = { standard: '', mre: ' + <span class="ampel ampel-orange">MRE-Risiko</span>', immunsupp: ' + <span class="ampel ampel-rot">Immunsupprimiert</span>' };
+        var rLabel = r[risiko] || '';
+        var map = {
+          'cap': { title: 'CAP (ambulant erworbene Pneumonie)', std: '<strong>Ampicillin/Sulbactam 3g q8h</strong> + Azithromycin 500mg q24h', mre: '<strong>Piperacillin/Taz 4,5g q8h</strong> + Azithromycin. Bei MRSA-Verdacht: + Vancomycin/Linezolid', imm: '<strong>Meropenem 1g q8h</strong> + Azithromycin + Cotrimoxazol (PjP!) bei CD4 &lt;200' },
+          'hap': { title: 'HAP (nosokomiale Pneumonie)', std: '<strong>Piperacillin/Taz 4,5g q8h</strong>', mre: '<strong>Meropenem 1g q8h</strong> &plusmn; Vancomycin/Linezolid', imm: '<strong>Meropenem 2g q8h</strong> + Vancomycin + Cotrimoxazol' },
+          'vap': { title: 'VAP (Ventilator-assoziiert)', std: '<strong>Piperacillin/Taz 4,5g q6h</strong> (prolongiert!)', mre: '<strong>Meropenem 2g q8h</strong> + Vancomycin/Linezolid &plusmn; inh. Colistin', imm: '<strong>Meropenem 2g q8h</strong> + Vancomycin + Antimykotikum erwaegen' },
+          'uro': { title: 'Urosepsis', std: '<strong>Ceftriaxon 2g q24h</strong> &plusmn; Aminoglykosid (Einmaldosis)', mre: '<strong>Meropenem 1g q8h</strong> + Aminoglykosid', imm: '<strong>Meropenem 1g q8h</strong> + Aminoglykosid' },
+          'abdo': { title: 'Abdominelle Infektion', std: '<strong>Piperacillin/Taz 4,5g q8h</strong> (Chirurgische Fokussanierung!)', mre: '<strong>Meropenem 1g q8h</strong> + Vancomycin bei post-OP', imm: '<strong>Meropenem 1g q8h</strong> + Anidulafungin (Candida!)' },
+          'haut': { title: 'Nekrotisierende Weichteilinfektion', std: '<strong>Meropenem 1g q8h</strong> + <strong>Clindamycin 600mg q8h</strong> (Toxin-Hemmung!). CHIRURGIE SOFORT!', mre: 'Wie Standard + Vancomycin/Linezolid', imm: 'Wie Standard + Vancomycin + Antimykotikum' },
+          'zns': { title: 'Bakterielle Meningitis', std: '<strong>Ceftriaxon 2g q12h</strong> + <strong>Ampicillin 2g q4h</strong> (Listerien!) + <strong>Dexamethason 0,15 mg/kg q6h</strong> (vor/mit 1. ABx-Gabe!)', mre: '+ Vancomycin 15–20 mg/kg q8–12h (Pneumokokken-Resistenz)', imm: '+ Meropenem statt Ceftriaxon + Aciclovir (HSV!) + Cotrimoxazol' },
+          'katheter': { title: 'CLABSI (Katheter-assoziiert)', std: '<strong>Vancomycin 15–20 mg/kg q8–12h</strong> (Staphylokokken!) + Katheter entfernen wenn moeglich', mre: 'Vancomycin + <strong>Meropenem 1g q8h</strong> (gramnegative Abdeckung)', imm: 'Vancomycin + Meropenem + <strong>Anidulafungin/Caspofungin</strong> (Candida!)' },
+          'unbekannt': { title: 'Fokus unklar / FUO auf ICU', std: '<strong>Piperacillin/Taz 4,5g q8h</strong> — Fokussuche! (CT Thorax/Abdomen, Echo, Kulturen, Katheter)', mre: '<strong>Meropenem 1g q8h</strong> + Vancomycin', imm: '<strong>Meropenem 2g q8h</strong> + Vancomycin + Caspofungin + Cotrimoxazol (PjP!)' }
+        };
+        var m = map[fokus];
+        var therapy = risiko === 'immunsupp' ? m.imm : (risiko === 'mre' ? m.mre : m.std);
+        el.innerHTML = '<div class="card" style="margin:0;"><h3>' + m.title + rLabel + '</h3><div style="padding:8px 0;font-size:0.9rem;">' + therapy + '</div>' +
+          '<p style="font-size:0.78rem;color:var(--text-muted);">Immer: Blutkulturen VOR Antibiotikagabe! Deeskalation nach Antibiogramm. Lokale Resistenzlage beachten.</p></div>';
+      },
+
+      calcCandida: function() {
+        var tpn = document.getElementById('cand-tpn').checked ? 1 : 0;
+        var op = document.getElementById('cand-op').checked ? 1 : 0;
+        var multi = document.getElementById('cand-multi').checked ? 1 : 0;
+        var sepsis = document.getElementById('cand-sepsis').checked ? 2 : 0;
+        var score = tpn + op + multi + sepsis;
+        var el = document.getElementById('cand-ergebnis');
+        if (score < 3) {
+          el.style.background = 'var(--green-bg)'; el.style.color = 'var(--green)';
+          el.innerHTML = 'Candida-Score: ' + score + '/5 — ' + this.ampel('gruen', 'Niedriges Risiko') + '<br><span style="font-size:0.82rem;font-weight:normal;">Keine empirische Antimykotika-Therapie empfohlen. Reevaluation bei Verschlechterung.</span>';
+        } else {
+          el.style.background = 'var(--red-bg)'; el.style.color = 'var(--red)';
+          el.innerHTML = 'Candida-Score: ' + score + '/5 — ' + this.ampel('rot', 'Hohes Risiko (&ge;3)') + '<br><span style="font-size:0.82rem;font-weight:normal;"><strong>Empirisch Antimykotikum starten:</strong> Anidulafungin 200/100mg ODER Caspofungin 70/50mg. Blutkulturen (aerob!) + Beta-D-Glucan. Katheter entfernen!</span>';
+        }
+      },
+
+      calcPCT: function() {
+        var pct = parseFloat(document.getElementById('pct-wert').value);
+        var frage = document.getElementById('pct-frage').value;
+        var el = document.getElementById('pct-ergebnis');
+        if (isNaN(pct)) { el.style.background = 'var(--bg)'; el.style.color = 'var(--text-muted)'; el.innerHTML = 'Bitte PCT-Wert eingeben'; return; }
+        if (frage === 'start') {
+          if (pct < 0.25) {
+            el.style.background = 'var(--green-bg)'; el.style.color = 'var(--green)';
+            el.innerHTML = 'PCT ' + pct + ' ng/ml — ' + this.ampel('gruen', 'Bakterielle Infektion unwahrscheinlich') + '<br><span style="font-size:0.82rem;font-weight:normal;">Antibiotika NICHT empfohlen allein aufgrund PCT. Cave: fruehe Infektion (&lt;6h), lokale Infektionen, atypische Erreger koennen niedrigen PCT haben.</span>';
+          } else if (pct < 0.5) {
+            el.style.background = 'var(--yellow-bg)'; el.style.color = 'var(--yellow)';
+            el.innerHTML = 'PCT ' + pct + ' ng/ml — ' + this.ampel('gelb', 'Graubereich') + '<br><span style="font-size:0.82rem;font-weight:normal;">Antibiotika je nach Klinik. Kontrolle in 6–12h. Bei klinischem Verdacht: behandeln und PCT-Verlauf nutzen.</span>';
+          } else if (pct < 2) {
+            el.style.background = 'var(--orange-bg)'; el.style.color = 'var(--orange)';
+            el.innerHTML = 'PCT ' + pct + ' ng/ml — ' + this.ampel('orange', 'Bakterielle Infektion wahrscheinlich') + '<br><span style="font-size:0.82rem;font-weight:normal;">Antibiotika empfohlen. Blutkulturen abnehmen! PCT-Kontrolle in 24–48h fuer Verlauf.</span>';
+          } else {
+            el.style.background = 'var(--red-bg)'; el.style.color = 'var(--red)';
+            el.innerHTML = 'PCT ' + pct + ' ng/ml — ' + this.ampel('rot', 'Schwere bakterielle Infektion / Sepsis') + '<br><span style="font-size:0.82rem;font-weight:normal;">Antibiotika sofort! PCT &gt;10: septischer Schock? Fokussuche + Blutkulturen + Laktat. Taeglich PCT zur Verlaufskontrolle.</span>';
+          }
+        } else {
+          if (pct < 0.5 || (!isNaN(pct) && pct < 0.25)) {
+            el.style.background = 'var(--green-bg)'; el.style.color = 'var(--green)';
+            el.innerHTML = 'PCT ' + pct + ' ng/ml — ' + this.ampel('gruen', 'Antibiotika stoppen erwaegen') + '<br><span style="font-size:0.82rem;font-weight:normal;">PCT &lt;0,5 ng/ml ODER Abfall &gt;80% vom Peak: Stopp-Kriterium (ProRATA/PRORATA). Klinische Besserung vorausgesetzt!</span>';
+          } else {
+            el.style.background = 'var(--orange-bg)'; el.style.color = 'var(--orange)';
+            el.innerHTML = 'PCT ' + pct + ' ng/ml — ' + this.ampel('orange', 'Antibiotika fortfuehren') + '<br><span style="font-size:0.82rem;font-weight:normal;">PCT noch erhoht. Weiterfuehren + Reevaluation in 24–48h. Fokus saniert? Resistenzen? Deeskalation moeglich?</span>';
+          }
         }
       },
 
