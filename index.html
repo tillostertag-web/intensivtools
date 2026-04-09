@@ -919,6 +919,110 @@
         </div>
       </div>
 
+      <!-- G) Hamilton Ventilator Monitoring -->
+      <div class="card">
+        <h2>G) Hamilton Ventilator Monitoring</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Interpretation der wichtigsten Hamilton-Parameter (G5/S1/C6/T1). Werte eingeben fuer automatische Bewertung.
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>P/V Tool: Compliance (ml/cmH&#8322;O)</label>
+            <input type="number" id="ham-compliance" min="5" max="150" step="1" placeholder="z.B. 35" onchange="IntensivTools.calcHamilton()">
+          </div>
+          <div class="input-group">
+            <label>Rsexp — Exsp. Resistance (cmH&#8322;O/l/s)</label>
+            <input type="number" id="ham-resistance" min="0" max="40" step="1" placeholder="z.B. 12" onchange="IntensivTools.calcHamilton()">
+          </div>
+          <div class="input-group">
+            <label>P0.1 (cmH&#8322;O)</label>
+            <input type="number" id="ham-p01" min="0" max="15" step="0.1" placeholder="z.B. 2.5" onchange="IntensivTools.calcHamilton()">
+          </div>
+          <div class="input-group">
+            <label>RSB / f/Vt (1/l/min)</label>
+            <input type="number" id="ham-rsb" min="0" max="300" step="1" placeholder="z.B. 65" onchange="IntensivTools.calcHamilton()">
+          </div>
+          <div class="input-group">
+            <label>EtCO&#8322; (mmHg)</label>
+            <input type="number" id="ham-etco2" min="10" max="100" step="1" placeholder="z.B. 38" onchange="IntensivTools.calcHamilton()">
+          </div>
+          <div class="input-group">
+            <label>MV spont (l/min)</label>
+            <input type="number" id="ham-mvspont" min="0" max="30" step="0.1" placeholder="z.B. 4.2" onchange="IntensivTools.calcHamilton()">
+          </div>
+        </div>
+
+        <div id="ham-ergebnis" style="margin-top: 12px;"></div>
+
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Hamilton-Parameter Referenzbereiche</div>
+          <div class="score-body hidden">
+            <table>
+              <tr><th>Parameter</th><th>Normal</th><th>Pathologisch</th><th>Klinische Bedeutung</th></tr>
+              <tr>
+                <td><strong>Cstat (Compliance)</strong></td>
+                <td><span class="ampel ampel-gruen">50–80 ml/cmH&#8322;O</span></td>
+                <td><span class="ampel ampel-rot">&lt;30</span></td>
+                <td>Lungensteifigkeit: ARDS, Fibrose, Oedem, Atelektasen</td>
+              </tr>
+              <tr>
+                <td><strong>Rsexp (Resistance)</strong></td>
+                <td><span class="ampel ampel-gruen">&lt;10 cmH&#8322;O/l/s</span></td>
+                <td><span class="ampel ampel-rot">&gt;15</span></td>
+                <td>Atemwegswiderstand: Bronchospasmus, Sekretverhalt, Tubusobstruktion</td>
+              </tr>
+              <tr>
+                <td><strong>P0.1</strong></td>
+                <td><span class="ampel ampel-gruen">1–3 cmH&#8322;O</span></td>
+                <td><span class="ampel ampel-rot">&gt;4,5</span></td>
+                <td>Atemantrieb: &lt;1 = schwacher Antrieb; &gt;4,5 = Erschoepfung/Weaning-Versagen</td>
+              </tr>
+              <tr>
+                <td><strong>RSB (f/Vt)</strong></td>
+                <td><span class="ampel ampel-gruen">&lt;105</span></td>
+                <td><span class="ampel ampel-rot">&gt;105</span></td>
+                <td>Rapid Shallow Breathing: Weaning-Praediktor (&gt;105 = hohes Versagensrisiko)</td>
+              </tr>
+              <tr>
+                <td><strong>EtCO&#8322;</strong></td>
+                <td><span class="ampel ampel-gruen">35–45 mmHg</span></td>
+                <td><span class="ampel ampel-rot">&lt;30 / &gt;50</span></td>
+                <td>Ventilation: &darr; = Hyperventilation; &uarr; = Hypoventilation/Totraum</td>
+              </tr>
+              <tr>
+                <td><strong>MV spont</strong></td>
+                <td><span class="ampel ampel-gruen">5–8 l/min</span></td>
+                <td><span class="ampel ampel-rot">&lt;4 / &gt;12</span></td>
+                <td>Spontanaktivitaet: Weaning-Readiness bei 5–8 l/min stabil</td>
+              </tr>
+            </table>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
+              <strong>Hamilton IntelliVent-ASV:</strong> %MinVol zeigt Anteil der maschinellen Unterstuetzung. Ziel-Reduktion auf &lt;30% vor Extubation. Vent Status Panel: gruene Zone = Zielbereich.
+            </p>
+          </div>
+        </div>
+
+        <div class="score-card">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Weaning-Checkliste (Hamilton SBT)</div>
+          <div class="score-body hidden">
+            <ul class="checklist">
+              <li><input type="checkbox"> Grunderkrankung gebessert / kontrolliert</li>
+              <li><input type="checkbox"> FiO&#8322; &le;0,4 und PEEP &le;8 cmH&#8322;O</li>
+              <li><input type="checkbox"> P0.1 zwischen 1–4,5 cmH&#8322;O</li>
+              <li><input type="checkbox"> RSB (f/Vt) &lt;105</li>
+              <li><input type="checkbox"> Keine hochdosierten Vasopressoren</li>
+              <li><input type="checkbox"> Adaequater Hustenstoss, Schutzreflexe</li>
+              <li><input type="checkbox"> GCS &ge;9, kooperativ</li>
+              <li><input type="checkbox"> Negativer Fluessigkeitstrend (keine Ueberladung)</li>
+            </ul>
+            <div class="hinweis hinweis-info" style="margin-top: 8px;">
+              <strong>SBT-Protokoll:</strong> PS 5–8 cmH&#8322;O + PEEP 5 fuer 30–120 min. Abbruch bei AF &gt;35, SpO&#8322; &lt;88%, HR-Anstieg &gt;20%, Agitiertheit.
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Export -->
       <div style="text-align: center; margin-top: 8px;">
         <button class="export-btn" onclick="IntensivTools.exportBefund('ards')">
@@ -1064,8 +1168,161 @@
           <tr><td>Modus</td><td>CVVHDF bevorzugt</td></tr>
           <tr><td>Antikoagulation</td><td>Regionale Citrat-Antikoagulation bevorzugt</td></tr>
         </table>
+      </div>
+
+      <!-- F) Antibiotika-Dosierung bei CRRT -->
+      <div class="card">
+        <h2>F) Antibiotika-Dosierung bei CRRT</h2>
+        <div class="hinweis hinweis-kritisch" style="margin-bottom: 12px;">
+          <strong>Cave:</strong> Dosierungen abhaengig von Effluentrate, Restdiurese, Modus (CVVH/CVVHD/CVVHDF) und Sieving-Koeffizient. Immer TDM wenn verfuegbar! Angaben als Orientierung bei Effluentrate 20–25 ml/kg/h.
+        </div>
+
+        <h3>Beta-Laktame (zeitabhaengig — prolongierte/kontinuierliche Gabe bevorzugt)</h3>
+        <table>
+          <tr><th>Antibiotikum</th><th>Ladedosis</th><th>Erhaltungsdosis bei CRRT</th><th>TDM / Hinweis</th></tr>
+          <tr>
+            <td><strong>Piperacillin/Taz</strong></td>
+            <td>4,5 g</td>
+            <td>4,5 g q8h (oder 13,5 g/24h kont.)</td>
+            <td>TDM empfohlen; hohe CRRT-Clearance</td>
+          </tr>
+          <tr>
+            <td><strong>Meropenem</strong></td>
+            <td>1–2 g</td>
+            <td>1 g q8h (oder 0,5 g q6h)</td>
+            <td>Instabil in Loesung bei kont. Gabe &gt;6h; TDM</td>
+          </tr>
+          <tr>
+            <td>Ceftazidim</td>
+            <td>2 g</td>
+            <td>1–2 g q8h (oder 6 g/24h kont.)</td>
+            <td>Gut dialysierbar</td>
+          </tr>
+          <tr>
+            <td>Cefepim</td>
+            <td>2 g</td>
+            <td>1–2 g q8–12h</td>
+            <td>Neurotoxizitaet bei Ueberdosierung!</td>
+          </tr>
+          <tr>
+            <td>Ampicillin/Sulb</td>
+            <td>3 g</td>
+            <td>3 g q8h</td>
+            <td>Moderate CRRT-Clearance</td>
+          </tr>
+        </table>
+
+        <h3 style="margin-top: 16px;">Glykopeptide &amp; Oxazolidinone</h3>
+        <table>
+          <tr><th>Antibiotikum</th><th>Ladedosis</th><th>Erhaltungsdosis bei CRRT</th><th>TDM / Hinweis</th></tr>
+          <tr>
+            <td><strong>Vancomycin</strong></td>
+            <td>25–30 mg/kg</td>
+            <td>15–20 mg/kg q24–48h</td>
+            <td><span class="ampel ampel-rot">TDM obligat!</span> Talspiegel 15–20 mg/l; AUC/MIC-basiert</td>
+          </tr>
+          <tr>
+            <td>Linezolid</td>
+            <td>600 mg</td>
+            <td>600 mg q12h (unver&auml;ndert)</td>
+            <td>Nicht relevant dialysierbar; Thrombopenie ab Tag 7</td>
+          </tr>
+          <tr>
+            <td>Daptomycin</td>
+            <td>8–10 mg/kg</td>
+            <td>8–10 mg/kg q48h</td>
+            <td>CK-Monitoring; wird durch CRRT entfernt</td>
+          </tr>
+        </table>
+
+        <h3 style="margin-top: 16px;">Aminoglykoside (konzentrationsabhaengig)</h3>
+        <table>
+          <tr><th>Antibiotikum</th><th>Ladedosis</th><th>Erhaltungsdosis bei CRRT</th><th>TDM / Hinweis</th></tr>
+          <tr>
+            <td><strong>Gentamicin</strong></td>
+            <td>5–7 mg/kg</td>
+            <td>Nach Spiegel (oft 2–3 mg/kg q24–48h)</td>
+            <td><span class="ampel ampel-rot">TDM obligat!</span> Peak 20–30, Trough &lt;1 mg/l</td>
+          </tr>
+          <tr>
+            <td>Tobramycin</td>
+            <td>5–7 mg/kg</td>
+            <td>Nach Spiegel</td>
+            <td>Wie Gentamicin; hohe CRRT-Clearance</td>
+          </tr>
+          <tr>
+            <td>Amikacin</td>
+            <td>15–25 mg/kg</td>
+            <td>Nach Spiegel (oft 7,5 mg/kg q24–48h)</td>
+            <td>TDM; Peak 60–80, Trough &lt;5 mg/l</td>
+          </tr>
+        </table>
+
+        <h3 style="margin-top: 16px;">Fluorchinolone &amp; Andere</h3>
+        <table>
+          <tr><th>Antibiotikum</th><th>Ladedosis</th><th>Erhaltungsdosis bei CRRT</th><th>TDM / Hinweis</th></tr>
+          <tr>
+            <td>Ciprofloxacin</td>
+            <td>400 mg i.v.</td>
+            <td>400 mg q12h i.v.</td>
+            <td>Moderate CRRT-Clearance; QTc beachten</td>
+          </tr>
+          <tr>
+            <td>Levofloxacin</td>
+            <td>500–750 mg</td>
+            <td>250 mg q24h</td>
+            <td>Signifikante CRRT-Elimination</td>
+          </tr>
+          <tr>
+            <td>Metronidazol</td>
+            <td>500 mg</td>
+            <td>500 mg q8h (unveraendert)</td>
+            <td>Geringe CRRT-Clearance; hepatische Elimination</td>
+          </tr>
+          <tr>
+            <td>Fluconazol</td>
+            <td>800 mg</td>
+            <td>400–800 mg q24h</td>
+            <td>Hohe Dialysierbarkeit; Ladedosis wichtig!</td>
+          </tr>
+          <tr>
+            <td>Anidulafungin</td>
+            <td>200 mg</td>
+            <td>100 mg q24h (unveraendert)</td>
+            <td>Nicht dialysierbar; keine Anpassung</td>
+          </tr>
+          <tr>
+            <td>Colistin (CMS)</td>
+            <td>9 Mio IE</td>
+            <td>4,5 Mio IE q12h</td>
+            <td>Signifikante CRRT-Clearance; Nephrotoxizitaet weniger relevant bei CRRT</td>
+          </tr>
+        </table>
+
         <div class="hinweis hinweis-warnung" style="margin-top: 12px;">
-          <strong>Antibiotika bei CRRT:</strong> Viele Antibiotika werden durch CRRT eliminiert — Dosisanpassung erforderlich! Ruecksprache Apotheke/Nephrologie.
+          <strong>Generelle Prinzipien:</strong>
+        </div>
+        <ul style="padding-left: 20px; font-size: 0.85rem; margin-top: 4px; margin-bottom: 8px;">
+          <li><strong>Ladedosis IMMER geben</strong> — unabhaengig von Nierenfunktion/CRRT (Vd ist entscheidend, nicht Clearance)</li>
+          <li><strong>Prolongierte/kontinuierliche Infusion</strong> fuer Beta-Laktame bevorzugen (bessere T&gt;MIC)</li>
+          <li><strong>TDM nutzen</strong> wann immer verfuegbar (v.a. Vancomycin, Aminoglykoside, Beta-Laktame)</li>
+          <li><strong>Effluentrate beachten:</strong> hoehere Rate = hoehere Clearance = hoehere Dosis noetig</li>
+          <li><strong>Restdiurese addiert</strong> sich zur CRRT-Clearance — bei erhaltener Diurese tendenziell hoeher dosieren</li>
+          <li><strong>Sieving-Koeffizient:</strong> Proteinbindung &gt;80% = kaum dialysierbar (z.B. Ceftriaxon, Teicoplanin)</li>
+        </ul>
+
+        <div class="score-card">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Nicht/kaum dialysierbare Antibiotika (keine CRRT-Anpassung)</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <table>
+              <tr><th>Antibiotikum</th><th>Proteinbindung</th><th>CRRT-Anpassung</th></tr>
+              <tr><td>Ceftriaxon</td><td>~95%</td><td>Keine (Standarddosis)</td></tr>
+              <tr><td>Teicoplanin</td><td>~90%</td><td>Keine (nach Spiegel)</td></tr>
+              <tr><td>Anidulafungin</td><td>&gt;99%</td><td>Keine</td></tr>
+              <tr><td>Micafungin</td><td>&gt;99%</td><td>Keine</td></tr>
+              <tr><td>Tigecyclin</td><td>71–89%</td><td>Keine (biliaire Elimination)</td></tr>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -2155,6 +2412,90 @@
           el.style.color = 'var(--red)';
           el.innerHTML = 'Anionenluecke: <strong>' + ag + ' mmol/l</strong> — ' + this.ampel('rot', 'Erhoht (&gt;12)') + '<br><span style="font-size:0.85rem;font-weight:normal;">DD: DKA, Laktatazidose, Urämie, Intoxikation (Methanol, Ethylenglykol)</span>';
         }
+      },
+
+      /* === HAMILTON MONITORING === */
+
+      calcHamilton: function() {
+        var el = document.getElementById('ham-ergebnis');
+        var results = [];
+
+        var comp = parseFloat(document.getElementById('ham-compliance').value);
+        if (!isNaN(comp)) {
+          if (comp >= 50) {
+            results.push(this.ampel('gruen', 'Compliance ' + comp) + ' <span style="font-size:0.82rem;">Normal (&ge;50)</span>');
+          } else if (comp >= 30) {
+            results.push(this.ampel('gelb', 'Compliance ' + comp) + ' <span style="font-size:0.82rem;">Reduziert — Atelektasen? Oedem? Ueberblähung?</span>');
+          } else {
+            results.push(this.ampel('rot', 'Compliance ' + comp) + ' <span style="font-size:0.82rem;">Schwer reduziert — ARDS? Fibrose? Pleuraerguss? Pneumothorax?</span>');
+          }
+        }
+
+        var res = parseFloat(document.getElementById('ham-resistance').value);
+        if (!isNaN(res)) {
+          if (res <= 10) {
+            results.push(this.ampel('gruen', 'Resistance ' + res) + ' <span style="font-size:0.82rem;">Normal (&le;10)</span>');
+          } else if (res <= 15) {
+            results.push(this.ampel('gelb', 'Resistance ' + res) + ' <span style="font-size:0.82rem;">Erhoht — Sekretverhalt? Tubusgroesse?</span>');
+          } else {
+            results.push(this.ampel('rot', 'Resistance ' + res) + ' <span style="font-size:0.82rem;">Stark erhoht — Bronchospasmus? Tubusobstruktion? Sekretverhalt!</span>');
+          }
+        }
+
+        var p01 = parseFloat(document.getElementById('ham-p01').value);
+        if (!isNaN(p01)) {
+          if (p01 < 1) {
+            results.push(this.ampel('gelb', 'P0.1 = ' + p01) + ' <span style="font-size:0.82rem;">Schwacher Atemantrieb — Sedierung? Zentrales Problem?</span>');
+          } else if (p01 <= 3.5) {
+            results.push(this.ampel('gruen', 'P0.1 = ' + p01) + ' <span style="font-size:0.82rem;">Adaequater Atemantrieb (Weaning-Fenster)</span>');
+          } else if (p01 <= 4.5) {
+            results.push(this.ampel('orange', 'P0.1 = ' + p01) + ' <span style="font-size:0.82rem;">Erhoehter Atemantrieb — Atemlast erhoht, Weaning vorsichtig</span>');
+          } else {
+            results.push(this.ampel('rot', 'P0.1 = ' + p01) + ' <span style="font-size:0.82rem;">Erschoepfungsgefahr! Unterstuetzung erhoehen, kein SBT</span>');
+          }
+        }
+
+        var rsb = parseFloat(document.getElementById('ham-rsb').value);
+        if (!isNaN(rsb)) {
+          if (rsb < 80) {
+            results.push(this.ampel('gruen', 'RSB ' + rsb) + ' <span style="font-size:0.82rem;">Weaning wahrscheinlich erfolgreich (&lt;80)</span>');
+          } else if (rsb <= 105) {
+            results.push(this.ampel('gelb', 'RSB ' + rsb) + ' <span style="font-size:0.82rem;">Grenzbereich — engmaschig ueberwachen</span>');
+          } else {
+            results.push(this.ampel('rot', 'RSB ' + rsb) + ' <span style="font-size:0.82rem;">Weaning-Versagen wahrscheinlich (&gt;105) — Ursache suchen</span>');
+          }
+        }
+
+        var etco2 = parseFloat(document.getElementById('ham-etco2').value);
+        if (!isNaN(etco2)) {
+          if (etco2 < 30) {
+            results.push(this.ampel('gelb', 'EtCO2 ' + etco2) + ' <span style="font-size:0.82rem;">Hyperventilation — Schmerz? Agitation? Azidose-Kompensation?</span>');
+          } else if (etco2 <= 45) {
+            results.push(this.ampel('gruen', 'EtCO2 ' + etco2) + ' <span style="font-size:0.82rem;">Normal (35–45)</span>');
+          } else {
+            results.push(this.ampel('orange', 'EtCO2 ' + etco2) + ' <span style="font-size:0.82rem;">Hypoventilation / erhoehter Totraum — Vt/AF pruefen</span>');
+          }
+        }
+
+        var mv = parseFloat(document.getElementById('ham-mvspont').value);
+        if (!isNaN(mv)) {
+          if (mv < 4) {
+            results.push(this.ampel('gelb', 'MV spont ' + mv + ' l/min') + ' <span style="font-size:0.82rem;">Niedrig — Sedierung? Erschoepfung? Zentrales Problem?</span>');
+          } else if (mv <= 10) {
+            results.push(this.ampel('gruen', 'MV spont ' + mv + ' l/min') + ' <span style="font-size:0.82rem;">Adaequat fuer Weaning-Assessment</span>');
+          } else {
+            results.push(this.ampel('orange', 'MV spont ' + mv + ' l/min') + ' <span style="font-size:0.82rem;">Erhoht — erhoehter Bedarf, Kompensation?</span>');
+          }
+        }
+
+        if (results.length === 0) {
+          el.innerHTML = '';
+          return;
+        }
+
+        el.innerHTML = results.map(function(r) {
+          return '<div style="padding: 6px 0; border-bottom: 1px solid var(--border);">' + r + '</div>';
+        }).join('');
       },
 
       /* === BEFUND-EXPORT === */
