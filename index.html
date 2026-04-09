@@ -368,11 +368,22 @@
     }
 
     /* === TABELLE === */
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 12px;
+    }
+
+    .table-wrap table {
+      margin-bottom: 0;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 0.85rem;
       margin-bottom: 12px;
+      min-width: 0;
     }
 
     th, td {
@@ -385,6 +396,7 @@
       background: var(--accent-light);
       color: var(--accent);
       font-weight: 600;
+      white-space: nowrap;
     }
 
     /* === PRINT === */
@@ -448,11 +460,24 @@
       }
 
       table {
-        font-size: 0.78rem;
+        font-size: 0.75rem;
       }
 
       th, td {
-        padding: 6px 8px;
+        padding: 5px 6px;
+      }
+
+      th {
+        white-space: normal;
+      }
+
+      .card {
+        overflow-x: auto;
+      }
+
+      .card [style*="grid-template-columns: 1fr 1fr 1fr"],
+      .card [style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
       }
     }
 
@@ -4256,6 +4281,18 @@
         // RRT-Checklist Event-Listener
         document.querySelectorAll('#rrt-checklist input[type="checkbox"]').forEach(function(c) {
           c.addEventListener('change', function() { self.updateRRTStatus(); });
+        });
+        // Breite Tabellen in scrollbare Container wickeln
+        document.querySelectorAll('.card table, .score-body table').forEach(function(t) {
+          var firstRow = t.querySelector('tr');
+          if (firstRow && firstRow.children.length >= 4) {
+            if (!t.parentElement.classList.contains('table-wrap')) {
+              var wrapper = document.createElement('div');
+              wrapper.className = 'table-wrap';
+              t.parentElement.insertBefore(wrapper, t);
+              wrapper.appendChild(t);
+            }
+          }
         });
       }
     };
