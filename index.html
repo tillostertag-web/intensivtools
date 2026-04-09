@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IntensivTools — Klinische Entscheidungsunterstutzung</title>
+  <title>IntensivTools — Intensivmedizin</title>
   <style>
+    /* === DESIGN TOKENS === */
     :root {
       --bg: #f4f6f9;
       --surface: #ffffff;
@@ -13,119 +14,2314 @@
       --text-muted: #5a6476;
       --accent: #1a5fa8;
       --accent-light: #e8f0fb;
+
+      /* Ampel */
+      --green: #1a7a4a;    --green-bg: #eaf6f0;
+      --yellow: #8a6200;   --yellow-bg: #fef8e7;
+      --orange: #b84a00;   --orange-bg: #fff1e8;
+      --red: #b71c1c;      --red-bg: #fdecea;
+
       --radius: 8px;
       --shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* === RESET === */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
+      min-width: 320px;
     }
-    .container { max-width: 560px; width: 100%; }
+
+    /* === LAYOUT === */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 16px 32px;
+    }
+
+    /* === HEADER === */
     header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
       text-align: center;
-      margin-bottom: 32px;
+      box-shadow: var(--shadow);
     }
-    header h1 {
-      font-size: 2rem;
-      color: var(--accent);
+
+    header .logo {
+      font-size: 1.5rem;
       font-weight: 700;
+      color: var(--accent);
     }
-    header p {
+
+    header .subtitle {
+      font-size: 0.85rem;
       color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-top: 4px;
+      margin-top: 2px;
     }
+
+    header .badge {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: var(--accent-light);
+      padding: 2px 10px;
+      border-radius: 12px;
+    }
+
+    /* === TAB-BAR === */
+    .tab-bar {
+      display: flex;
+      gap: 0;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 16px;
+      background: var(--surface);
+      border-bottom: 2px solid var(--border);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px 8px;
+      border: none;
+      background: transparent;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: var(--accent);
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* === TAB PANELS === */
+    .tab-panel {
+      display: none;
+      padding-top: 20px;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* === CARDS === */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 24px;
+      padding: 20px;
       margin-bottom: 16px;
-      text-decoration: none;
-      color: var(--text);
-      display: block;
-      transition: box-shadow 0.2s, transform 0.15s;
     }
-    .card:hover {
-      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-      transform: translateY(-2px);
-    }
+
     .card h2 {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
       color: var(--accent);
-      margin-bottom: 6px;
     }
-    .card .tabs {
-      font-size: 0.85rem;
-      color: var(--text-muted);
+
+    .card h3 {
+      font-size: 0.95rem;
       margin-bottom: 8px;
+      color: var(--text);
     }
-    .card .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .tag {
+
+    /* === AMPEL === */
+    .ampel {
       display: inline-block;
-      padding: 2px 10px;
+      padding: 3px 12px;
       border-radius: 12px;
-      font-size: 0.72rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .ampel-gruen {
+      color: var(--green);
+      background: var(--green-bg);
+    }
+
+    .ampel-gelb {
+      color: var(--yellow);
+      background: var(--yellow-bg);
+    }
+
+    .ampel-orange {
+      color: var(--orange);
+      background: var(--orange-bg);
+    }
+
+    .ampel-rot {
+      color: var(--red);
+      background: var(--red-bg);
+    }
+
+    /* === SCORE-KARTEN === */
+    .score-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .score-header {
+      padding: 10px 16px;
+      background: var(--accent-light);
       font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      user-select: none;
+      color: var(--accent);
+    }
+
+    .score-header:hover {
+      background: #d6e6f8;
+    }
+
+    .score-body {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* === INPUTS === */
+    .input-group {
+      margin-bottom: 12px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      color: var(--text);
+      background: var(--surface);
+      transition: border-color 0.2s;
+    }
+
+    .input-group input:focus,
+    .input-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(26, 95, 168, 0.12);
+    }
+
+    /* === BUTTONS === */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #15508e;
+    }
+
+    .export-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
       background: var(--accent-light);
       color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
     }
-    footer {
-      margin-top: 32px;
-      font-size: 0.72rem;
+
+    .export-btn:hover {
+      background: #d6e6f8;
+    }
+
+    /* === HINWEIS-BOX === */
+    .hinweis {
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+      border-left: 4px solid;
+    }
+
+    .hinweis-info {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .hinweis-warnung {
+      background: var(--yellow-bg);
+      border-color: var(--yellow);
+      color: var(--yellow);
+    }
+
+    .hinweis-kritisch {
+      background: var(--red-bg);
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    /* === CHECKLISTE === */
+    .checklist {
+      list-style: none;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 6px 0;
+      font-size: 0.9rem;
+    }
+
+    .checklist input[type="checkbox"] {
+      margin-top: 4px;
+      accent-color: var(--accent);
+    }
+
+    /* === TOAST === */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      z-index: 9999;
+      animation: toastIn 0.3s ease, toastOut 0.3s ease 2.2s;
+      opacity: 1;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateX(-50%) translateY(0); }
+      to   { opacity: 0; transform: translateX(-50%) translateY(12px); }
+    }
+
+    /* === ERGEBNIS-BOX === */
+    .ergebnis {
+      padding: 16px;
+      border-radius: var(--radius);
+      margin-top: 12px;
+      font-weight: 600;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    /* === TABELLE === */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+    }
+
+    th, td {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+
+    th {
+      background: var(--accent-light);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* === PRINT === */
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      header .badge,
+      .tab-bar,
+      .export-btn,
+      .toast {
+        display: none !important;
+      }
+
+      .tab-panel {
+        display: block !important;
+        page-break-inside: avoid;
+      }
+
+      .tab-panel:not(.active) {
+        display: none !important;
+      }
+
+      .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        break-inside: avoid;
+      }
+
+      main {
+        max-width: 100%;
+      }
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 600px) {
+      header {
+        padding: 12px 16px;
+      }
+
+      header .logo {
+        font-size: 1.25rem;
+      }
+
+      .tab-btn {
+        font-size: 0.72rem;
+        padding: 10px 2px;
+      }
+
+      .card {
+        padding: 14px;
+      }
+
+      main {
+        padding: 0 10px 24px;
+      }
+
+      .tab-bar {
+        padding: 0 10px;
+      }
+
+      table {
+        font-size: 0.78rem;
+      }
+
+      th, td {
+        padding: 6px 8px;
+      }
+    }
+
+    /* === FOOTER === */
+    footer.disclaimer {
+      max-width: 960px;
+      margin: 16px auto 32px;
+      padding: 16px 20px;
+      font-size: 0.75rem;
       color: var(--text-muted);
       text-align: center;
-      max-width: 560px;
+      border-top: 1px solid var(--border);
+      line-height: 1.5;
+    }
+
+    footer.disclaimer .quellen {
+      margin-bottom: 10px;
+      text-align: left;
+      font-size: 0.72rem;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>IntensivTools</h1>
-      <p>Klinische Entscheidungsunterstutzung · Intensivmedizin</p>
-    </header>
 
-    <a class="card" href="IntensivScan1.html">
-      <h2>IntensivScan 1</h2>
-      <div class="tabs">Sepsis · ARDS · AKI</div>
-      <div class="tags">
-        <span class="tag">SSC 2021</span>
-        <span class="tag">Berlin-Definition</span>
-        <span class="tag">ARDSNet</span>
-        <span class="tag">KDIGO 2012</span>
-      </div>
-    </a>
+  <!-- HEADER -->
+  <header>
+    <div class="logo">IntensivTools</div>
+    <div class="subtitle">Klinische Entscheidungsunterstutzung · Intensivmedizin</div>
+    <div class="badge">v1.0 · Leitlinienstand 2024</div>
+  </header>
 
-    <a class="card" href="IntensivScan2.html">
-      <h2>IntensivScan 2</h2>
-      <div class="tabs">Kardio · Gerinnung · Stoffwechsel</div>
-      <div class="tags">
-        <span class="tag">ESC 2023</span>
-        <span class="tag">ISTH DIC 2023</span>
-        <span class="tag">ADA 2024</span>
-        <span class="tag">DGEM</span>
-      </div>
-    </a>
+  <!-- TAB-BAR -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="IntensivTools.showTab('sepsis', this)">Sepsis</button>
+    <button class="tab-btn" onclick="IntensivTools.showTab('ards', this)">ARDS</button>
+    <button class="tab-btn" onclick="IntensivTools.showTab('aki', this)">AKI</button>
+    <button class="tab-btn" onclick="IntensivTools.showTab('kardio', this)">Kardio</button>
+    <button class="tab-btn" onclick="IntensivTools.showTab('gerinnung', this)">Gerinnung</button>
+    <button class="tab-btn" onclick="IntensivTools.showTab('stoffwechsel', this)">Stoffwechsel</button>
   </div>
 
-  <footer>
+  <!-- MAIN -->
+  <main>
+
+    <!-- TAB: SEPSIS START -->
+    <div id="sepsis" class="tab-panel active">
+
+      <div class="hinweis hinweis-info">
+        <strong>Leitlinie:</strong> Surviving Sepsis Campaign 2021 (Evans et al.) · DGAI/DIVI · Sepsis-3-Definition
+      </div>
+
+      <!-- A) qSOFA-Screening -->
+      <div class="card">
+        <h2>A) qSOFA-Screening</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Quick-SOFA: Bedside-Screening bei V.a. Infektion (Sepsis-3)
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="qsofa-rr" onchange="IntensivTools.calcQSOFA()">
+            RR systolisch &le;100 mmHg
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="qsofa-af" onchange="IntensivTools.calcQSOFA()">
+            Atemfrequenz &ge;22/min
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="qsofa-gcs" onchange="IntensivTools.calcQSOFA()">
+            GCS &lt;15 (veraenderte Bewusstseinslage)
+          </label>
+        </div>
+        <div id="qsofa-ergebnis" class="ergebnis" style="background: var(--green-bg); color: var(--green);">
+          qSOFA: 0/3 — <span class="ampel ampel-gruen">Kein Hinweis</span>
+        </div>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; qSOFA — Bewertung anzeigen</div>
+          <div class="score-body hidden">
+            <table>
+              <tr><th>Score</th><th>Bewertung</th><th>Konsequenz</th></tr>
+              <tr><td>0–1</td><td><span class="ampel ampel-gruen">Niedrig</span></td><td>Kein Sepsis-Verdacht allein durch qSOFA</td></tr>
+              <tr><td>2–3</td><td><span class="ampel ampel-rot">Hoch</span></td><td>Sepsis-Verdacht &rarr; SOFA-Score pruefen</td></tr>
+            </table>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+              Hinweis: qSOFA ist ein Screening-Tool, kein diagnostisches Kriterium. Bei Verdacht immer SOFA-Score erheben.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- B) SOFA-Score (vereinfacht) -->
+      <div class="card">
+        <h2>B) SOFA-Score (vereinfacht)</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Sequential Organ Failure Assessment — 6 Organsysteme, je 0–4 Punkte. Sepsis = SOFA &ge;2 ueber Baseline + Infektionsverdacht.
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Respiration (PaO2/FiO2)</label>
+            <select id="sofa-resp" onchange="IntensivTools.calcSOFA()">
+              <option value="0">&ge;400 (0 Pkt)</option>
+              <option value="1">300–399 (1 Pkt)</option>
+              <option value="2">200–299 (2 Pkt)</option>
+              <option value="3">100–199 + Beatmung (3 Pkt)</option>
+              <option value="4">&lt;100 + Beatmung (4 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Gerinnung (Thrombozyten G/l)</label>
+            <select id="sofa-coag" onchange="IntensivTools.calcSOFA()">
+              <option value="0">&ge;150 (0 Pkt)</option>
+              <option value="1">100–149 (1 Pkt)</option>
+              <option value="2">50–99 (2 Pkt)</option>
+              <option value="3">20–49 (3 Pkt)</option>
+              <option value="4">&lt;20 (4 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Leber (Bilirubin mg/dl)</label>
+            <select id="sofa-liver" onchange="IntensivTools.calcSOFA()">
+              <option value="0">&lt;1,2 (0 Pkt)</option>
+              <option value="1">1,2–1,9 (1 Pkt)</option>
+              <option value="2">2,0–5,9 (2 Pkt)</option>
+              <option value="3">6,0–11,9 (3 Pkt)</option>
+              <option value="4">&ge;12,0 (4 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Kreislauf (MAP / Vasopressoren)</label>
+            <select id="sofa-cardio" onchange="IntensivTools.calcSOFA()">
+              <option value="0">MAP &ge;70 (0 Pkt)</option>
+              <option value="1">MAP &lt;70 (1 Pkt)</option>
+              <option value="2">Dopamin &le;5 / Dobutamin (2 Pkt)</option>
+              <option value="3">Dopamin &gt;5 / NA &le;0,1 (3 Pkt)</option>
+              <option value="4">Dopamin &gt;15 / NA &gt;0,1 (4 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>ZNS (GCS)</label>
+            <select id="sofa-cns" onchange="IntensivTools.calcSOFA()">
+              <option value="0">15 (0 Pkt)</option>
+              <option value="1">13–14 (1 Pkt)</option>
+              <option value="2">10–12 (2 Pkt)</option>
+              <option value="3">6–9 (3 Pkt)</option>
+              <option value="4">&lt;6 (4 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Niere (Kreatinin mg/dl / Diurese)</label>
+            <select id="sofa-renal" onchange="IntensivTools.calcSOFA()">
+              <option value="0">&lt;1,2 (0 Pkt)</option>
+              <option value="1">1,2–1,9 (1 Pkt)</option>
+              <option value="2">2,0–3,4 (2 Pkt)</option>
+              <option value="3">3,5–4,9 / &lt;500 ml/d (3 Pkt)</option>
+              <option value="4">&ge;5,0 / &lt;200 ml/d (4 Pkt)</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group" style="margin-top: 8px;">
+          <label>SOFA-Baseline (bekannter Vorscore, Standard: 0)</label>
+          <input type="number" id="sofa-baseline" value="0" min="0" max="24" onchange="IntensivTools.calcSOFA()">
+        </div>
+        <div id="sofa-ergebnis" class="ergebnis" style="background: var(--green-bg); color: var(--green);">
+          SOFA: 0/24 (Delta: 0) — <span class="ampel ampel-gruen">Kein Organversagen</span>
+        </div>
+      </div>
+
+      <!-- C) Klassifikation -->
+      <div class="card">
+        <h2>C) Sepsis-Klassifikation</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Automatische Einstufung basierend auf qSOFA, SOFA und klinischen Kriterien.
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="class-infektion" onchange="IntensivTools.calcKlassifikation()">
+            Infektionsverdacht / gesicherte Infektion
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="class-vasopressor" onchange="IntensivTools.calcKlassifikation()">
+            Vasopressorbedarf (MAP &lt;65 trotz Volumengabe)
+          </label>
+          <div class="input-group" style="max-width: 280px;">
+            <label>Laktat (mmol/l)</label>
+            <input type="number" id="class-laktat" step="0.1" min="0" placeholder="z.B. 2.4" onchange="IntensivTools.calcKlassifikation()">
+          </div>
+        </div>
+        <div id="class-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Kriterien oben angeben
+        </div>
+      </div>
+
+      <!-- D) 1-Stunden-Bundle -->
+      <div class="card">
+        <h2>D) 1-Stunden-Bundle (SSC 2021)</h2>
+        <div class="hinweis hinweis-warnung" style="margin-bottom: 12px;">
+          <strong>Zeitkritisch:</strong> Alle Massnahmen innerhalb 1 Stunde nach Erkennung beginnen!
+        </div>
+        <ul class="checklist" id="bundle-checklist">
+          <li><input type="checkbox" id="bundle-laktat"> Laktat messen (Ziel &lt;2 mmol/l, bei &gt;2: Kontrolle in 2–4h)</li>
+          <li><input type="checkbox" id="bundle-bk"> Blutkulturen &times; 2 (aerob + anaerob, vor Antibiotikagabe!)</li>
+          <li><input type="checkbox" id="bundle-abx"> Breitspektrum-Antibiotikum i.v. (innerhalb 1h bei Schock, 3h bei Sepsis)</li>
+          <li><input type="checkbox" id="bundle-fluid"> 30 ml/kg kristalloide Fluessigkeit bei Hypotonie oder Laktat &ge;4 mmol/l</li>
+          <li><input type="checkbox" id="bundle-vaso"> Vasopressoren starten bei MAP &lt;65 mmHg trotz Volumengabe</li>
+        </ul>
+        <div id="bundle-status" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+          0/5 Massnahmen abgeschlossen
+        </div>
+      </div>
+
+      <!-- E) Antibiotika-Hinweise -->
+      <div class="card">
+        <h2>E) Empirische Antibiotikatherapie</h2>
+        <div class="hinweis hinweis-warnung" style="margin-bottom: 12px;">
+          <strong>Hinweis:</strong> Immer lokale Resistenzlage beachten! Kein verbindlicher Algorithmus — Ruecksprache Mikrobiologie/ABS-Team.
+        </div>
+        <table>
+          <tr><th>Fokus</th><th>Empfehlung (empirisch)</th><th>Anmerkung</th></tr>
+          <tr>
+            <td>Community-acquired</td>
+            <td>Piperacillin/Tazobactam 4,5g q8h</td>
+            <td>&plusmn; Aminoglykosid bei schwerer Sepsis</td>
+          </tr>
+          <tr>
+            <td>Nosokomial / VAP</td>
+            <td>Meropenem 1–2g q8h</td>
+            <td>&plusmn; Vancomycin/Linezolid bei MRSA-Risiko</td>
+          </tr>
+          <tr>
+            <td>Abdominell</td>
+            <td>Meropenem oder Pip/Taz + Metronidazol</td>
+            <td>Fokussanierung pruefen (Chirurgie!)</td>
+          </tr>
+          <tr>
+            <td>Urosepsis</td>
+            <td>Pip/Taz oder Ceftriaxon + Aminoglykosid</td>
+            <td>Harnableitung sicherstellen</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- F) Vasopressoren -->
+      <div class="card">
+        <h2>F) Vasopressoren &amp; Adjunktive Therapie</h2>
+        <table>
+          <tr><th>Substanz</th><th>Indikation</th><th>Dosis</th><th>Cave</th></tr>
+          <tr>
+            <td><strong>Noradrenalin</strong></td>
+            <td>First-line bei sept. Schock</td>
+            <td>0,01–3 &mu;g/kg/min</td>
+            <td>Ziel MAP &ge;65 mmHg</td>
+          </tr>
+          <tr>
+            <td>Vasopressin</td>
+            <td>Add-on bei NE &gt;0,25 &mu;g/kg/min</td>
+            <td>0,03 U/min fix</td>
+            <td>Nicht titrieren</td>
+          </tr>
+          <tr>
+            <td>Adrenalin</td>
+            <td>Refraktaerer Schock</td>
+            <td>0,01–1 &mu;g/kg/min</td>
+            <td>Laktatanstieg, Tachykardie</td>
+          </tr>
+        </table>
+        <div class="hinweis hinweis-kritisch" style="margin-top: 12px;">
+          <strong>Hydrocortison:</strong> 200 mg/d i.v. (50 mg q6h) bei refraktaerem septischem Schock (Vasopressor-Eskalation trotz adaequater Volumengabe).
+        </div>
+      </div>
+
+      <!-- G) Monitoring-Ziele -->
+      <div class="card">
+        <h2>G) Monitoring-Ziele</h2>
+        <table>
+          <tr><th>Parameter</th><th>Zielwert</th><th>Kontrolle</th></tr>
+          <tr><td>MAP</td><td>&ge;65 mmHg</td><td>Kontinuierlich (art. Katheter)</td></tr>
+          <tr><td>ScvO&#8322;</td><td>&ge;70%</td><td>ZVK, initial alle 6h</td></tr>
+          <tr><td>Laktat-Clearance</td><td>&ge;10% / 2h</td><td>Seriell bei Laktat &gt;2 mmol/l</td></tr>
+          <tr><td>Diurese</td><td>&ge;0,5 ml/kg/h</td><td>Stundlich (Dauerkatheter)</td></tr>
+          <tr><td>ZVD</td><td>8–12 mmHg (beatmet: 12–15)</td><td>Nur als Trend, nicht als alleiniger Zielwert</td></tr>
+        </table>
+      </div>
+
+      <!-- Export -->
+      <div style="text-align: center; margin-top: 8px;">
+        <button class="export-btn" onclick="IntensivTools.exportBefund('sepsis')">
+          Befund kopieren
+        </button>
+      </div>
+
+    </div>
+    <!-- TAB: SEPSIS END -->
+
+    <!-- TAB: ARDS START -->
+    <div id="ards" class="tab-panel">
+
+      <div class="hinweis hinweis-info">
+        <strong>Leitlinie:</strong> Berlin-Definition 2012 · ARDSNet Protocol 2000 · ATS/ERS/ESICM 2017
+      </div>
+
+      <!-- A) Berlin-Klassifikation -->
+      <div class="card">
+        <h2>A) Berlin-Klassifikation</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Voraussetzungen: Akuter Beginn (&le;7d), beidseitige Infiltrate im Roentgen/CT, nicht vollstaendig durch Herzinsuffizienz/Volumenueberladung erklaerbar.
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="ards-infiltrate" onchange="IntensivTools.calcBerlin()">
+            Beidseitige Infiltrate (Roentgen/CT)
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="ards-peep" onchange="IntensivTools.calcBerlin()">
+            PEEP &ge;5 cmH&#8322;O
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="ards-noncardiac" onchange="IntensivTools.calcBerlin()">
+            Kein primaer kardiogenes Oedem
+          </label>
+        </div>
+        <div class="input-group" style="max-width: 280px;">
+          <label>PaO&#8322;/FiO&#8322;-Ratio (Horovitz-Index)</label>
+          <input type="number" id="ards-pfratio" min="0" max="700" step="1" placeholder="z.B. 180" onchange="IntensivTools.calcBerlin()">
+        </div>
+        <div id="ards-berlin-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Kriterien angeben
+        </div>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Berlin-Klassifikation — Uebersicht</div>
+          <div class="score-body hidden">
+            <table>
+              <tr><th>Schweregrad</th><th>PaO&#8322;/FiO&#8322;</th><th>Mortalitaet</th></tr>
+              <tr><td><span class="ampel ampel-gelb">Mild</span></td><td>200–300</td><td>27%</td></tr>
+              <tr><td><span class="ampel ampel-orange">Moderat</span></td><td>100–200</td><td>32%</td></tr>
+              <tr><td><span class="ampel ampel-rot">Schwer</span></td><td>&lt;100</td><td>45%</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- B) Idealgewichts-Rechner + Tidalvolumen -->
+      <div class="card">
+        <h2>B) Idealgewicht &amp; Tidalvolumen (ARDSNet)</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Geschlecht</label>
+            <select id="ards-geschlecht" onchange="IntensivTools.calcIBW()">
+              <option value="">-- waehlen --</option>
+              <option value="m">Maennlich</option>
+              <option value="f">Weiblich</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Koerpergroesse (cm)</label>
+            <input type="number" id="ards-groesse" min="100" max="230" step="1" placeholder="z.B. 175" onchange="IntensivTools.calcIBW()">
+          </div>
+        </div>
+        <div id="ards-ibw-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Geschlecht und Groesse angeben
+        </div>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; ARDSNet-Formel</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <p><strong>Maenner:</strong> IBW = 50 + 0,91 &times; (Groesse cm &minus; 152,4)</p>
+            <p><strong>Frauen:</strong> IBW = 45,5 + 0,91 &times; (Groesse cm &minus; 152,4)</p>
+            <p style="margin-top: 8px;"><strong>Tidalvolumen-Ziel:</strong> 6 ml/kg IBW (Bereich: 4–8 ml/kg)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- C) Beatmungsziele -->
+      <div class="card">
+        <h2>C) Beatmungsziele (ARDSNet)</h2>
+        <table>
+          <tr><th>Parameter</th><th>Zielwert</th><th>Anmerkung</th></tr>
+          <tr><td>Tidalvolumen</td><td>6 ml/kg IBW</td><td>Bereich 4–8 ml/kg, Ziel 6 ml/kg</td></tr>
+          <tr><td>Plateaudruck</td><td>&le;30 cmH&#8322;O</td><td>Reduktion Vt wenn Pplat &gt;30</td></tr>
+          <tr><td>Driving Pressure</td><td>&lt;15 cmH&#8322;O</td><td>Pplat &minus; PEEP</td></tr>
+          <tr><td>Atemfrequenz</td><td>14–35/min</td><td>pH-Ziel 7,30–7,45</td></tr>
+          <tr><td>SpO&#8322;-Ziel</td><td>88–95%</td><td>Permissive Hypoxaemie</td></tr>
+          <tr><td>pH-Ziel</td><td>7,30–7,45</td><td>Permissive Hyperkapnie akzeptabel</td></tr>
+        </table>
+      </div>
+
+      <!-- D) PEEP/FiO2-Tabelle -->
+      <div class="card">
+        <h2>D) PEEP/FiO&#8322;-Tabelle (ARDSNet)</h2>
+        <h3>Low-PEEP-Strategie</h3>
+        <table style="font-size: 0.78rem;">
+          <tr><th>FiO&#8322;</th><td>0,3</td><td>0,4</td><td>0,5</td><td>0,6</td><td>0,7</td><td>0,8</td><td>0,9</td><td>1,0</td></tr>
+          <tr><th>PEEP</th><td>5</td><td>5–8</td><td>8–10</td><td>10</td><td>10–14</td><td>14</td><td>14–18</td><td>18–24</td></tr>
+        </table>
+        <h3 style="margin-top: 12px;">High-PEEP-Strategie</h3>
+        <table style="font-size: 0.78rem;">
+          <tr><th>FiO&#8322;</th><td>0,3</td><td>0,4</td><td>0,5</td><td>0,6</td><td>0,7</td><td>0,8</td><td>0,9</td><td>1,0</td></tr>
+          <tr><th>PEEP</th><td>5–14</td><td>14–16</td><td>16–18</td><td>18–20</td><td>20</td><td>20–22</td><td>22</td><td>22–24</td></tr>
+        </table>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
+          High-PEEP bevorzugt bei schwerem ARDS (PF-Ratio &lt;150). Individuelle Anpassung nach Haemodynamik und Compliance.
+        </p>
+      </div>
+
+      <!-- E) Driving Pressure Rechner -->
+      <div class="card">
+        <h2>E) Driving Pressure Rechner</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Plateaudruck (cmH&#8322;O)</label>
+            <input type="number" id="ards-pplat" min="0" max="60" step="1" placeholder="z.B. 28" onchange="IntensivTools.calcDrivingPressure()">
+          </div>
+          <div class="input-group">
+            <label>PEEP (cmH&#8322;O)</label>
+            <input type="number" id="ards-peep-val" min="0" max="30" step="1" placeholder="z.B. 12" onchange="IntensivTools.calcDrivingPressure()">
+          </div>
+        </div>
+        <div id="ards-dp-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Plateau und PEEP eingeben
+        </div>
+      </div>
+
+      <!-- F) Rescue-Therapien -->
+      <div class="card">
+        <h2>F) Rescue-Therapien (schweres ARDS)</h2>
+        <div class="hinweis hinweis-kritisch" style="margin-bottom: 12px;">
+          <strong>Nur bei schwerem ARDS</strong> (PF-Ratio &lt;100) und nach Optimierung der Standardtherapie!
+        </div>
+        <table>
+          <tr><th>Stufe</th><th>Massnahme</th><th>Evidenz</th><th>Details</th></tr>
+          <tr>
+            <td>1</td>
+            <td><strong>Bauchlagerung</strong></td>
+            <td><span class="ampel ampel-gruen">Empfehlung A</span></td>
+            <td>&ge;16h/d, fruehzeitig bei PF &lt;150</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Neuromusk. Blockade</td>
+            <td><span class="ampel ampel-gelb">Empfehlung B</span></td>
+            <td>Cisatracurium, erste 48h, nur bei tiefem PF</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>iNO (Stickstoffmonoxid)</td>
+            <td><span class="ampel ampel-orange">Bridge</span></td>
+            <td>Ueberbrueckung, kein Mortalitaetsvorteil</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><strong>ECMO</strong></td>
+            <td><span class="ampel ampel-rot">Rescue</span></td>
+            <td>Murray-Score &ge;3 oder pH &lt;7,2 trotz Maximaltherapie</td>
+          </tr>
+        </table>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; ECMO-Kriterien (Orientierung)</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <ul style="padding-left: 16px;">
+              <li>Murray Lung Injury Score &ge;3,0</li>
+              <li>pH &lt;7,20 trotz optimierter Beatmung</li>
+              <li>PaO&#8322;/FiO&#8322; &lt;80 trotz Bauchlage + PEEP &ge;15</li>
+              <li>Hyperkapnie mit Pplat &gt;30 cmH&#8322;O</li>
+              <li>Frueher Kontakt mit ECMO-Zentrum empfohlen!</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Export -->
+      <div style="text-align: center; margin-top: 8px;">
+        <button class="export-btn" onclick="IntensivTools.exportBefund('ards')">
+          Befund kopieren
+        </button>
+      </div>
+
+    </div>
+    <!-- TAB: ARDS END -->
+
+    <!-- TAB: AKI START -->
+    <div id="aki" class="tab-panel">
+
+      <div class="hinweis hinweis-info">
+        <strong>Leitlinie:</strong> KDIGO AKI 2012 · KDIGO AKD 2020 · EuReCa
+      </div>
+
+      <!-- A) KDIGO-Staging -->
+      <div class="card">
+        <h2>A) KDIGO-Staging</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Staging nach dem schlechteren Kriterium (Kreatinin ODER Urinausscheidung).
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Kreatinin-Kriterium</label>
+            <select id="aki-krea" onchange="IntensivTools.calcKDIGO()">
+              <option value="0">Kein AKI-Kriterium erfuellt</option>
+              <option value="1">Stadium 1: &times;1,5–1,9 Baseline oder +0,3 mg/dl in 48h</option>
+              <option value="2">Stadium 2: &times;2,0–2,9 Baseline</option>
+              <option value="3">Stadium 3: &times;3 / &ge;4 mg/dl / Dialysebeginn</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Urinausscheidungs-Kriterium</label>
+            <select id="aki-urin" onchange="IntensivTools.calcKDIGO()">
+              <option value="0">Kein AKI-Kriterium erfuellt</option>
+              <option value="1">Stadium 1: &lt;0,5 ml/kg/h &times; 6–12h</option>
+              <option value="2">Stadium 2: &lt;0,5 ml/kg/h &times; &ge;12h</option>
+              <option value="3">Stadium 3: &lt;0,3 ml/kg/h &times; &ge;24h oder Anurie &ge;12h</option>
+            </select>
+          </div>
+        </div>
+        <div id="aki-kdigo-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Kriterien waehlen
+        </div>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; KDIGO-Stadien — Uebersicht</div>
+          <div class="score-body hidden">
+            <table>
+              <tr><th>Stadium</th><th>Kreatinin</th><th>Urinausscheidung</th><th>Ampel</th></tr>
+              <tr><td>1</td><td>&times;1,5–1,9 oder +0,3 mg/dl in 48h</td><td>&lt;0,5 ml/kg/h &times; 6–12h</td><td><span class="ampel ampel-gelb">Gelb</span></td></tr>
+              <tr><td>2</td><td>&times;2,0–2,9 Baseline</td><td>&lt;0,5 ml/kg/h &times; &ge;12h</td><td><span class="ampel ampel-orange">Orange</span></td></tr>
+              <tr><td>3</td><td>&times;3 / &ge;4 mg/dl / RRT</td><td>&lt;0,3 ml/kg/h &times; &ge;24h / Anurie &ge;12h</td><td><span class="ampel ampel-rot">Rot</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- B) Ursachen-Screening -->
+      <div class="card">
+        <h2>B) Ursachen-Screening</h2>
+        <table>
+          <tr><th>Kategorie</th><th>Ursachen</th><th>Diagnostik</th></tr>
+          <tr>
+            <td><strong>Praerenal</strong> (70%)</td>
+            <td>Hypovolaemie, Sepsis, Herzinsuffizienz, Leberversagen</td>
+            <td>Volumenstatus, Haemodynamik, Laktat</td>
+          </tr>
+          <tr>
+            <td><strong>Renal</strong> (20%)</td>
+            <td>ATN, Glomerulonephritis, interstitielle Nephritis, toxisch</td>
+            <td>Urinstatus, Sediment, Eosinophile, Komplement</td>
+          </tr>
+          <tr>
+            <td><strong>Postrenal</strong> (10%)</td>
+            <td>Harnleitersteine, Tumorkompression, Katheterobstruktion</td>
+            <td>Sonographie (Harnstau?)</td>
+          </tr>
+        </table>
+        <div class="hinweis hinweis-warnung" style="margin-top: 12px;">
+          <strong>Nephrotoxische Medikamente pruefen:</strong> NSAID, ACE-Hemmer/ARB, Aminoglykoside, Vancomycin, Kontrastmittel, Amphotericin B &rarr; Pausieren/Dosisanpassung?
+        </div>
+      </div>
+
+      <!-- C) Fluessigkeitsmanagement -->
+      <div class="card">
+        <h2>C) Fluessigkeitsmanagement</h2>
+        <table>
+          <tr><th>KDIGO-Stadium</th><th>Strategie</th><th>Ziel</th></tr>
+          <tr>
+            <td><span class="ampel ampel-gelb">Stadium 1</span></td>
+            <td>Vorsichtiger Volumenversuch bei praerenaler Genese</td>
+            <td>Euvolaemie, Diurese &ge;0,5 ml/kg/h</td>
+          </tr>
+          <tr>
+            <td><span class="ampel ampel-orange">Stadium 2</span></td>
+            <td>Bilanzierung, Schleifendiuretika bei Ueberladung</td>
+            <td>Negative Bilanz bei Hypervolaemie</td>
+          </tr>
+          <tr>
+            <td><span class="ampel ampel-rot">Stadium 3</span></td>
+            <td>Restriktiv, RRT erwägen</td>
+            <td>Kumulative Bilanz &lt;10% KG</td>
+          </tr>
+        </table>
+        <div class="hinweis hinweis-kritisch" style="margin-top: 12px;">
+          <strong>Cave:</strong> Hypervolaemie ist ein unabhaengiger Risikofaktor fuer Mortalitaet bei AKI! Kumulative Fluessigkeitsbilanz &gt;10% KG vermeiden.
+        </div>
+      </div>
+
+      <!-- D) RRT-Indikationen -->
+      <div class="card">
+        <h2>D) RRT-Indikationen (Nierenersatztherapie)</h2>
+        <div class="hinweis hinweis-kritisch" style="margin-bottom: 12px;">
+          <strong>Absolute Indikationen</strong> — sofortige RRT-Einleitung bei refraktaerem Verlauf:
+        </div>
+        <ul class="checklist" id="rrt-checklist">
+          <li><input type="checkbox" id="rrt-k"> Hyperkaliämie &ge;6,5 mmol/l (refraktaer auf konservative Therapie)</li>
+          <li><input type="checkbox" id="rrt-ph"> Metabolische Azidose pH &lt;7,15 (refraktaer auf Bikarbonat)</li>
+          <li><input type="checkbox" id="rrt-uraemie"> Uraemische Symptome (Perikarditis, Enzephalopathie, Blutung)</li>
+          <li><input type="checkbox" id="rrt-fluid"> Fluessigkeitsueberladung mit Lungenoedem (refraktaer auf Diuretika)</li>
+          <li><input type="checkbox" id="rrt-intox"> Dialysierbare Intoxikation (Lithium, Methanol, Ethylenglykol)</li>
+        </ul>
+        <div id="rrt-status" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+          0/5 Indikationen zutreffend
+        </div>
+      </div>
+
+      <!-- E) CRRT-Dosierung -->
+      <div class="card">
+        <h2>E) CRRT-Dosierung</h2>
+        <div class="input-group" style="max-width: 280px;">
+          <label>Koerpergewicht (kg)</label>
+          <input type="number" id="aki-gewicht" min="30" max="250" step="1" placeholder="z.B. 80" onchange="IntensivTools.calcCRRT()">
+        </div>
+        <div id="aki-crrt-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Koerpergewicht eingeben
+        </div>
+        <table style="margin-top: 12px;">
+          <tr><th>Parameter</th><th>Empfehlung (KDIGO)</th></tr>
+          <tr><td>Effluentrate</td><td>20–25 ml/kg/h</td></tr>
+          <tr><td>Modus</td><td>CVVHDF bevorzugt</td></tr>
+          <tr><td>Antikoagulation</td><td>Regionale Citrat-Antikoagulation bevorzugt</td></tr>
+        </table>
+        <div class="hinweis hinweis-warnung" style="margin-top: 12px;">
+          <strong>Antibiotika bei CRRT:</strong> Viele Antibiotika werden durch CRRT eliminiert — Dosisanpassung erforderlich! Ruecksprache Apotheke/Nephrologie.
+        </div>
+      </div>
+
+      <!-- Export -->
+      <div style="text-align: center; margin-top: 8px;">
+        <button class="export-btn" onclick="IntensivTools.exportBefund('aki')">
+          Befund kopieren
+        </button>
+      </div>
+
+    </div>
+    <!-- TAB: AKI END -->
+
+    <!-- ============================================================ -->
+    <!-- TAB: KARDIO START -->
+    <!-- ============================================================ -->
+    <div id="kardio" class="tab-panel">
+
+      <div class="hinweis hinweis-info">
+        <strong>Leitlinie:</strong> ESC Herzinsuffizienz 2023 · ESC Schock 2024 · ESC ACS 2023
+      </div>
+
+      <!-- A) Schock-Klassifikation / Stevenson -->
+      <div class="card">
+        <h2>A) Haemodynamisches Profil (Stevenson)</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Klinische Einteilung nach Perfusion (warm/kalt) und Stauung (trocken/feucht).
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Perfusion</label>
+            <select id="kardio-perfusion" onchange="IntensivTools.calcStevenson()">
+              <option value="">-- waehlen --</option>
+              <option value="warm">Warm (adaequat perfundiert)</option>
+              <option value="kalt">Kalt (Hypoperfusion: kalt, marmoriert, Oligurie)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Stauung</label>
+            <select id="kardio-stauung" onchange="IntensivTools.calcStevenson()">
+              <option value="">-- waehlen --</option>
+              <option value="trocken">Trocken (keine Stauungszeichen)</option>
+              <option value="feucht">Feucht (Lungenstauung, Oedeme, erhoehter JVD)</option>
+            </select>
+          </div>
+        </div>
+        <div id="kardio-stevenson-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Perfusion und Stauung waehlen
+        </div>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Stevenson-Quadranten</div>
+          <div class="score-body hidden">
+            <table>
+              <tr><th></th><th>Trocken</th><th>Feucht</th></tr>
+              <tr><td><strong>Warm</strong></td><td><span class="ampel ampel-gruen">A: warm+trocken</span><br>Kompensiert</td><td><span class="ampel ampel-gelb">B: warm+feucht</span><br>Diuretika</td></tr>
+              <tr><td><strong>Kalt</strong></td><td><span class="ampel ampel-orange">L: kalt+trocken</span><br>Volumen vorsichtig</td><td><span class="ampel ampel-rot">C: kalt+feucht</span><br>Inotropika + Diuretika</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- B) SCAI-Klassifikation -->
+      <div class="card">
+        <h2>B) Kardiogener Schock — SCAI-Klassifikation</h2>
+        <div class="input-group">
+          <label>SCAI-Stadium</label>
+          <select id="kardio-scai" onchange="IntensivTools.calcSCAI()">
+            <option value="">-- waehlen --</option>
+            <option value="A">A: At Risk — Risikofaktoren, haemodynamisch stabil</option>
+            <option value="B">B: Beginning — Hypotonie/Tachykardie ohne Hypoperfusion</option>
+            <option value="C">C: Classic — Hypoperfusion, Laktat erhoht, Organschaden beginnend</option>
+            <option value="D">D: Deteriorating — Verschlechterung trotz initialer Therapie</option>
+            <option value="E">E: Extremis — Kreislaufkollaps, CPR, refraktaer</option>
+          </select>
+        </div>
+        <div id="kardio-scai-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte SCAI-Stadium waehlen
+        </div>
+      </div>
+
+      <!-- C) Vasopressoren/Inotropika -->
+      <div class="card">
+        <h2>C) Vasopressoren &amp; Inotropika</h2>
+        <table>
+          <tr><th>Substanz</th><th>Indikation</th><th>Dosis</th><th>Cave</th></tr>
+          <tr>
+            <td><strong>Noradrenalin</strong></td>
+            <td>Vasodilatatorischer Schock</td>
+            <td>0,01–3 &mu;g/kg/min</td>
+            <td>Tachykardie, periphere Ischaemie</td>
+          </tr>
+          <tr>
+            <td><strong>Dobutamin</strong></td>
+            <td>Kardiogener Schock (CO&darr;)</td>
+            <td>2–20 &mu;g/kg/min</td>
+            <td>Tachyarrhythmie, Hypotonie</td>
+          </tr>
+          <tr>
+            <td>Levosimendan</td>
+            <td>Akute Dekompensation</td>
+            <td>0,05–0,2 &mu;g/kg/min</td>
+            <td>Hypotonie, kein Bolus auf ICU</td>
+          </tr>
+          <tr>
+            <td>Adrenalin</td>
+            <td>Refraktaerer Schock / CPR</td>
+            <td>0,01–1 &mu;g/kg/min</td>
+            <td>Laktatanstieg, Arrhythmien</td>
+          </tr>
+          <tr>
+            <td>Vasopressin</td>
+            <td>NE-Additiv</td>
+            <td>0,03 U/min fix</td>
+            <td>Nicht titrieren, Splanchnikusischaemie</td>
+          </tr>
+          <tr>
+            <td>Milrinon</td>
+            <td>PDE-III-Hemmer, Rechtsherzversagen</td>
+            <td>0,375–0,75 &mu;g/kg/min</td>
+            <td>Hypotonie, Arrhythmien</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- D) ACS auf der ICU -->
+      <div class="card">
+        <h2>D) ACS auf der ICU</h2>
+        <table>
+          <tr><th>Typ</th><th>Zeitfenster</th><th>Massnahme</th></tr>
+          <tr>
+            <td><span class="ampel ampel-rot">STEMI</span></td>
+            <td>&lt;120 min (Door-to-Balloon)</td>
+            <td>Primaere PCI, Kardiologie sofort informieren</td>
+          </tr>
+          <tr>
+            <td><span class="ampel ampel-orange">NSTEMI hohes Risiko</span></td>
+            <td>&lt;24h invasive Strategie</td>
+            <td>PCI/Angiographie, DAPT, Antikoagulation</td>
+          </tr>
+          <tr>
+            <td><span class="ampel ampel-gelb">NSTEMI niedriges Risiko</span></td>
+            <td>&lt;72h</td>
+            <td>Nicht-invasive Risikostratifizierung</td>
+          </tr>
+        </table>
+        <div class="hinweis hinweis-warnung" style="margin-top: 12px;">
+          <strong>Post-PCI-Monitoring:</strong> Radialis-/Femoraliszugang pruefen, Troponin-Verlauf 3–6h, Rhythmusueberwachung, DAPT sicherstellen (ASS + P2Y12-Hemmer).
+        </div>
+      </div>
+
+      <!-- E) Akute Herzinsuffizienz -->
+      <div class="card">
+        <h2>E) Akute Herzinsuffizienz — Diuretika</h2>
+        <div class="input-group" style="max-width: 320px;">
+          <label>Orale Furosemid-Vordosis (mg/d, 0 wenn keine)</label>
+          <input type="number" id="kardio-furodosis" min="0" max="1000" step="10" placeholder="z.B. 80" onchange="IntensivTools.calcDiuretika()">
+        </div>
+        <div id="kardio-diuretika-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte orale Vordosis eingeben
+        </div>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Diuretika-Algorithmus (ESC 2023)</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <ul style="padding-left: 16px;">
+              <li><strong>Startdosis i.v.:</strong> Mindestens orale Tagesdosis als i.v.-Aequivalent (1:1), ggf. 1–2&times;</li>
+              <li><strong>Evaluation nach 2h:</strong> Diurese &gt;100 ml/h? Wenn nein: Dosis verdoppeln</li>
+              <li><strong>Evaluation nach 6h:</strong> Diurese &gt;0,5 ml/kg/h? Wenn nein: Kombination (Thiazid/Metolazon)</li>
+              <li><strong>Ziel:</strong> 0,5–1 ml/kg/h Diurese, Negativbilanz 1–2 L/d</li>
+              <li><strong>Monitoring:</strong> Kalium, Natrium, Kreatinin alle 12–24h</li>
+            </ul>
+          </div>
+        </div>
+        <table style="margin-top: 12px;">
+          <tr><th>LVEF</th><th>Klassifikation</th><th>Spezifische Therapie</th></tr>
+          <tr><td>&le;40%</td><td>HFrEF</td><td>ACEi/ARNI + Betablocker + MRA + SGLT2i</td></tr>
+          <tr><td>41–49%</td><td>HFmrEF</td><td>SGLT2i, ACEi/ARNI erwaegen</td></tr>
+          <tr><td>&ge;50%</td><td>HFpEF</td><td>SGLT2i, Diuretika symptomatisch</td></tr>
+        </table>
+      </div>
+
+      <!-- Export -->
+      <div style="text-align: center; margin-top: 8px;">
+        <button class="export-btn" onclick="IntensivTools.exportBefund('kardio')">
+          Befund kopieren
+        </button>
+      </div>
+
+    </div>
+    <!-- TAB: KARDIO END -->
+
+    <!-- ============================================================ -->
+    <!-- TAB: GERINNUNG START -->
+    <!-- ============================================================ -->
+    <div id="gerinnung" class="tab-panel">
+
+      <div class="hinweis hinweis-info">
+        <strong>Leitlinie:</strong> ISTH DIC 2023 · AWMF Gerinnungsmanagement · DGAI Massivtransfusion
+      </div>
+
+      <!-- A) DIC-Score -->
+      <div class="card">
+        <h2>A) DIC-Score (ISTH)</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Voraussetzung: Grunderkrankung mit DIC-Risiko (Sepsis, Trauma, Malignome). Ohne Grunderkrankung Score nicht anwenden.
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Thrombozyten (G/l)</label>
+            <select id="dic-thromb" onchange="IntensivTools.calcDIC()">
+              <option value="0">&gt;100 (0 Pkt)</option>
+              <option value="1">50–100 (1 Pkt)</option>
+              <option value="2">&lt;50 (2 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>PT-Verlaengerung (Sekunden)</label>
+            <select id="dic-pt" onchange="IntensivTools.calcDIC()">
+              <option value="0">&lt;3s (0 Pkt)</option>
+              <option value="1">3–6s (1 Pkt)</option>
+              <option value="2">&gt;6s (2 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Fibrinogen</label>
+            <select id="dic-fibr" onchange="IntensivTools.calcDIC()">
+              <option value="0">&ge;1 g/l (0 Pkt)</option>
+              <option value="1">&lt;1 g/l (1 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>D-Dimer</label>
+            <select id="dic-ddimer" onchange="IntensivTools.calcDIC()">
+              <option value="0">Normal (0 Pkt)</option>
+              <option value="2">Maessig erhoht (2 Pkt)</option>
+              <option value="3">Stark erhoht (3 Pkt)</option>
+            </select>
+          </div>
+        </div>
+        <div id="dic-ergebnis" class="ergebnis" style="background: var(--green-bg); color: var(--green);">
+          DIC-Score: 0/8 — <span class="ampel ampel-gruen">Kein Hinweis auf DIC</span>
+        </div>
+      </div>
+
+      <!-- B) Therapie DIC -->
+      <div class="card">
+        <h2>B) Therapie-Algorithmus DIC</h2>
+        <div class="hinweis hinweis-kritisch" style="margin-bottom: 12px;">
+          <strong>Primaer:</strong> Grunderkrankung behandeln! Substitution nur supportiv.
+        </div>
+        <table>
+          <tr><th>Parameter</th><th>Trigger</th><th>Massnahme</th><th>Ziel</th></tr>
+          <tr>
+            <td>Thrombozyten</td>
+            <td>&lt;50 G/l + aktive Blutung<br>&lt;20 G/l prophylaktisch</td>
+            <td>Thrombozytenkonzentrat</td>
+            <td>&gt;50 G/l</td>
+          </tr>
+          <tr>
+            <td>FFP</td>
+            <td>PT &gt;1,5&times; + aktive Blutung</td>
+            <td>FFP 15–20 ml/kg</td>
+            <td>INR &lt;1,5</td>
+          </tr>
+          <tr>
+            <td>Fibrinogen</td>
+            <td>&lt;1,5 g/l</td>
+            <td>Fibrinogenkonzentrat 2–4g<br>oder Kryopraezipitat</td>
+            <td>&gt;1,5 g/l</td>
+          </tr>
+          <tr>
+            <td>Heparin</td>
+            <td>Thrombotische DIC-Dominanz</td>
+            <td>UFH niedrigdosiert</td>
+            <td>Selten auf ICU indiziert</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- C) Massivtransfusions-Protokoll -->
+      <div class="card">
+        <h2>C) Massivtransfusions-Protokoll</h2>
+        <div class="hinweis hinweis-kritisch" style="margin-bottom: 12px;">
+          <strong>Trigger:</strong> &gt;10 EK in 24h ODER &gt;4 EK in 1h + haemodynamische Instabilitaet
+        </div>
+        <table>
+          <tr><th>Komponente</th><th>Ratio</th><th>Ziel</th></tr>
+          <tr><td>EK : FFP : TK</td><td><strong>1 : 1 : 1</strong></td><td>Balancierten Ersatz sicherstellen</td></tr>
+          <tr><td>Fibrinogen</td><td>Fruh substituieren</td><td>&gt;1,5 g/l</td></tr>
+          <tr><td>Thrombozyten</td><td>Bei Verbrauch</td><td>&gt;50 G/l</td></tr>
+          <tr><td>Kalzium</td><td>Citrat-Antagonisierung</td><td>Ca&sup2;&#8314; &gt;1,1 mmol/l</td></tr>
+        </table>
+        <div class="hinweis hinweis-warnung" style="margin-top: 12px;">
+          <strong>Cave Hypothermie:</strong> Waermemanagement! Alle Blutprodukte ueber Waermer. Zieltemperatur &gt;35&deg;C.
+        </div>
+      </div>
+
+      <!-- D) HIT / 4T-Score -->
+      <div class="card">
+        <h2>D) HIT-Screening (4T-Score)</h2>
+        <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Thrombozytopenie</label>
+            <select id="hit-thromb" onchange="IntensivTools.calc4T()">
+              <option value="0">Abfall &lt;30% oder Nadir &lt;10 G/l (0 Pkt)</option>
+              <option value="1">Abfall 30–50% oder Nadir 10–19 G/l (1 Pkt)</option>
+              <option value="2">Abfall &gt;50% UND Nadir &ge;20 G/l (2 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Timing des Abfalls</label>
+            <select id="hit-timing" onchange="IntensivTools.calc4T()">
+              <option value="0">Abfall &lt;4d ohne Heparin-Exposition (0 Pkt)</option>
+              <option value="1">Passend, aber unklar / Abfall nach Tag 10 (1 Pkt)</option>
+              <option value="2">Tag 5–10 oder &lt;1d bei Reexposition (2 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Thrombose oder andere Folgen</label>
+            <select id="hit-thrombose" onchange="IntensivTools.calc4T()">
+              <option value="0">Keine (0 Pkt)</option>
+              <option value="1">Rezidiv-Thrombose / Verdacht (1 Pkt)</option>
+              <option value="2">Neue Thrombose / Hautnekrose / Anaphylaxie (2 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Andere Ursachen fuer Thrombozytenabfall</label>
+            <select id="hit-andere" onchange="IntensivTools.calc4T()">
+              <option value="0">Definitive andere Ursache vorhanden (0 Pkt)</option>
+              <option value="1">Moegliche andere Ursache (1 Pkt)</option>
+              <option value="2">Keine andere Ursache erkennbar (2 Pkt)</option>
+            </select>
+          </div>
+        </div>
+        <div id="hit-ergebnis" class="ergebnis" style="background: var(--green-bg); color: var(--green);">
+          4T-Score: 0/8 — <span class="ampel ampel-gruen">Niedrig</span>
+        </div>
+      </div>
+
+      <!-- E) Antikoagulation ICU -->
+      <div class="card">
+        <h2>E) Antikoagulation auf der ICU</h2>
+        <h3>TVT-Prophylaxe</h3>
+        <table>
+          <tr><th>Situation</th><th>Substanz</th><th>Dosis</th></tr>
+          <tr><td>Normalfunktion Niere</td><td>NMH (Enoxaparin)</td><td>40 mg s.c. 1&times;/d</td></tr>
+          <tr><td>GFR &lt;30 ml/min</td><td>UFH</td><td>5.000 IE s.c. 2–3&times;/d</td></tr>
+          <tr><td>HIT</td><td>Argatroban / Fondaparinux</td><td>Dosisanpassung nach aPTT/Anti-Xa</td></tr>
+        </table>
+        <h3 style="margin-top: 12px;">Therapeutische Antikoagulation</h3>
+        <table>
+          <tr><th>Substanz</th><th>Dosis</th><th>Monitoring</th></tr>
+          <tr><td>UFH i.v.</td><td>18 IE/kg/h (nach aPTT-Schema)</td><td>aPTT alle 6h (Ziel: 1,5–2,5&times;)</td></tr>
+          <tr><td>Enoxaparin</td><td>1 mg/kg 2&times;/d s.c.</td><td>Anti-Xa (Ziel: 0,5–1,0 IE/ml)</td></tr>
+          <tr><td>Argatroban</td><td>0,5–2 &mu;g/kg/min i.v.</td><td>aPTT (Ziel: 1,5–3&times;)</td></tr>
+        </table>
+      </div>
+
+      <!-- Export -->
+      <div style="text-align: center; margin-top: 8px;">
+        <button class="export-btn" onclick="IntensivTools.exportBefund('gerinnung')">
+          Befund kopieren
+        </button>
+      </div>
+
+    </div>
+    <!-- TAB: GERINNUNG END -->
+
+    <!-- ============================================================ -->
+    <!-- TAB: STOFFWECHSEL START -->
+    <!-- ============================================================ -->
+    <div id="stoffwechsel" class="tab-panel">
+
+      <div class="hinweis hinweis-info">
+        <strong>Leitlinie:</strong> ADA Standards of Care 2024 · AWMF DKA · DGE/DGEM Ernaehrung Intensiv
+      </div>
+
+      <!-- A) DKA-Klassifikation -->
+      <div class="card">
+        <h2>A) DKA-Klassifikation</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Kriterien: BZ &gt;250 mg/dl, pH &lt;7,3, Bikarbonat &lt;18 mmol/l, Ketonurie/-aemie positiv.
+        </p>
+        <div class="input-group" style="max-width: 280px;">
+          <label>pH (arteriell)</label>
+          <input type="number" id="dka-ph" min="6.5" max="7.5" step="0.01" placeholder="z.B. 7.18" onchange="IntensivTools.calcDKA()">
+        </div>
+        <div class="input-group" style="max-width: 280px;">
+          <label>Bikarbonat (mmol/l)</label>
+          <input type="number" id="dka-bicarb" min="0" max="40" step="0.1" placeholder="z.B. 12" onchange="IntensivTools.calcDKA()">
+        </div>
+        <div id="dka-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte pH und Bikarbonat eingeben
+        </div>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; DKA-Schweregrade</div>
+          <div class="score-body hidden">
+            <table>
+              <tr><th>Schweregrad</th><th>pH</th><th>Bikarbonat</th><th>Bewusstsein</th></tr>
+              <tr><td><span class="ampel ampel-gelb">Mild</span></td><td>7,25–7,30</td><td>15–18</td><td>Alert</td></tr>
+              <tr><td><span class="ampel ampel-orange">Moderat</span></td><td>7,00–7,24</td><td>10–14</td><td>Alert/Schlaefrig</td></tr>
+              <tr><td><span class="ampel ampel-rot">Schwer</span></td><td>&lt;7,00</td><td>&lt;10</td><td>Sopor/Koma</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- B) DKA-Therapie -->
+      <div class="card">
+        <h2>B) DKA-Therapie-Algorithmus</h2>
+        <table>
+          <tr><th>Schritt</th><th>Massnahme</th><th>Details</th></tr>
+          <tr>
+            <td>1</td>
+            <td><strong>Fluessigkeit</strong></td>
+            <td>NaCl 0,9% 1 L/h erste Stunde, dann nach Na&#8314;/BZ anpassen (250–500 ml/h)</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>Kalium pruefen!</strong></td>
+            <td>K&#8314; &lt;3,5: Kalium VOR Insulin! K&#8314; 3,5–5,3: 20–30 mEq/L zumischen. K&#8314; &gt;5,3: kein Kalium, Kontrolle 2h</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><strong>Insulin i.v.</strong></td>
+            <td>0,1 IE/kg/h (KEIN Bolus ausser Schweregrad 3). BZ-Abfall Ziel: 50–75 mg/dl/h</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Glucose 5%</td>
+            <td>Zumischen wenn BZ &lt;250 mg/dl — Insulin NICHT stoppen!</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Bikarbonat</td>
+            <td>NUR bei pH &lt;6,9 (100 mmol NaHCO&#8323; in 400 ml ueber 2h)</td>
+          </tr>
+        </table>
+        <div class="hinweis hinweis-kritisch" style="margin-top: 12px;">
+          <strong>CAVE:</strong> Hirnoedem bei zu raschem BZ-Abfall! Ziel: max. 50–75 mg/dl/h. Kalium vor Insulin!
+        </div>
+      </div>
+
+      <!-- C) Anionenluecke -->
+      <div class="card">
+        <h2>C) Anionenluecke-Rechner</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Na&#8314; (mmol/l)</label>
+            <input type="number" id="ag-na" min="100" max="180" step="1" placeholder="z.B. 140" onchange="IntensivTools.calcAnionGap()">
+          </div>
+          <div class="input-group">
+            <label>Cl&#8315; (mmol/l)</label>
+            <input type="number" id="ag-cl" min="70" max="130" step="1" placeholder="z.B. 105" onchange="IntensivTools.calcAnionGap()">
+          </div>
+          <div class="input-group">
+            <label>HCO&#8323;&#8315; (mmol/l)</label>
+            <input type="number" id="ag-hco3" min="0" max="45" step="0.1" placeholder="z.B. 12" onchange="IntensivTools.calcAnionGap()">
+          </div>
+        </div>
+        <div id="ag-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Na&#8314;, Cl&#8315; und HCO&#8323;&#8315; eingeben
+        </div>
+      </div>
+
+      <!-- D) HHS -->
+      <div class="card">
+        <h2>D) HHS (Hyperosmolares Hyperglyk. Syndrom)</h2>
+        <table>
+          <tr><th>Merkmal</th><th>DKA</th><th>HHS</th></tr>
+          <tr><td>BZ</td><td>&gt;250 mg/dl</td><td>oft &gt;600 mg/dl</td></tr>
+          <tr><td>pH</td><td>&lt;7,3</td><td>&gt;7,3</td></tr>
+          <tr><td>Ketone</td><td>Positiv</td><td>Negativ/gering</td></tr>
+          <tr><td>Osmolalitaet</td><td>Variabel</td><td>&gt;320 mosmol/kg</td></tr>
+          <tr><td>Bewusstsein</td><td>Variabel</td><td>Oft eingetruebt</td></tr>
+        </table>
+        <div class="hinweis hinweis-warnung" style="margin-top: 12px;">
+          <strong>HHS-Therapie:</strong> Vorsichtige Rehydratation (Risiko Hirnoedem!), niedrig-dosiertes Insulin (0,05 IE/kg/h), langsame Osmolalitaetssenkung (max. 3–8 mosmol/kg/h).
+        </div>
+      </div>
+
+      <!-- E) Elektrolytstoerungen -->
+      <div class="card">
+        <h2>E) Elektrolytstoerungen</h2>
+
+        <h3>Hyponatriaemie</h3>
+        <table>
+          <tr><th>Typ</th><th>Korrektur</th><th>Cave</th></tr>
+          <tr><td>Akut (&lt;48h), symptomatisch</td><td>NaCl 3% 100 ml ueber 10 min, bis 3&times;</td><td>Rasche Korrektur erlaubt</td></tr>
+          <tr><td>Chronisch (&gt;48h)</td><td>Max. +8–10 mmol/l / 24h</td><td><span class="ampel ampel-rot">Osmotische Demyelinisierung!</span></td></tr>
+        </table>
+
+        <h3 style="margin-top: 16px;">Hyperkaliämie</h3>
+        <table>
+          <tr><th>K&#8314;</th><th>Massnahme</th></tr>
+          <tr><td>5,5–6,0 mmol/l</td><td>Ursache suchen, Diaet, Kationentauscher</td></tr>
+          <tr><td>6,0–6,5 mmol/l</td><td>Kationentauscher + Schleifendiuretikum + Insulin/Glukose</td></tr>
+          <tr><td><span class="ampel ampel-rot">&gt;6,5 / EKG-Veraenderungen</span></td><td>Kalziumglukonat 10% 10 ml i.v. + Insulin 10 IE + 25g Glukose + Bikarbonat + RRT erwaegen</td></tr>
+        </table>
+
+        <h3 style="margin-top: 16px;">Weitere</h3>
+        <table>
+          <tr><th>Stoerung</th><th>Trigger</th><th>Therapie</th></tr>
+          <tr><td>Hypokalzaemie (symptom.)</td><td>Tetanie, QTc-Verlaengerung</td><td>Kalziumglukonat 10% 10–20 ml i.v. ueber 10 min</td></tr>
+          <tr><td>Hypophosphataemie</td><td>&lt;0,6 mmol/l</td><td>Na-/K-Phosphat i.v. (<span class="ampel ampel-orange">Refeeding-Risiko!</span>)</td></tr>
+          <tr><td>Hypomagnesiaemie</td><td>&lt;0,5 mmol/l / Arrhythmien</td><td>MgSO&#8324; 2–4g i.v. ueber 1h</td></tr>
+        </table>
+      </div>
+
+      <!-- F) Ernaehrung Intensiv -->
+      <div class="card">
+        <h2>F) Ernaehrung Intensiv</h2>
+        <table>
+          <tr><th>Parameter</th><th>Empfehlung</th><th>Anmerkung</th></tr>
+          <tr><td>Start</td><td>Enteral innerhalb 24–48h</td><td>Wenn haemodynamisch stabil, kein Ileus</td></tr>
+          <tr><td>Kalorien (akut)</td><td>~70% des Ziels (15–20 kcal/kg/d)</td><td>Volle Kalorien erst ab Tag 3–7</td></tr>
+          <tr><td>Kalorien (Ziel)</td><td>25 kcal/kg/d</td><td>Indirekte Kalorimetrie wenn verfuegbar</td></tr>
+          <tr><td>Protein</td><td>1,2–2,0 g/kg/d</td><td>Fruehe Proteingabe priorisieren</td></tr>
+          <tr><td>BZ-Ziel</td><td>140–180 mg/dl</td><td>ADA/SCCM, Hypoglykaemie vermeiden!</td></tr>
+        </table>
+        <div class="hinweis hinweis-warnung" style="margin-top: 12px;">
+          <strong>Refeeding-Syndrom:</strong> Risiko bei &gt;5d Nahrungskarenz, Untergewicht, Alkoholismus. Phosphat, Kalium, Magnesium taeglich kontrollieren! Langsamer Kostaufbau (10 kcal/kg/d, steigern ueber 4–7d).
+        </div>
+      </div>
+
+      <!-- Export -->
+      <div style="text-align: center; margin-top: 8px;">
+        <button class="export-btn" onclick="IntensivTools.exportBefund('stoffwechsel')">
+          Befund kopieren
+        </button>
+      </div>
+
+    </div>
+    <!-- TAB: STOFFWECHSEL END -->
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="disclaimer">
+    <div class="quellen">
+      Quellen: Surviving Sepsis Campaign 2021 (Evans et al., Crit Care Med 2021) ·
+      ARDS Berlin Definition (JAMA 2012); ARDSNet Protocol 2000 ·
+      KDIGO Clinical Practice Guideline for Acute Kidney Injury 2012; AKD 2020 ·
+      ESC Guidelines for Acute Heart Failure 2023 ·
+      ISTH DIC Guidance 2023 ·
+      ADA Standards of Care in Diabetes 2024 ·
+      DGEM/DGE Leitlinie Enterale Ernaehrung 2022
+    </div>
     IntensivTools unterstutzt klinische Entscheidungen — ersetzt nicht die arztliche Beurteilung.
-    Keine Haftung fur Therapieentscheidungen.
+    Alle Empfehlungen basieren auf den zitierten Leitlinien. Keine Haftung fur Therapieentscheidungen.
+    Fur den Einsatz als Medizinprodukt (EU MDR) ist eine Konformitatsbewertung erforderlich.
   </footer>
+
+  <script>
+    /* === IntensivTools Core === */
+    var IntensivTools = {
+
+      /* --- Tab-Navigation --- */
+      showTab: function(tabId, btn) {
+        document.querySelectorAll('.tab-panel').forEach(function(p) {
+          p.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-btn').forEach(function(b) {
+          b.classList.remove('active');
+        });
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+      },
+
+      /* --- Ampel-Badge erzeugen --- */
+      ampel: function(level, label) {
+        // level: 'gruen' | 'gelb' | 'orange' | 'rot'
+        var defaultLabels = {
+          gruen: 'Normal',
+          gelb: 'Erhoht',
+          orange: 'Hoch',
+          rot: 'Kritisch'
+        };
+        var text = label || defaultLabels[level] || level;
+        return '<span class="ampel ampel-' + level + '">' + text + '</span>';
+      },
+
+      /* --- Score-Karte auf-/zuklappen --- */
+      toggleScore: function(header) {
+        var body = header.nextElementSibling;
+        body.classList.toggle('hidden');
+        if (header.textContent.trim().charAt(0) === '\u25B6') {
+          header.textContent = header.textContent.replace('\u25B6', '\u25BC');
+        } else {
+          header.textContent = header.textContent.replace('\u25BC', '\u25B6');
+        }
+      },
+
+      /* --- Toast-Benachrichtigung --- */
+      showToast: function(msg) {
+        var t = document.createElement('div');
+        t.className = 'toast';
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(function() { t.remove(); }, 2500);
+      },
+
+      /* === SEPSIS-LOGIK === */
+
+      /* --- qSOFA berechnen --- */
+      calcQSOFA: function() {
+        var rr = document.getElementById('qsofa-rr').checked ? 1 : 0;
+        var af = document.getElementById('qsofa-af').checked ? 1 : 0;
+        var gcs = document.getElementById('qsofa-gcs').checked ? 1 : 0;
+        var score = rr + af + gcs;
+        var el = document.getElementById('qsofa-ergebnis');
+        if (score >= 2) {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = 'qSOFA: ' + score + '/3 — ' + this.ampel('rot', 'Sepsis-Verdacht') + ' &rarr; SOFA-Score pruefen!';
+        } else {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = 'qSOFA: ' + score + '/3 — ' + this.ampel('gruen', 'Kein Hinweis');
+        }
+        this.calcKlassifikation();
+      },
+
+      /* --- SOFA berechnen --- */
+      _sofaTotal: 0,
+      _sofaDelta: 0,
+      calcSOFA: function() {
+        var ids = ['sofa-resp', 'sofa-coag', 'sofa-liver', 'sofa-cardio', 'sofa-cns', 'sofa-renal'];
+        var total = 0;
+        for (var i = 0; i < ids.length; i++) {
+          total += parseInt(document.getElementById(ids[i]).value, 10);
+        }
+        var baseline = parseInt(document.getElementById('sofa-baseline').value, 10) || 0;
+        var delta = total - baseline;
+        var el = document.getElementById('sofa-ergebnis');
+        if (delta >= 2) {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = 'SOFA: ' + total + '/24 (Delta: ' + delta + ') — ' + this.ampel('rot', 'Organversagen (Sepsis-Kriterium)');
+        } else if (total >= 1) {
+          el.style.background = 'var(--yellow-bg)';
+          el.style.color = 'var(--yellow)';
+          el.innerHTML = 'SOFA: ' + total + '/24 (Delta: ' + delta + ') — ' + this.ampel('gelb', 'Organdysfunktion');
+        } else {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = 'SOFA: ' + total + '/24 (Delta: ' + delta + ') — ' + this.ampel('gruen', 'Kein Organversagen');
+        }
+        this._sofaTotal = total;
+        this._sofaDelta = delta;
+        this.calcKlassifikation();
+      },
+
+      /* --- Klassifikation berechnen --- */
+      calcKlassifikation: function() {
+        var infektion = document.getElementById('class-infektion').checked;
+        var vasopressor = document.getElementById('class-vasopressor').checked;
+        var laktatInput = document.getElementById('class-laktat').value;
+        var laktat = laktatInput ? parseFloat(laktatInput) : null;
+        var el = document.getElementById('class-ergebnis');
+
+        if (!infektion) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Kein Infektionsverdacht angegeben — Sepsis-Kriterien nicht pruefbar';
+          return;
+        }
+
+        var sepsis = infektion && this._sofaDelta >= 2;
+        var schock = sepsis && vasopressor && laktat !== null && laktat > 2;
+
+        if (schock) {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = this.ampel('rot', 'SEPTISCHER SCHOCK') +
+            '<br><span style="font-size:0.85rem; font-weight:normal;">Sepsis + Vasopressorbedarf + Laktat &gt;2 mmol/l &mdash; Mortalitaet &gt;40%</span>';
+        } else if (sepsis) {
+          el.style.background = 'var(--orange-bg)';
+          el.style.color = 'var(--orange)';
+          el.innerHTML = this.ampel('orange', 'SEPSIS') +
+            '<br><span style="font-size:0.85rem; font-weight:normal;">SOFA &ge;2 ueber Baseline + Infektionsverdacht (Sepsis-3)</span>';
+        } else {
+          el.style.background = 'var(--yellow-bg)';
+          el.style.color = 'var(--yellow)';
+          el.innerHTML = this.ampel('gelb', 'INFEKTIONSVERDACHT') +
+            '<br><span style="font-size:0.85rem; font-weight:normal;">Infektion vermutet, SOFA-Kriterium noch nicht erfuellt (Delta &lt;2)</span>';
+        }
+      },
+
+      /* --- Bundle-Zaehler --- */
+      updateBundleStatus: function() {
+        var checks = document.querySelectorAll('#bundle-checklist input[type="checkbox"]');
+        var done = 0;
+        checks.forEach(function(c) { if (c.checked) done++; });
+        var el = document.getElementById('bundle-status');
+        el.textContent = done + '/5 Massnahmen abgeschlossen';
+        if (done === 5) {
+          el.style.color = 'var(--green)';
+          el.style.fontWeight = '700';
+        } else {
+          el.style.color = 'var(--text-muted)';
+          el.style.fontWeight = 'normal';
+        }
+      },
+
+      /* === ARDS-LOGIK === */
+
+      /* --- Berlin-Klassifikation --- */
+      _ardsGrad: null,
+      calcBerlin: function() {
+        var infiltrate = document.getElementById('ards-infiltrate').checked;
+        var peep = document.getElementById('ards-peep').checked;
+        var noncardiac = document.getElementById('ards-noncardiac').checked;
+        var pfInput = document.getElementById('ards-pfratio').value;
+        var pf = pfInput ? parseFloat(pfInput) : null;
+        var el = document.getElementById('ards-berlin-ergebnis');
+
+        if (!infiltrate || !peep || !noncardiac || pf === null) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte alle Voraussetzungen pruefen und PF-Ratio eingeben';
+          this._ardsGrad = null;
+          return;
+        }
+
+        if (pf > 300) {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = 'PF-Ratio ' + pf + ' — ' + this.ampel('gruen', 'Kein ARDS') + ' (PF &gt;300)';
+          this._ardsGrad = 'Kein ARDS';
+        } else if (pf >= 200) {
+          el.style.background = 'var(--yellow-bg)';
+          el.style.color = 'var(--yellow)';
+          el.innerHTML = 'PF-Ratio ' + pf + ' — ' + this.ampel('gelb', 'Mildes ARDS') + ' (200–300, Mortalitaet ~27%)';
+          this._ardsGrad = 'Mild';
+        } else if (pf >= 100) {
+          el.style.background = 'var(--orange-bg)';
+          el.style.color = 'var(--orange)';
+          el.innerHTML = 'PF-Ratio ' + pf + ' — ' + this.ampel('orange', 'Moderates ARDS') + ' (100–200, Mortalitaet ~32%)';
+          this._ardsGrad = 'Moderat';
+        } else {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = 'PF-Ratio ' + pf + ' — ' + this.ampel('rot', 'Schweres ARDS') + ' (&lt;100, Mortalitaet ~45%) &rarr; Rescue-Therapien pruefen!';
+          this._ardsGrad = 'Schwer';
+        }
+      },
+
+      /* --- Idealgewicht + Tidalvolumen --- */
+      _ibw: null,
+      calcIBW: function() {
+        var geschlecht = document.getElementById('ards-geschlecht').value;
+        var groesse = parseFloat(document.getElementById('ards-groesse').value);
+        var el = document.getElementById('ards-ibw-ergebnis');
+
+        if (!geschlecht || !groesse || groesse < 100) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte Geschlecht und Groesse angeben';
+          this._ibw = null;
+          return;
+        }
+
+        var ibw;
+        if (geschlecht === 'm') {
+          ibw = 50 + 0.91 * (groesse - 152.4);
+        } else {
+          ibw = 45.5 + 0.91 * (groesse - 152.4);
+        }
+        ibw = Math.round(ibw * 10) / 10;
+        this._ibw = ibw;
+
+        var vt6 = Math.round(ibw * 6);
+        var vt4 = Math.round(ibw * 4);
+        var vt8 = Math.round(ibw * 8);
+
+        el.style.background = 'var(--accent-light)';
+        el.style.color = 'var(--accent)';
+        el.innerHTML = '<strong>IBW: ' + ibw + ' kg</strong><br>' +
+          'Tidalvolumen-Ziel: <strong>' + vt6 + ' ml</strong> (6 ml/kg)<br>' +
+          '<span style="font-size:0.85rem;">Bereich: ' + vt4 + '–' + vt8 + ' ml (4–8 ml/kg IBW)</span>';
+      },
+
+      /* --- Driving Pressure --- */
+      calcDrivingPressure: function() {
+        var pplat = parseFloat(document.getElementById('ards-pplat').value);
+        var peep = parseFloat(document.getElementById('ards-peep-val').value);
+        var el = document.getElementById('ards-dp-ergebnis');
+
+        if (isNaN(pplat) || isNaN(peep)) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte Plateau und PEEP eingeben';
+          return;
+        }
+
+        var dp = pplat - peep;
+        if (dp < 15) {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = 'Driving Pressure: <strong>' + dp + ' cmH&#8322;O</strong> — ' + this.ampel('gruen', 'Im Zielbereich (&lt;15)');
+        } else {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = 'Driving Pressure: <strong>' + dp + ' cmH&#8322;O</strong> — ' + this.ampel('rot', 'Erhoht (&ge;15)') + ' &rarr; Vt reduzieren!';
+        }
+
+        if (pplat > 30) {
+          el.innerHTML += '<br><span class="ampel ampel-rot">Pplat &gt;30 cmH&#8322;O!</span> Tidalvolumen reduzieren.';
+        }
+      },
+
+      /* === AKI-LOGIK === */
+
+      /* --- KDIGO-Staging --- */
+      _akiStadium: 0,
+      calcKDIGO: function() {
+        var krea = parseInt(document.getElementById('aki-krea').value, 10);
+        var urin = parseInt(document.getElementById('aki-urin').value, 10);
+        var stadium = Math.max(krea, urin);
+        this._akiStadium = stadium;
+        var el = document.getElementById('aki-kdigo-ergebnis');
+
+        if (stadium === 0) {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = this.ampel('gruen', 'Kein AKI') + ' — KDIGO-Kriterien nicht erfuellt';
+        } else if (stadium === 1) {
+          el.style.background = 'var(--yellow-bg)';
+          el.style.color = 'var(--yellow)';
+          el.innerHTML = this.ampel('gelb', 'AKI Stadium 1') + ' — Nephrotoxische Medikamente pruefen, Volumenstatus optimieren';
+        } else if (stadium === 2) {
+          el.style.background = 'var(--orange-bg)';
+          el.style.color = 'var(--orange)';
+          el.innerHTML = this.ampel('orange', 'AKI Stadium 2') + ' — Nephrologie-Konsil erwaegen, Bilanzierung, Ursache klaeren';
+        } else {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = this.ampel('rot', 'AKI Stadium 3') + ' — Nephrologie-Konsil! RRT-Indikation pruefen!';
+        }
+      },
+
+      /* --- RRT-Zaehler --- */
+      updateRRTStatus: function() {
+        var checks = document.querySelectorAll('#rrt-checklist input[type="checkbox"]');
+        var done = 0;
+        checks.forEach(function(c) { if (c.checked) done++; });
+        var el = document.getElementById('rrt-status');
+        if (done > 0) {
+          el.style.color = 'var(--red)';
+          el.style.fontWeight = '700';
+          el.textContent = done + '/5 Indikationen zutreffend — RRT-Einleitung pruefen!';
+        } else {
+          el.style.color = 'var(--text-muted)';
+          el.style.fontWeight = 'normal';
+          el.textContent = '0/5 Indikationen zutreffend';
+        }
+      },
+
+      /* --- CRRT-Dosierung --- */
+      calcCRRT: function() {
+        var kg = parseFloat(document.getElementById('aki-gewicht').value);
+        var el = document.getElementById('aki-crrt-ergebnis');
+
+        if (isNaN(kg) || kg < 30) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte Koerpergewicht eingeben';
+          return;
+        }
+
+        var low = Math.round(kg * 20);
+        var high = Math.round(kg * 25);
+        el.style.background = 'var(--accent-light)';
+        el.style.color = 'var(--accent)';
+        el.innerHTML = '<strong>Effluentrate-Ziel: ' + low + '–' + high + ' ml/h</strong><br>' +
+          '<span style="font-size:0.85rem;">(20–25 ml/kg/h bei ' + kg + ' kg KG)</span>';
+      },
+
+      /* === KARDIO-LOGIK === */
+
+      /* --- Stevenson-Profil --- */
+      _stevensonProfil: null,
+      calcStevenson: function() {
+        var perf = document.getElementById('kardio-perfusion').value;
+        var stau = document.getElementById('kardio-stauung').value;
+        var el = document.getElementById('kardio-stevenson-ergebnis');
+
+        if (!perf || !stau) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte Perfusion und Stauung waehlen';
+          this._stevensonProfil = null;
+          return;
+        }
+
+        var profil = perf + '+' + stau;
+        this._stevensonProfil = profil;
+
+        if (perf === 'warm' && stau === 'trocken') {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = this.ampel('gruen', 'Profil A: warm+trocken') + '<br><span style="font-size:0.85rem;font-weight:normal;">Kompensiert — orale Therapie optimieren</span>';
+        } else if (perf === 'warm' && stau === 'feucht') {
+          el.style.background = 'var(--yellow-bg)';
+          el.style.color = 'var(--yellow)';
+          el.innerHTML = this.ampel('gelb', 'Profil B: warm+feucht') + '<br><span style="font-size:0.85rem;font-weight:normal;">Diuretika i.v., Vasodilatation</span>';
+        } else if (perf === 'kalt' && stau === 'trocken') {
+          el.style.background = 'var(--orange-bg)';
+          el.style.color = 'var(--orange)';
+          el.innerHTML = this.ampel('orange', 'Profil L: kalt+trocken') + '<br><span style="font-size:0.85rem;font-weight:normal;">Vorsichtiger Volumenversuch, Inotropika erwaegen</span>';
+        } else {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = this.ampel('rot', 'Profil C: kalt+feucht') + '<br><span style="font-size:0.85rem;font-weight:normal;">Hoechste Mortalitaet! Inotropika + Diuretika, MCS erwaegen</span>';
+        }
+      },
+
+      /* --- SCAI-Stadium --- */
+      _scaiStadium: null,
+      calcSCAI: function() {
+        var stage = document.getElementById('kardio-scai').value;
+        var el = document.getElementById('kardio-scai-ergebnis');
+        this._scaiStadium = stage;
+
+        var map = {
+          'A': { level: 'gruen', label: 'SCAI A: At Risk', desc: 'Ueberwachung, Risikofaktoren behandeln' },
+          'B': { level: 'gelb', label: 'SCAI B: Beginning', desc: 'Volumen, Vasopressoren niedrigdosiert, Monitoring intensivieren' },
+          'C': { level: 'orange', label: 'SCAI C: Classic', desc: 'Inotropika/Vasopressoren, invasives Monitoring, MCS erwaegen' },
+          'D': { level: 'rot', label: 'SCAI D: Deteriorating', desc: 'Eskalation MCS (IABP/Impella/ECMO), Multiorgan-Support' },
+          'E': { level: 'rot', label: 'SCAI E: Extremis', desc: 'CPR/ECPR, maximale Eskalation, Prognose reevaluieren' }
+        };
+
+        if (!stage || !map[stage]) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte SCAI-Stadium waehlen';
+          return;
+        }
+
+        var m = map[stage];
+        var bgMap = { gruen: '--green-bg', gelb: '--yellow-bg', orange: '--orange-bg', rot: '--red-bg' };
+        var colMap = { gruen: '--green', gelb: '--yellow', orange: '--orange', rot: '--red' };
+        el.style.background = 'var(' + bgMap[m.level] + ')';
+        el.style.color = 'var(' + colMap[m.level] + ')';
+        el.innerHTML = this.ampel(m.level, m.label) + '<br><span style="font-size:0.85rem;font-weight:normal;">' + m.desc + '</span>';
+      },
+
+      /* --- Diuretika-Rechner --- */
+      calcDiuretika: function() {
+        var dose = parseFloat(document.getElementById('kardio-furodosis').value);
+        var el = document.getElementById('kardio-diuretika-ergebnis');
+
+        if (isNaN(dose)) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte orale Vordosis eingeben';
+          return;
+        }
+
+        var ivDose = Math.max(dose, 40);
+        var ivHigh = dose * 2 || 80;
+        el.style.background = 'var(--accent-light)';
+        el.style.color = 'var(--accent)';
+        el.innerHTML = '<strong>Furosemid i.v. Startdosis: ' + ivDose + '–' + ivHigh + ' mg/d</strong><br>' +
+          '<span style="font-size:0.85rem;font-weight:normal;">' +
+          (dose > 0 ? ('Orale Vordosis ' + dose + ' mg/d &rarr; i.v. 1–2&times; als Bolus oder Perfusor') : 'Keine orale Vordosis &rarr; Start mit 40–80 mg i.v.') +
+          '<br>Evaluation: Diurese nach 2h, Ziel &gt;100 ml/h</span>';
+      },
+
+      /* === GERINNUNG-LOGIK === */
+
+      /* --- DIC-Score --- */
+      _dicScore: 0,
+      calcDIC: function() {
+        var thromb = parseInt(document.getElementById('dic-thromb').value, 10);
+        var pt = parseInt(document.getElementById('dic-pt').value, 10);
+        var fibr = parseInt(document.getElementById('dic-fibr').value, 10);
+        var ddimer = parseInt(document.getElementById('dic-ddimer').value, 10);
+        var score = thromb + pt + fibr + ddimer;
+        this._dicScore = score;
+        var el = document.getElementById('dic-ergebnis');
+
+        if (score >= 5) {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = 'DIC-Score: ' + score + '/8 — ' + this.ampel('rot', 'Manifeste DIC') + '<br><span style="font-size:0.85rem;font-weight:normal;">Grunderkrankung behandeln + Substitution nach Klinik</span>';
+        } else if (score >= 3) {
+          el.style.background = 'var(--yellow-bg)';
+          el.style.color = 'var(--yellow)';
+          el.innerHTML = 'DIC-Score: ' + score + '/8 — ' + this.ampel('gelb', 'V.a. Non-overt DIC') + '<br><span style="font-size:0.85rem;font-weight:normal;">Kontrolle in 12–24h, Grunderkrankung behandeln</span>';
+        } else {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = 'DIC-Score: ' + score + '/8 — ' + this.ampel('gruen', 'Kein Hinweis auf DIC');
+        }
+      },
+
+      /* --- 4T-Score (HIT) --- */
+      _hitScore: 0,
+      calc4T: function() {
+        var t1 = parseInt(document.getElementById('hit-thromb').value, 10);
+        var t2 = parseInt(document.getElementById('hit-timing').value, 10);
+        var t3 = parseInt(document.getElementById('hit-thrombose').value, 10);
+        var t4 = parseInt(document.getElementById('hit-andere').value, 10);
+        var score = t1 + t2 + t3 + t4;
+        this._hitScore = score;
+        var el = document.getElementById('hit-ergebnis');
+
+        if (score <= 3) {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = '4T-Score: ' + score + '/8 — ' + this.ampel('gruen', 'Niedrig') + '<br><span style="font-size:0.85rem;font-weight:normal;">HIT unwahrscheinlich, Heparin kann fortgefuehrt werden</span>';
+        } else if (score <= 5) {
+          el.style.background = 'var(--orange-bg)';
+          el.style.color = 'var(--orange)';
+          el.innerHTML = '4T-Score: ' + score + '/8 — ' + this.ampel('orange', 'Intermediaer') + '<br><span style="font-size:0.85rem;font-weight:normal;">Heparin stoppen, Alternative starten, HIT-Antikoerper bestimmen</span>';
+        } else {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = '4T-Score: ' + score + '/8 — ' + this.ampel('rot', 'Hoch') + '<br><span style="font-size:0.85rem;font-weight:normal;">Heparin sofort stoppen! Argatroban/Fondaparinux starten, HIT-AK bestimmen</span>';
+        }
+      },
+
+      /* === STOFFWECHSEL-LOGIK === */
+
+      /* --- DKA-Klassifikation --- */
+      _dkaGrad: null,
+      calcDKA: function() {
+        var ph = parseFloat(document.getElementById('dka-ph').value);
+        var bicarb = parseFloat(document.getElementById('dka-bicarb').value);
+        var el = document.getElementById('dka-ergebnis');
+
+        if (isNaN(ph) || isNaN(bicarb)) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte pH und Bikarbonat eingeben';
+          this._dkaGrad = null;
+          return;
+        }
+
+        if (ph >= 7.3 && bicarb >= 18) {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = this.ampel('gruen', 'Keine DKA') + ' (pH ' + ph.toFixed(2) + ', HCO3 ' + bicarb + ')';
+          this._dkaGrad = 'Keine DKA';
+        } else if (ph >= 7.25 && bicarb >= 15) {
+          el.style.background = 'var(--yellow-bg)';
+          el.style.color = 'var(--yellow)';
+          el.innerHTML = this.ampel('gelb', 'Milde DKA') + '<br><span style="font-size:0.85rem;font-weight:normal;">pH ' + ph.toFixed(2) + ', HCO3 ' + bicarb + ' — Insulin i.v. + Fluessigkeit</span>';
+          this._dkaGrad = 'Mild';
+        } else if (ph >= 7.0 && bicarb >= 10) {
+          el.style.background = 'var(--orange-bg)';
+          el.style.color = 'var(--orange)';
+          el.innerHTML = this.ampel('orange', 'Moderate DKA') + '<br><span style="font-size:0.85rem;font-weight:normal;">pH ' + ph.toFixed(2) + ', HCO3 ' + bicarb + ' — ICU-Therapie, engmaschiges Monitoring</span>';
+          this._dkaGrad = 'Moderat';
+        } else {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = this.ampel('rot', 'Schwere DKA') + '<br><span style="font-size:0.85rem;font-weight:normal;">pH ' + ph.toFixed(2) + ', HCO3 ' + bicarb + ' — Intensivtherapie! Bikarbonat bei pH &lt;6,9 erwaegen</span>';
+          this._dkaGrad = 'Schwer';
+        }
+      },
+
+      /* --- Anionenluecke --- */
+      calcAnionGap: function() {
+        var na = parseFloat(document.getElementById('ag-na').value);
+        var cl = parseFloat(document.getElementById('ag-cl').value);
+        var hco3 = parseFloat(document.getElementById('ag-hco3').value);
+        var el = document.getElementById('ag-ergebnis');
+
+        if (isNaN(na) || isNaN(cl) || isNaN(hco3)) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte alle Werte eingeben';
+          return;
+        }
+
+        var ag = na - (cl + hco3);
+        ag = Math.round(ag * 10) / 10;
+
+        if (ag <= 12) {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = 'Anionenluecke: <strong>' + ag + ' mmol/l</strong> — ' + this.ampel('gruen', 'Normal (&le;12)');
+        } else {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = 'Anionenluecke: <strong>' + ag + ' mmol/l</strong> — ' + this.ampel('rot', 'Erhoht (&gt;12)') + '<br><span style="font-size:0.85rem;font-weight:normal;">DD: DKA, Laktatazidose, Urämie, Intoxikation (Methanol, Ethylenglykol)</span>';
+        }
+      },
+
+      /* === BEFUND-EXPORT === */
+
+      generateBefundText: function(tab) {
+        var now = new Date();
+        var ts = now.toLocaleDateString('de-DE') + ' ' + now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+
+        if (tab === 'sepsis') {
+          var qsofa = (document.getElementById('qsofa-rr').checked ? 1 : 0)
+                    + (document.getElementById('qsofa-af').checked ? 1 : 0)
+                    + (document.getElementById('qsofa-gcs').checked ? 1 : 0);
+          var sofa = this._sofaTotal;
+          var delta = this._sofaDelta;
+          var laktat = document.getElementById('class-laktat').value || '-';
+          var infektion = document.getElementById('class-infektion').checked ? 'Ja' : 'Nein';
+          var vasopressor = document.getElementById('class-vasopressor').checked ? 'Ja' : 'Nein';
+
+          var klasse = 'Nicht beurteilbar';
+          if (document.getElementById('class-infektion').checked) {
+            if (delta >= 2 && document.getElementById('class-vasopressor').checked && parseFloat(laktat) > 2) {
+              klasse = 'Septischer Schock';
+            } else if (delta >= 2) {
+              klasse = 'Sepsis';
+            } else {
+              klasse = 'Infektionsverdacht (SOFA-Kriterium nicht erfuellt)';
+            }
+          }
+
+          var checks = document.querySelectorAll('#bundle-checklist input[type="checkbox"]');
+          var done = 0;
+          checks.forEach(function(c) { if (c.checked) done++; });
+
+          return [
+            'IntensivTools — SEPSIS-ASSESSMENT',
+            'Zeitstempel: ' + ts,
+            '',
+            'qSOFA-Score: ' + qsofa + '/3',
+            'SOFA-Score: ' + sofa + '/24 (Delta: ' + delta + ')',
+            'Infektionsverdacht: ' + infektion,
+            'Vasopressorbedarf: ' + vasopressor,
+            'Laktat: ' + laktat + ' mmol/l',
+            'Klassifikation: ' + klasse,
+            '',
+            '1h-Bundle: ' + done + '/5 Massnahmen abgeschlossen',
+            '',
+            'Quelle: SSC 2021 / Sepsis-3'
+          ].join('\n');
+        }
+
+        if (tab === 'ards') {
+          var pf = document.getElementById('ards-pfratio').value || '-';
+          var grad = this._ardsGrad || 'Nicht bewertet';
+          var ibw = this._ibw ? (this._ibw + ' kg') : '-';
+          var vt = this._ibw ? (Math.round(this._ibw * 6) + ' ml') : '-';
+          var ppVal = document.getElementById('ards-pplat').value;
+          var peepVal = document.getElementById('ards-peep-val').value;
+          var dp = (ppVal && peepVal) ? (parseFloat(ppVal) - parseFloat(peepVal)) + ' cmH2O' : '-';
+
+          return [
+            'IntensivTools — ARDS-ASSESSMENT',
+            'Zeitstempel: ' + ts,
+            '',
+            'PaO2/FiO2-Ratio: ' + pf,
+            'Berlin-Klassifikation: ' + grad,
+            'Idealgewicht (IBW): ' + ibw,
+            'Tidalvolumen-Ziel (6ml/kg): ' + vt,
+            'Driving Pressure: ' + dp,
+            '',
+            'Quelle: Berlin-Definition 2012 / ARDSNet'
+          ].join('\n');
+        }
+
+        if (tab === 'aki') {
+          var stadium = this._akiStadium;
+          var stadiumText = stadium === 0 ? 'Kein AKI' : 'Stadium ' + stadium;
+          var kg = document.getElementById('aki-gewicht').value;
+          var crrt = kg ? (Math.round(parseFloat(kg) * 20) + '–' + Math.round(parseFloat(kg) * 25) + ' ml/h') : '-';
+          var rrtChecks = document.querySelectorAll('#rrt-checklist input[type="checkbox"]');
+          var rrtCount = 0;
+          rrtChecks.forEach(function(c) { if (c.checked) rrtCount++; });
+
+          return [
+            'IntensivTools — AKI-ASSESSMENT',
+            'Zeitstempel: ' + ts,
+            '',
+            'KDIGO-Stadium: ' + stadiumText,
+            'RRT-Indikationen: ' + rrtCount + '/5 zutreffend',
+            'CRRT-Effluentrate-Ziel: ' + crrt,
+            '',
+            'Quelle: KDIGO AKI 2012'
+          ].join('\n');
+        }
+
+        if (tab === 'kardio') {
+          var profil = this._stevensonProfil || '-';
+          var scai = this._scaiStadium || '-';
+          return [
+            'IntensivTools — KARDIO-ASSESSMENT',
+            'Zeitstempel: ' + ts,
+            '',
+            'Stevenson-Profil: ' + profil,
+            'SCAI-Stadium: ' + scai,
+            '',
+            'Quelle: ESC 2023'
+          ].join('\n');
+        }
+
+        if (tab === 'gerinnung') {
+          return [
+            'IntensivTools — GERINNUNGS-ASSESSMENT',
+            'Zeitstempel: ' + ts,
+            '',
+            'ISTH DIC-Score: ' + this._dicScore + '/8' + (this._dicScore >= 5 ? ' (Manifeste DIC)' : ''),
+            '4T-Score (HIT): ' + this._hitScore + '/8',
+            '',
+            'Quelle: ISTH 2023'
+          ].join('\n');
+        }
+
+        if (tab === 'stoffwechsel') {
+          var dka = this._dkaGrad || '-';
+          var agNa = document.getElementById('ag-na').value;
+          var agCl = document.getElementById('ag-cl').value;
+          var agHco3 = document.getElementById('ag-hco3').value;
+          var ag = (agNa && agCl && agHco3) ? (parseFloat(agNa) - (parseFloat(agCl) + parseFloat(agHco3))).toFixed(1) : '-';
+          return [
+            'IntensivTools — STOFFWECHSEL-ASSESSMENT',
+            'Zeitstempel: ' + ts,
+            '',
+            'DKA-Klassifikation: ' + dka,
+            'Anionenluecke: ' + ag + ' mmol/l',
+            '',
+            'Quelle: ADA 2024'
+          ].join('\n');
+        }
+
+        return 'IntensivTools — ' + tab.toUpperCase() + '\nZeitstempel: ' + ts;
+      },
+
+      /* --- Befund in Zwischenablage kopieren --- */
+      exportBefund: function(tab) {
+        var text = this.generateBefundText(tab);
+        navigator.clipboard.writeText(text).then(function() {
+          IntensivTools.showToast('Befund in Zwischenablage kopiert');
+        }).catch(function() {
+          IntensivTools.showToast('Kopieren fehlgeschlagen');
+        });
+      },
+
+      /* --- Init --- */
+      init: function() {
+        var self = this;
+        // Bundle-Checklist Event-Listener
+        document.querySelectorAll('#bundle-checklist input[type="checkbox"]').forEach(function(c) {
+          c.addEventListener('change', function() { self.updateBundleStatus(); });
+        });
+        // RRT-Checklist Event-Listener
+        document.querySelectorAll('#rrt-checklist input[type="checkbox"]').forEach(function(c) {
+          c.addEventListener('change', function() { self.updateRRTStatus(); });
+        });
+      }
+    };
+
+    // Init on DOM ready
+    IntensivTools.init();
+  </script>
+
 </body>
 </html>
