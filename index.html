@@ -580,7 +580,7 @@
     <div id="sepsis" class="tab-panel active">
 
       <div class="hinweis hinweis-info">
-        <strong>Leitlinie:</strong> Surviving Sepsis Campaign 2021 (Evans et al.) · DGAI/DIVI · Sepsis-3-Definition
+        <strong>Leitlinie:</strong> Surviving Sepsis Campaign 2021/2026 (Evans et al.; Prescott et al.) · DGAI/DIVI · Sepsis-3-Definition
       </div>
 
       <!-- A) qSOFA-Screening -->
@@ -767,7 +767,7 @@
       <div class="card">
         <h2>C) Sepsis-Klassifikation (Sepsis-3)</h2>
         <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px;">
-          Stufenweise Einstufung nach Sepsis-3-Definition (Singer et al., JAMA 2016; SSC 2021). Die Klassifikation bestimmt die Dringlichkeit der Therapie.
+          Stufenweise Einstufung nach Sepsis-3-Definition (Singer et al., JAMA 2016; SSC 2021/2026). Die Klassifikation bestimmt die Dringlichkeit der Therapie.
         </p>
         <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
           <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
@@ -830,7 +830,7 @@
 
       <!-- D) 1-Stunden-Bundle -->
       <div class="card">
-        <h2>D) 1-Stunden-Bundle (SSC 2021)</h2>
+        <h2>D) 1-Stunden-Bundle (SSC 2021/2026)</h2>
         <div class="hinweis hinweis-warnung" style="margin-bottom: 12px;">
           <strong>Zeitkritisch:</strong> Alle Massnahmen innerhalb 1 Stunde nach Erkennung beginnen!
         </div>
@@ -838,7 +838,7 @@
           <li><input type="checkbox" id="bundle-laktat"> Laktat messen (Ziel &lt;2 mmol/l, bei &gt;2: Kontrolle in 2–4h)</li>
           <li><input type="checkbox" id="bundle-bk"> Blutkulturen &times; 2 (aerob + anaerob, vor Antibiotikagabe!)</li>
           <li><input type="checkbox" id="bundle-abx"> Breitspektrum-Antibiotikum i.v. (innerhalb 1h bei Schock, 3h bei Sepsis)</li>
-          <li><input type="checkbox" id="bundle-fluid"> 30 ml/kg kristalloide Fluessigkeit bei Hypotonie oder Laktat &ge;4 mmol/l</li>
+          <li><input type="checkbox" id="bundle-fluid"> 30 ml/kg <strong>balancierte Kristalloide</strong> (Ringer-Laktat/Plasmalyte bevorzugt, SSC 2026: Empfehlung) bei Hypotonie oder Laktat &ge;4 mmol/l</li>
           <li><input type="checkbox" id="bundle-vaso"> Vasopressoren starten bei MAP &lt;65 mmHg trotz Volumengabe</li>
         </ul>
         <div id="bundle-status" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
@@ -851,6 +851,9 @@
         <h2>E) Empirische Antibiotikatherapie</h2>
         <div class="hinweis hinweis-warnung" style="margin-bottom: 12px;">
           <strong>Hinweis:</strong> Immer lokale Resistenzlage beachten! Kein verbindlicher Algorithmus — Ruecksprache Mikrobiologie/ABS-Team.
+        </div>
+        <div class="hinweis hinweis-info" style="margin-bottom: 12px;">
+          <strong>SSC 2026:</strong> Prolongierte/kontinuierliche Beta-Laktam-Infusion wird empfohlen (upgraded von 'suggest' auf 'recommend'). Deeskalation nach Antibiogramm ebenfalls 'recommend'.
         </div>
         <table>
           <tr><th>Fokus</th><th>Empfehlung (empirisch)</th><th>Anmerkung</th></tr>
@@ -905,7 +908,7 @@
           <strong>Hydrocortison:</strong> 200 mg/d i.v. (50 mg q6h) bei refraktaerem septischem Schock (Vasopressor-Eskalation trotz adaequater Volumengabe).
         </div>
 
-        <h3 style="margin-top: 16px;">Katecholamin-Eskalationsschema (SSC 2021 / DIVI)</h3>
+        <h3 style="margin-top: 16px;">Katecholamin-Eskalationsschema (SSC 2021/2026 / DIVI)</h3>
         <table style="font-size: 0.82rem;">
           <tr><th>Stufe</th><th>Situation</th><th>Massnahme</th><th>Evidenz</th></tr>
           <tr>
@@ -923,7 +926,7 @@
           <tr>
             <td><span class="ampel ampel-orange">3</span></td>
             <td>NE &gt;0,5 &mu;g/kg/min trotz Vasopressin</td>
-            <td><strong>+ Hydrocortison</strong> 200 mg/d + Reevaluation Volumen/Fokus</td>
+            <td><strong>+ Hydrocortison</strong> 200 mg/d — SSC 2026: breiter indiziert, nicht mehr nur bei refraktaerem Schock</td>
             <td>SSC: schwache Empfehlung</td>
           </tr>
           <tr>
@@ -933,6 +936,9 @@
             <td>Individuell, keine starke Evidenz</td>
           </tr>
         </table>
+        <div class="hinweis hinweis-info" style="margin-top: 8px;">
+          <strong>SSC 2026:</strong> Noradrenalin bleibt bevorzugt, aber Vasopressin und Angiotensin II als gleichwertige Erstlinien-Alternativen ('suggest').
+        </div>
         <div class="hinweis hinweis-warnung" style="margin-top: 8px;">
           <strong>Parallel bei jeder Stufe:</strong> Fokussuche (Bildgebung, Kulturen), Volumenstatus reevaluieren (Echo/PLR), Laktat-Trend pruefen. Katecholamin-Eskalation ist kein Ersatz fuer Kausaltherapie!
         </div>
@@ -974,7 +980,7 @@
     <div id="ards" class="tab-panel">
 
       <div class="hinweis hinweis-info">
-        <strong>Leitlinie:</strong> Berlin-Definition 2012 · ARDSNet Protocol 2000 · ATS/ERS/ESICM 2017
+        <strong>Leitlinie:</strong> Berlin-Definition 2012 · Global Definition 2024 (Matthay et al.) · ARDSNet Protocol 2000 · ATS/ERS/ESICM 2017
       </div>
 
       <!-- A) Berlin-Klassifikation -->
@@ -982,6 +988,7 @@
         <h2>A) Berlin-Klassifikation</h2>
         <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
           Voraussetzungen: Akuter Beginn (&le;7d), beidseitige Infiltrate im Roentgen/CT, nicht vollstaendig durch Herzinsuffizienz/Volumenueberladung erklaerbar.
+          Erweitert durch Global Definition 2024 (Matthay et al., AJRCCM): HFNC &ge;30 l/min qualifiziert (nicht mehr nur invasive Beatmung/CPAP noetig). SpO2/FiO2 &le;315 (bei SpO2 &le;97%) akzeptiert wenn kein arterielles BGA verfuegbar. Lungen-Ultraschall als Alternative zu Roentgen/CT fuer bilaterale Infiltrate akzeptiert.
         </p>
         <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
           <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
@@ -1877,7 +1884,7 @@
           </tr>
         </table>
         <div class="hinweis hinweis-kritisch" style="margin-top: 12px;">
-          <strong>ZVD als alleiniger Volumenparameter ist NICHT empfohlen</strong> (SSC 2021: starke Empfehlung dagegen). Nur als Trend im Kontext verwenden.
+          <strong>ZVD als alleiniger Volumenparameter ist NICHT empfohlen</strong> (SSC 2021/2026: starke Empfehlung dagegen). Nur als Trend im Kontext verwenden.
         </div>
         <div class="hinweis hinweis-warnung" style="margin-top: 8px;">
           <strong>Laktat-Trend &gt; Einzelwert:</strong> Laktat-Clearance &ge;10%/2h zeigt adaequate Perfusion an. Steigender Trend trotz Therapie = Reevaluation Schocktyp + Fokus!
@@ -2087,7 +2094,7 @@
     <div id="gerinnung" class="tab-panel">
 
       <div class="hinweis hinweis-info">
-        <strong>Leitlinie:</strong> ISTH DIC 2023 · AWMF Gerinnungsmanagement · DGAI Massivtransfusion
+        <strong>Leitlinie:</strong> ISTH DIC 2023/2025 · AWMF Gerinnungsmanagement · DGAI Massivtransfusion
       </div>
 
       <!-- A) DIC-Score -->
@@ -2131,6 +2138,9 @@
         </div>
         <div id="dic-ergebnis" class="ergebnis" style="background: var(--green-bg); color: var(--green);">
           DIC-Score: 0/8 — <span class="ampel ampel-gruen">Kein Hinweis auf DIC</span>
+        </div>
+        <div class="hinweis hinweis-info" style="margin-top: 12px;">
+          <strong>ISTH 2025 Update:</strong> Neue Phasen-Klassifikation: Pre-DIC → Early-phase DIC → Overt DIC. D-Dimer-Schwellen angepasst (&gt;3x ULN = 2 Pkt, &gt;7x ULN = 3 Pkt). DIC-Phenotyp unterscheiden: thrombotisch vs. haemorrhagisch — Therapie unterscheidet sich!
         </div>
       </div>
 
@@ -2264,7 +2274,7 @@
     <div id="stoffwechsel" class="tab-panel">
 
       <div class="hinweis hinweis-info">
-        <strong>Leitlinie:</strong> ADA Standards of Care 2024 · AWMF DKA · DGE/DGEM Ernaehrung Intensiv
+        <strong>Leitlinie:</strong> ADA Standards of Care 2026 · AWMF DKA · DGE/DGEM Ernaehrung Intensiv
       </div>
 
       <!-- A) DKA-Klassifikation -->
@@ -2408,7 +2418,7 @@
           <tr><td>Kalorien (akut)</td><td>~70% des Ziels (15–20 kcal/kg/d)</td><td>Volle Kalorien erst ab Tag 3–7</td></tr>
           <tr><td>Kalorien (Ziel)</td><td>25 kcal/kg/d</td><td>Indirekte Kalorimetrie wenn verfuegbar</td></tr>
           <tr><td>Protein</td><td>1,2–2,0 g/kg/d</td><td>Fruehe Proteingabe priorisieren</td></tr>
-          <tr><td>BZ-Ziel</td><td>140–180 mg/dl</td><td>ADA/SCCM, Hypoglykaemie vermeiden!</td></tr>
+          <tr><td>BZ-Ziel</td><td>140–180 mg/dl</td><td>ADA 2026/SCCM, Hypoglykaemie vermeiden!</td></tr>
         </table>
         <div class="hinweis hinweis-warnung" style="margin-top: 12px;">
           <strong>Refeeding-Syndrom:</strong> Risiko bei &gt;5d Nahrungskarenz, Untergewicht, Alkoholismus. Phosphat, Kalium, Magnesium taeglich kontrollieren! Langsamer Kostaufbau (10 kcal/kg/d, steigern ueber 4–7d).
@@ -2431,7 +2441,7 @@
     <div id="sedierung" class="tab-panel">
 
       <div class="hinweis hinweis-info">
-        <strong>Leitlinie:</strong> DAS-Leitlinie 2021 (DGAI) · PADIS Guidelines 2018 (SCCM) · S3-Analgesie/Sedierung/Delir 2021
+        <strong>Leitlinie:</strong> DAS-Leitlinie 2021 (DGAI) · PADIS 2018 + Focused Update 2025 (SCCM) · S3-Analgesie/Sedierung/Delir 2021
       </div>
 
       <!-- A) RASS-Score -->
@@ -2503,13 +2513,13 @@
           <tr>
             <td><strong>Propofol</strong></td>
             <td>0,5–4 mg/kg/h</td>
-            <td>Kurzzeit (&lt;7d), neurochirurgisch, schnelles Aufwachen</td>
+            <td>Kurzzeit (&lt;7d), neurochirurgisch, schnelles Aufwachen (PADIS 2025: Dexmedetomidin ueber Propofol conditional empfohlen)</td>
             <td><span class="ampel ampel-rot">PRIS bei &gt;4 mg/kg/h &gt;48h!</span> Triglyzeride, CK kontrollieren</td>
           </tr>
           <tr>
             <td><strong>Dexmedetomidin</strong></td>
             <td>0,2–1,4 &mu;g/kg/h</td>
-            <td>Leichte Sedierung (RASS 0 bis -2), Delir-Praevention, Weaning</td>
+            <td>PADIS 2025: First-Line Sedativum (ueber Propofol empfohlen). Leichte Sedierung (RASS 0 bis -2), Delir-Praevention, Weaning</td>
             <td>Bradykardie, Hypotonie; NICHT fuer tiefe Sedierung geeignet</td>
           </tr>
           <tr>
@@ -2602,6 +2612,7 @@
           <li><input type="checkbox"> <strong>D</strong>elirium monitoring (CAM-ICU q8h)</li>
           <li><input type="checkbox"> <strong>E</strong>arly mobility (Fruehmobilisation ab Tag 1 wenn moeglich)</li>
           <li><input type="checkbox"> <strong>F</strong>amily engagement + Schlafhygiene (Tag/Nacht-Rhythmus!)</li>
+          <li><input type="checkbox"> Melatonin zur Schlaffoerderung (PADIS 2025: empfohlen)</li>
         </ul>
 
         <h3 style="margin-top: 16px;">Ursachensuche (THINK!)</h3>
@@ -2619,7 +2630,7 @@
           <tr>
             <td><strong>Dexmedetomidin</strong></td>
             <td>0,2–1,4 &mu;g/kg/h</td>
-            <td>First-Line bei ICU-Delir (PADIS 2018)</td>
+            <td>First-Line bei ICU-Delir (PADIS 2018/2025)</td>
             <td>Bradykardie; NICHT bei Alkoholentzugsdelir allein</td>
           </tr>
           <tr>
@@ -2806,7 +2817,7 @@
     <div id="notfall" class="tab-panel">
 
       <div class="hinweis hinweis-kritisch">
-        <strong>NOTFALL-ALGORITHMEN</strong> — Zeitkritische Entscheidungen. ERC 2021 · DGAI · DAS 2015
+        <strong>NOTFALL-ALGORITHMEN</strong> — Zeitkritische Entscheidungen. ERC 2025 · DGAI · DAS 2025
       </div>
 
       <!-- A) Reanimation -->
@@ -2823,6 +2834,9 @@
         </div>
         <div id="rea-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
           Bitte Rhythmus waehlen
+        </div>
+        <div class="hinweis hinweis-info" style="margin-top: 12px;">
+          <strong>ERC 2025 Update:</strong> Effektive Ventilation und korrekte Defibrillator-Pad-Platzierung staerker betont. CPR-induziertes Bewusstsein adressiert (Analgesie/Sedierung). Erste 3–5 Minuten als entscheidend hervorgehoben.
         </div>
         <div class="score-card" style="margin-top: 12px;">
           <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Reversible Ursachen (4H + 4T)</div>
@@ -2918,7 +2932,7 @@
     <div id="infektio" class="tab-panel">
 
       <div class="hinweis hinweis-info">
-        <strong>Leitlinie:</strong> PEG 2022 · ESCMID · IDSA · S3 HAP/VAP 2024 · AWMF
+        <strong>Leitlinie:</strong> PEG 2022 · ESCMID · IDSA · S3 HAP/VAP 2024 · ECMM/ISHAM 2025 · AWMF
       </div>
 
       <!-- A) Fokus → Antibiotikum -->
@@ -3010,15 +3024,17 @@
   <!-- FOOTER -->
   <footer class="disclaimer">
     <div class="quellen">
-      Quellen: Surviving Sepsis Campaign 2021 (Evans et al., Crit Care Med 2021) ·
-      ARDS Berlin Definition (JAMA 2012); ARDSNet Protocol 2000 ·
+      Quellen: Surviving Sepsis Campaign 2021/2026 (Evans et al.; Prescott et al.) ·
+      ARDS Berlin Definition (JAMA 2012) · Global Definition 2024 (Matthay et al.) · ARDSNet Protocol 2000 ·
       KDIGO Clinical Practice Guideline for Acute Kidney Injury 2012; AKD 2020 ·
       ESC Guidelines for Acute Heart Failure 2023 ·
-      ISTH DIC Guidance 2023 ·
-      ADA Standards of Care in Diabetes 2024 ·
+      ISTH DIC Guidance 2023/2025 ·
+      ADA Standards of Care in Diabetes 2026 ·
       DGEM/DGE Leitlinie Enterale Ernaehrung 2022 ·
       S3-Leitlinie Analgesie, Sedierung und Delirmanagement (DAS) 2021 ·
-      PADIS Guidelines (SCCM) 2018
+      PADIS Guidelines (SCCM) 2018 + Focused Update 2025 ·
+      ERC Guidelines 2025 · DAS Airway Guidelines 2025 ·
+      ECMM/ISHAM/ASM Candida Guidelines 2025
     </div>
     IntensivTools unterstutzt klinische Entscheidungen — ersetzt nicht die arztliche Beurteilung.
     Alle Empfehlungen basieren auf den zitierten Leitlinien. Keine Haftung fur Therapieentscheidungen.
@@ -3987,10 +4003,10 @@
         var el = document.getElementById('aw-ergebnis');
         if (!plan) { el.style.background = 'var(--bg)'; el.style.color = 'var(--text-muted)'; el.innerHTML = 'Bitte Plan waehlen'; return; }
         var map = {
-          'A': { level: 'gelb', html: '<strong>Plan A — Intubation (max. 3 Versuche + 1 Experte)</strong><br>Videolaryngoskop bevorzugt. Bougie bereithalten. Optimale Lagerung (Rampe/Kopfhoch). Gummielastischer Bougie bei Cormack III. Nach 3 Fehlversuchen: STOPP &rarr; Plan B!' },
+          'A': { level: 'gelb', html: '<strong>Plan A — Intubation (max. 3 Versuche + 1 Experte)</strong><br><strong>Videolaryngoskopie First-Line</strong> fuer ALLE Intubationsversuche (DAS 2025). Apnoeische Oxygenierung (HFNO) als Standard. Max 3+1 Versuche. Bougie bereithalten. Optimale Lagerung (Rampe/Kopfhoch). Gummielastischer Bougie bei Cormack III. Nach 3 Fehlversuchen: STOPP &rarr; Plan B!' },
           'B': { level: 'orange', html: '<strong>Plan B — Supraglottischer Atemweg</strong><br>Larynxmaske (2. Gen., z.B. i-gel) einlegen. Max. 3 Versuche. Oxygenierung sichern. Wenn Ventilation moeglich: Stabilisierung, dann Wach-Intubation planen oder chirurgischer Atemweg.' },
           'C': { level: 'orange', html: '<strong>Plan C — Masken-/Beutelbeatmung</strong><br>Esmarch + oropharyngealer Tubus (Guedel). 2-Personen-Technik. Relaxierung wenn noch nicht erfolgt. Oxygenierung ist das Ziel! Patient aufwachen lassen wenn moeglich.' },
-          'D': { level: 'rot', html: '<strong>Plan D — CICO: Chirurgischer Atemweg JETZT!</strong><br><span class="ampel ampel-rot">NOTFALL-KONIOTOMIE!</span> Skalpell-Bougie-Technik: Membrana cricothyroidea tasten, horizontaler Schnitt, Bougie einfuehren, Tubus 6.0 ueber Bougie. KEIN Zoegern — jede Sekunde zaehlt!' }
+          'D': { level: 'rot', html: '<strong>Plan D — CICO: Chirurgischer Atemweg JETZT!</strong><br><span class="ampel ampel-rot">NOTFALL-KONIOTOMIE!</span> Standardisierte Technik: <strong>Vertikaler Hautschnitt</strong> &rarr; Membrana cricothyroidea &rarr; Bougie &rarr; Tubus 6.0 (DAS 2025: eFONA vereinheitlicht). KEIN Zoegern — jede Sekunde zaehlt!' }
         };
         var m = map[plan];
         var bgMap = { gelb: '--yellow-bg', orange: '--orange-bg', rot: '--red-bg' };
@@ -4038,7 +4054,8 @@
           el.innerHTML = 'Candida-Score: ' + score + '/5 — ' + this.ampel('gruen', 'Niedriges Risiko') + '<br><span style="font-size:0.82rem;font-weight:normal;">Keine empirische Antimykotika-Therapie empfohlen. Reevaluation bei Verschlechterung.</span>';
         } else {
           el.style.background = 'var(--red-bg)'; el.style.color = 'var(--red)';
-          el.innerHTML = 'Candida-Score: ' + score + '/5 — ' + this.ampel('rot', 'Hohes Risiko (&ge;3)') + '<br><span style="font-size:0.82rem;font-weight:normal;"><strong>Empirisch Antimykotikum starten:</strong> Anidulafungin 200/100mg ODER Caspofungin 70/50mg. Blutkulturen (aerob!) + Beta-D-Glucan. Katheter entfernen!</span>';
+          el.innerHTML = 'Candida-Score: ' + score + '/5 — ' + this.ampel('rot', 'Hohes Risiko (&ge;3)') + '<br><span style="font-size:0.82rem;font-weight:normal;"><strong>Empirisch Antimykotikum starten:</strong> Anidulafungin 200/100mg ODER Caspofungin 70/50mg. Blutkulturen (aerob!) + Beta-D-Glucan. Katheter entfernen!</span>' +
+            '<br><span style="font-size:0.82rem;font-weight:normal;"><strong>ECMM/ISHAM/ASM 2025:</strong> Echinocandine bleiben First-Line. Rezafungin (1x/Woche Echinocandin) als neue Option. Candida auris + azolresistente C. parapsilosis beachten. Frueher IV&rarr;oral Step-Down bei stabilen Patienten.</span>';
         }
       },
 
@@ -4198,7 +4215,7 @@
             '',
             '1h-Bundle: ' + done + '/5 Massnahmen abgeschlossen',
             '',
-            'Quelle: SSC 2021 / Sepsis-3'
+            'Quelle: SSC 2021/2026 / Sepsis-3'
           ].join('\n');
         }
 
@@ -4221,7 +4238,7 @@
             'Tidalvolumen-Ziel (6ml/kg): ' + vt,
             'Driving Pressure: ' + dp,
             '',
-            'Quelle: Berlin-Definition 2012 / ARDSNet'
+            'Quelle: Berlin-Definition 2012 / Global Definition 2024 / ARDSNet'
           ].join('\n');
         }
 
@@ -4268,7 +4285,7 @@
             'ISTH DIC-Score: ' + this._dicScore + '/8' + (this._dicScore >= 5 ? ' (Manifeste DIC)' : ''),
             '4T-Score (HIT): ' + this._hitScore + '/8',
             '',
-            'Quelle: ISTH 2023'
+            'Quelle: ISTH 2023/2025'
           ].join('\n');
         }
 
@@ -4285,7 +4302,7 @@
             'DKA-Klassifikation: ' + dka,
             'Anionenluecke: ' + ag + ' mmol/l',
             '',
-            'Quelle: ADA 2024'
+            'Quelle: ADA 2026'
           ].join('\n');
         }
 
@@ -4304,7 +4321,7 @@
             'RASS: ' + rass,
             'CAM-ICU: ' + delir,
             '',
-            'Quelle: DAS-Leitlinie 2021 / PADIS 2018'
+            'Quelle: DAS-Leitlinie 2021 / PADIS 2018+2025'
           ].join('\n');
         }
 
