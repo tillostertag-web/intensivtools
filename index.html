@@ -2258,6 +2258,38 @@
         </table>
       </div>
 
+      <!-- F) ROTEM/TEG-Interpreter -->
+      <div class="card">
+        <h2>F) ROTEM-Interpreter</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>EXTEM CT (s) — Normal: 38–79</label>
+            <input type="number" id="rot-extem-ct" min="0" max="500" step="1" placeholder="z.B. 65" onchange="IntensivTools.calcROTEM()">
+          </div>
+          <div class="input-group">
+            <label>EXTEM A10 (mm) — Normal: 43–65</label>
+            <input type="number" id="rot-extem-a10" min="0" max="80" step="1" placeholder="z.B. 55" onchange="IntensivTools.calcROTEM()">
+          </div>
+          <div class="input-group">
+            <label>EXTEM ML (%) — Normal: &lt;15</label>
+            <input type="number" id="rot-extem-ml" min="0" max="100" step="1" placeholder="z.B. 5" onchange="IntensivTools.calcROTEM()">
+          </div>
+          <div class="input-group">
+            <label>FIBTEM A10 (mm) — Normal: 7–23</label>
+            <input type="number" id="rot-fibtem-a10" min="0" max="50" step="1" placeholder="z.B. 12" onchange="IntensivTools.calcROTEM()">
+          </div>
+          <div class="input-group">
+            <label>INTEM CT (s) — Normal: 100–240</label>
+            <input type="number" id="rot-intem-ct" min="0" max="600" step="1" placeholder="z.B. 180" onchange="IntensivTools.calcROTEM()">
+          </div>
+          <div class="input-group">
+            <label>HEPTEM CT (s) — Normal: wie INTEM</label>
+            <input type="number" id="rot-heptem-ct" min="0" max="600" step="1" placeholder="z.B. 170" onchange="IntensivTools.calcROTEM()">
+          </div>
+        </div>
+        <div id="rotem-ergebnis" style="margin-top: 12px;"></div>
+      </div>
+
       <!-- Export -->
       <div style="text-align: center; margin-top: 8px;">
         <button class="export-btn" onclick="IntensivTools.exportBefund('gerinnung')">
@@ -2423,6 +2455,42 @@
         <div class="hinweis hinweis-warnung" style="margin-top: 12px;">
           <strong>Refeeding-Syndrom:</strong> Risiko bei &gt;5d Nahrungskarenz, Untergewicht, Alkoholismus. Phosphat, Kalium, Magnesium taeglich kontrollieren! Langsamer Kostaufbau (10 kcal/kg/d, steigern ueber 4–7d).
         </div>
+      </div>
+
+      <!-- G) BGA-Interpreter -->
+      <div class="card">
+        <h2>G) BGA-Interpreter</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>pH</label>
+            <input type="number" id="bga-ph" min="6.5" max="7.8" step="0.01" placeholder="7.38" onchange="IntensivTools.calcBGA()">
+          </div>
+          <div class="input-group">
+            <label>pCO&#8322; (mmHg)</label>
+            <input type="number" id="bga-pco2" min="10" max="120" step="1" placeholder="40" onchange="IntensivTools.calcBGA()">
+          </div>
+          <div class="input-group">
+            <label>HCO&#8323;&#8315; (mmol/l)</label>
+            <input type="number" id="bga-hco3" min="2" max="50" step="0.1" placeholder="24" onchange="IntensivTools.calcBGA()">
+          </div>
+          <div class="input-group">
+            <label>Na&#8314; (mmol/l)</label>
+            <input type="number" id="bga-na" min="100" max="180" step="1" placeholder="140" onchange="IntensivTools.calcBGA()">
+          </div>
+          <div class="input-group">
+            <label>Cl&#8315; (mmol/l)</label>
+            <input type="number" id="bga-cl" min="70" max="130" step="1" placeholder="105" onchange="IntensivTools.calcBGA()">
+          </div>
+          <div class="input-group">
+            <label>Albumin (g/dl)</label>
+            <input type="number" id="bga-alb" min="0.5" max="6" step="0.1" placeholder="3.5" onchange="IntensivTools.calcBGA()">
+          </div>
+          <div class="input-group">
+            <label>Laktat (mmol/l)</label>
+            <input type="number" id="bga-lak" min="0" max="30" step="0.1" placeholder="1.2" onchange="IntensivTools.calcBGA()">
+          </div>
+        </div>
+        <div id="bga-ergebnis" style="margin-top: 12px;"></div>
       </div>
 
       <!-- Export -->
@@ -2916,6 +2984,61 @@
         </div>
         <div id="aw-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
           Bitte Plan waehlen
+        </div>
+      </div>
+
+      <!-- E) Post-ROSC / TTM -->
+      <div class="card">
+        <h2>E) Post-ROSC-Bundle &amp; TTM</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>ROSC seit (Minuten)</label>
+            <input type="number" id="rosc-min" min="0" max="600" step="1" placeholder="z.B. 30" onchange="IntensivTools.calcPostROSC()">
+          </div>
+          <div class="input-group">
+            <label>Initialer Rhythmus</label>
+            <select id="rosc-rhythmus" onchange="IntensivTools.calcPostROSC()">
+              <option value="">-- waehlen --</option>
+              <option value="vfvt">VF/pVT (schockbar)</option>
+              <option value="nichtschock">PEA/Asystolie (nicht schockbar)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>ST-Hebung / STEMI?</label>
+            <select id="rosc-stemi" onchange="IntensivTools.calcPostROSC()">
+              <option value="">-- waehlen --</option>
+              <option value="ja">Ja — STEMI im EKG</option>
+              <option value="nein">Nein — kein STEMI</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>GCS nach ROSC (ohne Sedierung)</label>
+            <select id="rosc-gcs" onchange="IntensivTools.calcPostROSC()">
+              <option value="">-- waehlen --</option>
+              <option value="wach">Befolgt Aufforderungen (GCS 14–15)</option>
+              <option value="koma">Komatoes / nicht erweckbar</option>
+            </select>
+          </div>
+        </div>
+        <div id="rosc-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Parameter eingeben
+        </div>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Neuroprognostik nach 72h</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <p><strong>Fruehestens 72h nach ROSC / nach Ende TTM + Rewarming:</strong></p>
+            <table>
+              <tr><th>Untersuchung</th><th>Schlechte Prognose wenn</th><th>Evidenz</th></tr>
+              <tr><td><strong>Pupillenreaktion</strong></td><td>Beidseits fehlend nach 72h</td><td>FPR &lt;1%</td></tr>
+              <tr><td><strong>SSEP (N20)</strong></td><td>Beidseits fehlend</td><td>FPR ~1%</td></tr>
+              <tr><td><strong>NSE</strong></td><td>&gt;60 &mu;g/l nach 48–72h (Trend!)</td><td>Kein fixer Cutoff, Haemolyse ausschliessen</td></tr>
+              <tr><td><strong>EEG</strong></td><td>Burst-Suppression / Status epilepticus &gt;72h</td><td>Im Kontext bewerten</td></tr>
+              <tr><td><strong>CT/MRT</strong></td><td>Diffuses Hirnoedem (CT), diffuse DWI-Restriktion (MRT)</td><td>MRT sensitiver, ab Tag 3–5</td></tr>
+            </table>
+            <div class="hinweis hinweis-kritisch" style="margin-top: 8px;">
+              <strong>Multimodaler Ansatz!</strong> Keine einzelne Untersuchung reicht fuer Prognose. Mindestens 2 konsistente Befunde. Confounders ausschliessen (Sedierung, Hypothermie, Metabolik).
+            </div>
+          </div>
         </div>
       </div>
 
@@ -3598,6 +3721,232 @@
       /* === HAMILTON MONITORING === */
 
       /* === SCHOCK-DIFFERENZIAL === */
+
+      /* === BGA-INTERPRETER === */
+
+      calcBGA: function() {
+        var ph = parseFloat(document.getElementById('bga-ph').value);
+        var pco2 = parseFloat(document.getElementById('bga-pco2').value);
+        var hco3 = parseFloat(document.getElementById('bga-hco3').value);
+        var na = parseFloat(document.getElementById('bga-na').value);
+        var cl = parseFloat(document.getElementById('bga-cl').value);
+        var alb = parseFloat(document.getElementById('bga-alb').value);
+        var lak = parseFloat(document.getElementById('bga-lak').value);
+        var el = document.getElementById('bga-ergebnis');
+
+        if (isNaN(ph) || isNaN(pco2) || isNaN(hco3)) { el.innerHTML = ''; return; }
+        var results = [];
+        var self = this;
+
+        // 1. Primaere Stoerung
+        var acidBase = '';
+        if (ph < 7.35) {
+          if (pco2 > 45 && hco3 <= 26) acidBase = 'Respiratorische Azidose';
+          else if (hco3 < 22) acidBase = 'Metabolische Azidose';
+          else if (pco2 > 45) acidBase = 'Respiratorische Azidose';
+          else acidBase = 'Metabolische Azidose';
+        } else if (ph > 7.45) {
+          if (pco2 < 35) acidBase = 'Respiratorische Alkalose';
+          else if (hco3 > 26) acidBase = 'Metabolische Alkalose';
+          else acidBase = 'Respiratorische Alkalose';
+        } else {
+          if (pco2 > 45 && hco3 > 26) acidBase = 'Kompensierte respiratorische Azidose';
+          else if (pco2 < 35 && hco3 < 22) acidBase = 'Kompensierte metabolische Azidose';
+          else if (hco3 > 26 && pco2 < 35) acidBase = 'Gemischte Stoerung (Alkalosen)';
+          else acidBase = 'Normal';
+        }
+
+        var abLevel = ph < 7.35 || ph > 7.45 ? (ph < 7.2 || ph > 7.55 ? 'rot' : 'orange') : 'gruen';
+        results.push(self.ampel(abLevel, 'pH ' + ph.toFixed(2) + ' — ' + acidBase));
+
+        // 2. pCO2 Bewertung
+        if (pco2 > 45) results.push(self.ampel('orange', 'pCO\u2082 ' + pco2 + ' mmHg \u2191') + ' <span style="font-size:0.82rem;">Hyperkapnie — Hypoventilation / respiratorisches Versagen</span>');
+        else if (pco2 < 35) results.push(self.ampel('gelb', 'pCO\u2082 ' + pco2 + ' mmHg \u2193') + ' <span style="font-size:0.82rem;">Hypokapnie — Hyperventilation / respiratorische Kompensation</span>');
+        else results.push(self.ampel('gruen', 'pCO\u2082 ' + pco2 + ' mmHg') + ' <span style="font-size:0.82rem;">Normal</span>');
+
+        // 3. HCO3
+        if (hco3 < 22) results.push(self.ampel('orange', 'HCO\u2083\u207B ' + hco3 + ' mmol/l \u2193') + ' <span style="font-size:0.82rem;">Metabolische Azidose / renale Kompensation</span>');
+        else if (hco3 > 26) results.push(self.ampel('gelb', 'HCO\u2083\u207B ' + hco3 + ' mmol/l \u2191') + ' <span style="font-size:0.82rem;">Metabolische Alkalose / renale Kompensation</span>');
+        else results.push(self.ampel('gruen', 'HCO\u2083\u207B ' + hco3 + ' mmol/l') + ' <span style="font-size:0.82rem;">Normal</span>');
+
+        // 4. Erwartete Kompensation
+        if (ph < 7.35 && hco3 < 22) {
+          var expPco2 = (1.5 * hco3 + 8);
+          var komp = Math.abs(pco2 - expPco2) <= 2 ? 'Adaequat kompensiert' : (pco2 > expPco2 + 2 ? 'Zusaetzliche resp. Azidose!' : 'Zusaetzliche resp. Alkalose!');
+          var kompLevel = Math.abs(pco2 - expPco2) <= 2 ? 'gruen' : 'rot';
+          results.push(self.ampel(kompLevel, 'Kompensation: ' + komp) + ' <span style="font-size:0.82rem;">Erwartet pCO\u2082: ' + expPco2.toFixed(0) + ' mmHg (Winters-Formel), gemessen: ' + pco2 + '</span>');
+        }
+        if (ph > 7.45 && hco3 > 26) {
+          var expPco2Alk = 0.7 * hco3 + 21;
+          var kompAlk = Math.abs(pco2 - expPco2Alk) <= 2 ? 'Adaequat kompensiert' : (pco2 > expPco2Alk + 2 ? 'Zusaetzliche resp. Azidose!' : 'Zusaetzliche resp. Alkalose!');
+          var kompAlkLevel = Math.abs(pco2 - expPco2Alk) <= 2 ? 'gruen' : 'rot';
+          results.push(self.ampel(kompAlkLevel, 'Kompensation: ' + kompAlk) + ' <span style="font-size:0.82rem;">Erwartet pCO\u2082: ' + expPco2Alk.toFixed(0) + ' mmHg, gemessen: ' + pco2 + '</span>');
+        }
+
+        // 5. Anionenluecke
+        if (!isNaN(na) && !isNaN(cl)) {
+          var ag = na - (cl + hco3);
+          ag = Math.round(ag * 10) / 10;
+          // Albumin-korrigiert
+          var agCorr = ag;
+          if (!isNaN(alb)) {
+            agCorr = ag + 2.5 * (4.0 - alb);
+            agCorr = Math.round(agCorr * 10) / 10;
+          }
+          var agLevel = agCorr > 12 ? 'rot' : 'gruen';
+          results.push(self.ampel(agLevel, 'Anionenluecke: ' + ag + ' mmol/l' + (!isNaN(alb) ? ' (korrigiert: ' + agCorr + ')' : '')) +
+            (agCorr > 12 ? ' <span style="font-size:0.82rem;">Erhoht — DD: Laktat, Ketoazidose, Uraemie, Intoxikation (Methanol, Ethylenglykol, Salicylate)</span>' : ' <span style="font-size:0.82rem;">Normal</span>'));
+
+          // 6. Delta-Delta-Ratio
+          if (agCorr > 12 && hco3 < 24) {
+            var deltaAG = agCorr - 12;
+            var deltaHCO3 = 24 - hco3;
+            var deltaRatio = deltaHCO3 > 0 ? Math.round(deltaAG / deltaHCO3 * 10) / 10 : 0;
+            var drText = '';
+            var drLevel = 'gruen';
+            if (deltaRatio < 1) { drText = 'Zusaetzliche non-AG metabolische Azidose (hyperchloraem)'; drLevel = 'orange'; }
+            else if (deltaRatio <= 2) { drText = 'Reine AG-Azidose'; drLevel = 'gruen'; }
+            else { drText = 'Zusaetzliche metabolische Alkalose (oder vorbestehend erhoehtes HCO\u2083)'; drLevel = 'gelb'; }
+            results.push(self.ampel(drLevel, 'Delta-Delta-Ratio: ' + deltaRatio) + ' <span style="font-size:0.82rem;">' + drText + '</span>');
+          }
+        }
+
+        // 7. Laktat
+        if (!isNaN(lak)) {
+          if (lak <= 2) results.push(self.ampel('gruen', 'Laktat ' + lak + ' mmol/l') + ' <span style="font-size:0.82rem;">Normal</span>');
+          else if (lak <= 4) results.push(self.ampel('orange', 'Laktat ' + lak + ' mmol/l \u2191') + ' <span style="font-size:0.82rem;">Erhoht — Hypoperfusion? Katecholamine? Leber?</span>');
+          else results.push(self.ampel('rot', 'Laktat ' + lak + ' mmol/l \u2191\u2191') + ' <span style="font-size:0.82rem;">Schwere Laktatazidose — Schock? Ischaemie? Leberversagen?</span>');
+        }
+
+        el.innerHTML = results.map(function(r) {
+          return '<div style="padding:6px 0;border-bottom:1px solid var(--border);">' + r + '</div>';
+        }).join('');
+      },
+
+      /* === ROTEM-INTERPRETER === */
+
+      calcROTEM: function() {
+        var exCT = parseFloat(document.getElementById('rot-extem-ct').value);
+        var exA10 = parseFloat(document.getElementById('rot-extem-a10').value);
+        var exML = parseFloat(document.getElementById('rot-extem-ml').value);
+        var fibA10 = parseFloat(document.getElementById('rot-fibtem-a10').value);
+        var inCT = parseFloat(document.getElementById('rot-intem-ct').value);
+        var hepCT = parseFloat(document.getElementById('rot-heptem-ct').value);
+        var el = document.getElementById('rotem-ergebnis');
+        var results = [];
+        var self = this;
+
+        // EXTEM CT — Gerinnungsfaktoren (extrinsisch)
+        if (!isNaN(exCT)) {
+          if (exCT > 79) results.push(self.ampel('rot', 'EXTEM CT ' + exCT + 's \u2191') + ' <span style="font-size:0.82rem;">Faktorenmangel (extrinsisch) — <strong>FFP 15–20 ml/kg</strong> oder PPSB 25 IE/kg</span>');
+          else if (exCT >= 38) results.push(self.ampel('gruen', 'EXTEM CT ' + exCT + 's') + ' <span style="font-size:0.82rem;">Normal</span>');
+          else results.push(self.ampel('gelb', 'EXTEM CT ' + exCT + 's \u2193') + ' <span style="font-size:0.82rem;">Verkuerzt — Hyperkoagulabilitaet?</span>');
+        }
+
+        // EXTEM A10 + FIBTEM A10 — Clot-Festigkeit
+        if (!isNaN(exA10)) {
+          if (exA10 < 43) {
+            if (!isNaN(fibA10) && fibA10 < 7) {
+              results.push(self.ampel('rot', 'EXTEM A10 ' + exA10 + ' + FIBTEM A10 ' + fibA10 + ' \u2193\u2193') + ' <span style="font-size:0.82rem;">Fibrinogenmangel! <strong>Fibrinogenkonzentrat 2–4g</strong> (Ziel FIBTEM A10 &ge;12)</span>');
+            } else if (!isNaN(fibA10) && fibA10 >= 7) {
+              results.push(self.ampel('rot', 'EXTEM A10 ' + exA10 + ' \u2193 (FIBTEM A10 ' + fibA10 + ' OK)') + ' <span style="font-size:0.82rem;">Thrombozytopenie/-pathie! <strong>Thrombozytenkonzentrat</strong> (FIBTEM normal = Thrombozyten-Problem)</span>');
+            } else {
+              results.push(self.ampel('rot', 'EXTEM A10 ' + exA10 + ' \u2193') + ' <span style="font-size:0.82rem;">Reduzierte Clot-Festigkeit — FIBTEM pruefen fuer Differenzierung</span>');
+            }
+          } else {
+            results.push(self.ampel('gruen', 'EXTEM A10 ' + exA10 + 'mm') + ' <span style="font-size:0.82rem;">Normal</span>');
+          }
+        } else if (!isNaN(fibA10)) {
+          if (fibA10 < 7) results.push(self.ampel('rot', 'FIBTEM A10 ' + fibA10 + 'mm \u2193') + ' <span style="font-size:0.82rem;">Fibrinogenmangel — <strong>Fibrinogenkonzentrat 2–4g</strong></span>');
+          else if (fibA10 <= 23) results.push(self.ampel('gruen', 'FIBTEM A10 ' + fibA10 + 'mm') + ' <span style="font-size:0.82rem;">Normal</span>');
+          else results.push(self.ampel('gelb', 'FIBTEM A10 ' + fibA10 + 'mm \u2191') + ' <span style="font-size:0.82rem;">Erhoht — Hyperfibrinogenaemie (Akutphase?)</span>');
+        }
+
+        // EXTEM ML — Hyperfibrinolyse
+        if (!isNaN(exML)) {
+          if (exML > 15) results.push(self.ampel('rot', 'EXTEM ML ' + exML + '% \u2191\u2191') + ' <span style="font-size:0.82rem;">Hyperfibrinolyse! <strong>Tranexamsaeure 1g i.v.</strong> (2. Dosis nach 3h wenn ML &gt;20%)</span>');
+          else results.push(self.ampel('gruen', 'EXTEM ML ' + exML + '%') + ' <span style="font-size:0.82rem;">Keine Hyperfibrinolyse</span>');
+        }
+
+        // INTEM CT vs HEPTEM CT — Heparin-Effekt
+        if (!isNaN(inCT) && !isNaN(hepCT)) {
+          var ratio = inCT / hepCT;
+          if (inCT > 240 && ratio > 1.2) {
+            results.push(self.ampel('orange', 'INTEM CT ' + inCT + 's / HEPTEM CT ' + hepCT + 's (Ratio ' + ratio.toFixed(1) + ')') + ' <span style="font-size:0.82rem;">Heparin-Effekt nachgewiesen — <strong>Protamin</strong> erwaegen (1 mg/100 IE UFH)</span>');
+          } else if (inCT > 240) {
+            results.push(self.ampel('rot', 'INTEM CT ' + inCT + 's \u2191 (HEPTEM CT ' + hepCT + 's)') + ' <span style="font-size:0.82rem;">Intrinsisch verlaengert OHNE Heparin-Effekt — Faktorenmangel (VIII, IX, XI, XII)</span>');
+          } else {
+            results.push(self.ampel('gruen', 'INTEM CT ' + inCT + 's / HEPTEM CT ' + hepCT + 's') + ' <span style="font-size:0.82rem;">Normal, kein Heparin-Effekt</span>');
+          }
+        } else if (!isNaN(inCT)) {
+          if (inCT > 240) results.push(self.ampel('orange', 'INTEM CT ' + inCT + 's \u2191') + ' <span style="font-size:0.82rem;">Verlaengert — HEPTEM durchfuehren fuer Heparin-Differenzierung</span>');
+          else results.push(self.ampel('gruen', 'INTEM CT ' + inCT + 's') + ' <span style="font-size:0.82rem;">Normal</span>');
+        }
+
+        if (results.length > 0) {
+          el.innerHTML = results.map(function(r) {
+            return '<div style="padding:6px 0;border-bottom:1px solid var(--border);">' + r + '</div>';
+          }).join('');
+        } else {
+          el.innerHTML = '';
+        }
+      },
+
+      /* === POST-ROSC === */
+
+      calcPostROSC: function() {
+        var min = parseFloat(document.getElementById('rosc-min').value);
+        var rhythmus = document.getElementById('rosc-rhythmus').value;
+        var stemi = document.getElementById('rosc-stemi').value;
+        var gcs = document.getElementById('rosc-gcs').value;
+        var el = document.getElementById('rosc-ergebnis');
+
+        if (isNaN(min) || !rhythmus || !stemi || !gcs) {
+          el.style.background = 'var(--bg)'; el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte alle Parameter eingeben';
+          return;
+        }
+
+        var lines = [];
+        lines.push('<strong>Post-ROSC-Bundle (' + min + ' min nach ROSC):</strong>');
+        lines.push('');
+
+        // Koronarangio
+        if (stemi === 'ja') {
+          lines.push(this.ampel('rot', 'STEMI') + ' <strong>Sofortige Koronarangiographie!</strong> (Door-to-Balloon &lt;120 min, unabhaengig von Bewusstsein)');
+        } else if (rhythmus === 'vfvt') {
+          lines.push(this.ampel('orange', 'VF/VT ohne STEMI') + ' Fruehe Koronarangiographie erwaegen (&lt;2h empfohlen bei persistierendem V.a. kardiale Ursache)');
+        } else {
+          lines.push(this.ampel('gelb', 'Kein STEMI, nicht-schockbar') + ' Koronarangiographie je nach Klinik — CT-Angio/Echo zur Ursachensuche');
+        }
+
+        // TTM
+        if (gcs === 'koma') {
+          lines.push('');
+          lines.push(this.ampel('rot', 'KOMATOES') + ' <strong>TTM starten!</strong> Zieltemperatur <strong>32–36&deg;C fuer 24h</strong> (ERC 2025). Fieber aktiv vermeiden fuer &ge;72h!');
+          lines.push('<span style="font-size:0.82rem;">Kuehlmethoden: Intravasal (Thermogard), Oberflaechenkuehlung, kalte Infusion (4&deg;C 30 ml/kg NICHT praeklinisch). Shivering-Management: Sedierung + ggf. Relaxierung.</span>');
+        } else {
+          lines.push('');
+          lines.push(this.ampel('gruen', 'WACH') + ' Patient befolgt Aufforderungen — kein TTM noetig. Fieber aktiv vermeiden. Engmaschiges Monitoring.');
+        }
+
+        // Beatmung + Zielwerte
+        lines.push('');
+        lines.push('<strong>Zielwerte Post-ROSC:</strong>');
+        lines.push('SpO\u2082 94–98% (Hyperoxie vermeiden!), pCO\u2082 35–45 mmHg (Normoventilation!)');
+        lines.push('MAP &ge;65 mmHg (ggf. Noradrenalin), Laktat-Clearance verfolgen');
+        lines.push('BZ 140–180 mg/dl, Kalium 4,0–4,5 mmol/l, Krampfprophylaxe bei Myoklonien (Levetiracetam)');
+
+        // Neuroprognostik-Hinweis
+        if (gcs === 'koma') {
+          lines.push('');
+          lines.push(this.ampel('orange', 'Neuroprognostik') + ' Fruehestens <strong>72h nach ROSC</strong> (nach Ende TTM + Rewarming). Multimodal: Pupillen + SSEP + NSE + EEG + Bildgebung.');
+        }
+
+        el.style.background = gcs === 'koma' ? 'var(--orange-bg)' : 'var(--green-bg)';
+        el.style.color = gcs === 'koma' ? 'var(--orange)' : 'var(--green)';
+        el.innerHTML = lines.join('<br>');
+      },
 
       /* === EDWARDS HAEMODYNAMIK === */
 
