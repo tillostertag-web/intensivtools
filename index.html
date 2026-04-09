@@ -508,9 +508,12 @@
       <!-- A) qSOFA-Screening -->
       <div class="card">
         <h2>A) qSOFA-Screening</h2>
-        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
-          Quick-SOFA: Bedside-Screening bei V.a. Infektion (Sepsis-3)
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px;">
+          Quick-SOFA: Bedside-Screening bei V.a. Infektion. Entwickelt als Triage-Tool fuer Patienten <strong>ausserhalb der ICU</strong> (Notaufnahme, Normalstation). Validiert in Sepsis-3 (Singer et al., JAMA 2016).
         </p>
+        <div class="hinweis hinweis-warnung" style="margin-bottom: 12px;">
+          <strong>Wichtig:</strong> qSOFA ist ein <strong>Screening</strong>-Tool, KEINE diagnostische Definition. Sensitivitaet nur ~50% — ein negativer qSOFA schliesst Sepsis NICHT aus! Bei klinischem Verdacht immer SOFA-Score erheben, unabhaengig vom qSOFA.
+        </div>
         <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
           <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
             <input type="checkbox" id="qsofa-rr" onchange="IntensivTools.calcQSOFA()">
@@ -529,29 +532,40 @@
           qSOFA: 0/3 — <span class="ampel ampel-gruen">Kein Hinweis</span>
         </div>
         <div class="score-card" style="margin-top: 12px;">
-          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; qSOFA — Bewertung anzeigen</div>
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; qSOFA — Bewertung &amp; Konsequenz</div>
           <div class="score-body hidden">
             <table>
               <tr><th>Score</th><th>Bewertung</th><th>Konsequenz</th></tr>
-              <tr><td>0–1</td><td><span class="ampel ampel-gruen">Niedrig</span></td><td>Kein Sepsis-Verdacht allein durch qSOFA</td></tr>
-              <tr><td>2–3</td><td><span class="ampel ampel-rot">Hoch</span></td><td>Sepsis-Verdacht &rarr; SOFA-Score pruefen</td></tr>
+              <tr><td>0–1</td><td><span class="ampel ampel-gruen">Niedrig</span></td><td>Kein erhoehtes Risiko allein durch qSOFA — klinischen Verdacht separat bewerten</td></tr>
+              <tr><td>2–3</td><td><span class="ampel ampel-rot">Hoch</span></td><td>Sepsis-Verdacht &rarr; SOFA-Score erheben, Laktat abnehmen, Blutkulturen!</td></tr>
             </table>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
-              Hinweis: qSOFA ist ein Screening-Tool, kein diagnostisches Kriterium. Bei Verdacht immer SOFA-Score erheben.
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
+              <strong>Pathophysiologie der 3 Kriterien:</strong>
+            </p>
+            <ul style="padding-left: 16px; font-size: 0.82rem; color: var(--text-muted);">
+              <li><strong>RR &le;100:</strong> Vasodilatation (NO-vermittelt) + relative Hypovolaemie + myokardiale Depression &rarr; distributiver Schock</li>
+              <li><strong>AF &ge;22:</strong> Metabolische Azidose (Laktat) + pulmonale Kompensation + direkte Lungenschaedigung &rarr; Tachypnoe als fruehes Warnsignal</li>
+              <li><strong>GCS &lt;15:</strong> Sepsis-assoziierte Enzephalopathie durch Mikrozirkulationsstoerung, Zytokine, Blut-Hirn-Schranken-Stoerung</li>
+            </ul>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
+              <strong>Limitationen:</strong> Bei ICU-Patienten ist qSOFA weniger aussagekraeftig (oft bereits sediert, beatmet, unter Katecholaminen). Hier direkt SOFA verwenden.
             </p>
           </div>
         </div>
       </div>
 
-      <!-- B) SOFA-Score (vereinfacht) -->
+      <!-- B) SOFA-Score -->
       <div class="card">
-        <h2>B) SOFA-Score (vereinfacht)</h2>
-        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
-          Sequential Organ Failure Assessment — 6 Organsysteme, je 0–4 Punkte. Sepsis = SOFA &ge;2 ueber Baseline + Infektionsverdacht.
+        <h2>B) SOFA-Score — Organdysfunktion quantifizieren</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px;">
+          Sequential Organ Failure Assessment (Vincent et al., Crit Care Med 1996). Misst den Grad der Organdysfunktion in 6 Systemen. <strong>Sepsis-3-Definition:</strong> Sepsis = Infektionsverdacht + akuter SOFA-Anstieg &ge;2 Punkte ueber Baseline.
         </p>
+        <div class="hinweis hinweis-info" style="margin-bottom: 12px;">
+          <strong>Warum SOFA und nicht SIRS?</strong> Die alten SIRS-Kriterien (Temperatur, Puls, AF, Leukozyten) sind zu unspezifisch — sie treffen auf &gt;50% aller ICU-Patienten zu, auch ohne Infektion. SOFA misst gezielt Organversagen und korreliert deutlich besser mit Mortalitaet (AUROC 0,74 vs. 0,61 fuer SIRS).
+        </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
           <div class="input-group">
-            <label>Respiration (PaO2/FiO2)</label>
+            <label>Respiration (PaO&#8322;/FiO&#8322;)</label>
             <select id="sofa-resp" onchange="IntensivTools.calcSOFA()">
               <option value="0">&ge;400 (0 Pkt)</option>
               <option value="1">300–399 (1 Pkt)</option>
@@ -612,19 +626,70 @@
           </div>
         </div>
         <div class="input-group" style="margin-top: 8px;">
-          <label>SOFA-Baseline (bekannter Vorscore, Standard: 0)</label>
+          <label>SOFA-Baseline (bekannter Vorscore, Standard: 0 bei unbekannt)</label>
           <input type="number" id="sofa-baseline" value="0" min="0" max="24" onchange="IntensivTools.calcSOFA()">
         </div>
         <div id="sofa-ergebnis" class="ergebnis" style="background: var(--green-bg); color: var(--green);">
           SOFA: 0/24 (Delta: 0) — <span class="ampel ampel-gruen">Kein Organversagen</span>
         </div>
+
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; SOFA — Pathophysiologie der 6 Organsysteme</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <table>
+              <tr><th>Organ</th><th>Was wird gemessen</th><th>Pathomechanismus bei Sepsis</th><th>Klinische Bedeutung</th></tr>
+              <tr>
+                <td><strong>Lunge</strong><br>PaO&#8322;/FiO&#8322;</td>
+                <td>Gasaustausch-Effizienz</td>
+                <td>Kapillarleck &rarr; interstitielles Oedem &rarr; Diffusionsstoerung. Surfactant-Schaden &rarr; Atelektasen. Neutrophilen-Infiltration.</td>
+                <td>PF &lt;300 = ALI-Kriterium; &lt;200 = ARDS. Frueher Indikator fuer Organversagen.</td>
+              </tr>
+              <tr>
+                <td><strong>Gerinnung</strong><br>Thrombozyten</td>
+                <td>Verbrauchskoagulopathie</td>
+                <td>Endothel-Aktivierung &rarr; Tissue Factor &rarr; Thrombingeneration &rarr; Mikrothrombosen + Thrombozyten-Verbrauch &rarr; DIC</td>
+                <td>Abfall &gt;30% in 24h ist alarmierend, auch wenn Absolutwert noch &gt;100.</td>
+              </tr>
+              <tr>
+                <td><strong>Leber</strong><br>Bilirubin</td>
+                <td>Hepatozytaere Dysfunktion + Cholestase</td>
+                <td>Mikrozirkulationsstoerung &rarr; ischaemische Hepatitis. Zytokin-vermittelte Cholestase. Hypoxische Schaden bei Schock.</td>
+                <td>Spaeter Marker; Anstieg oft erst nach 24–48h. Cave: haemalytische Ursachen ausschliessen.</td>
+              </tr>
+              <tr>
+                <td><strong>Kreislauf</strong><br>MAP / Vasopressoren</td>
+                <td>Haemodynamische Stabilitaet</td>
+                <td>NO-vermittelte Vasodilatation &rarr; SVR&darr;&darr;. Myokardiale Depression (TNF-&alpha;, IL-1). Relative + absolute Hypovolaemie durch Kapillarleck.</td>
+                <td>Vasopressorbedarf = hoher SOFA-Kreislauf-Score, auch bei „normalem" MAP.</td>
+              </tr>
+              <tr>
+                <td><strong>ZNS</strong><br>GCS</td>
+                <td>Enzephalopathie</td>
+                <td>Sepsis-assoziierte Enzephalopathie: Mikrozirkulationsstoerung, Blut-Hirn-Schranken-Stoerung, Neurotransmitter-Dysbalance, Zytokine.</td>
+                <td>Cave bei Sedierung: GCS nicht verwertbar unter Sedierung! Sedierungspause fuer valide Beurteilung.</td>
+              </tr>
+              <tr>
+                <td><strong>Niere</strong><br>Kreatinin / Diurese</td>
+                <td>Renale Perfusion &amp; Funktion</td>
+                <td>Renale Vasokonstriktion (paradox bei systemischer Vasodilatation!), tubulaere Nekrose, Mikrothrombosen. Praerenale Komponente durch Hypovolaemie.</td>
+                <td>Kreatinin steigt verzoegert (12–24h). Oligurie ist frueherer Marker!</td>
+              </tr>
+            </table>
+            <p style="margin-top: 8px;"><strong>SOFA-Mortalitaet (Richtwerte):</strong></p>
+            <table>
+              <tr><th>SOFA</th><td>0–6</td><td>7–9</td><td>10–12</td><td>13–14</td><td>15–24</td></tr>
+              <tr><th>Mortalitaet</th><td>&lt;10%</td><td>15–20%</td><td>40–50%</td><td>50–60%</td><td>&gt;80%</td></tr>
+            </table>
+            <p style="margin-top: 4px; font-size: 0.8rem; color: var(--text-muted);">SOFA-Trend ist wichtiger als Absolutwert: steigender SOFA ueber 48h hat schlechtere Prognose als konstant hoher Initialwert.</p>
+          </div>
+        </div>
       </div>
 
-      <!-- C) Klassifikation -->
+      <!-- C) Sepsis-Klassifikation -->
       <div class="card">
-        <h2>C) Sepsis-Klassifikation</h2>
-        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
-          Automatische Einstufung basierend auf qSOFA, SOFA und klinischen Kriterien.
+        <h2>C) Sepsis-Klassifikation (Sepsis-3)</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px;">
+          Stufenweise Einstufung nach Sepsis-3-Definition (Singer et al., JAMA 2016; SSC 2021). Die Klassifikation bestimmt die Dringlichkeit der Therapie.
         </p>
         <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
           <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
@@ -633,7 +698,7 @@
           </label>
           <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
             <input type="checkbox" id="class-vasopressor" onchange="IntensivTools.calcKlassifikation()">
-            Vasopressorbedarf (MAP &lt;65 trotz Volumengabe)
+            Vasopressorbedarf (MAP &lt;65 trotz adaequater Volumengabe &ge;30 ml/kg)
           </label>
           <div class="input-group" style="max-width: 280px;">
             <label>Laktat (mmol/l)</label>
@@ -642,6 +707,46 @@
         </div>
         <div id="class-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
           Bitte Kriterien oben angeben
+        </div>
+
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Sepsis-3 Definitionen im Detail</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <table>
+              <tr><th>Stufe</th><th>Definition</th><th>Kriterien</th><th>Mortalitaet</th></tr>
+              <tr>
+                <td><span class="ampel ampel-gelb">Infektion</span></td>
+                <td>Vermutete oder nachgewiesene Infektion ohne Organversagen</td>
+                <td>Klinischer Verdacht (Fokus, Fieber, Leukozyten) ohne SOFA-Anstieg &ge;2</td>
+                <td>&lt;5%</td>
+              </tr>
+              <tr>
+                <td><span class="ampel ampel-orange">Sepsis</span></td>
+                <td>Lebensbedrohliche Organdysfunktion durch fehlregulierte Wirtsantwort auf Infektion</td>
+                <td>Infektion + SOFA-Anstieg &ge;2 ueber Baseline</td>
+                <td>~10–20%</td>
+              </tr>
+              <tr>
+                <td><span class="ampel ampel-rot">Sept. Schock</span></td>
+                <td>Sepsis mit zirkulatorischem und metabolischem Versagen</td>
+                <td>Sepsis + Vasopressorbedarf fuer MAP &ge;65 + Laktat &gt;2 mmol/l <strong>trotz adaequater Volumengabe</strong></td>
+                <td>&gt;40%</td>
+              </tr>
+            </table>
+            <p style="margin-top: 8px;"><strong>Pathophysiologie des septischen Schocks:</strong></p>
+            <ul style="padding-left: 16px;">
+              <li><strong>Makrozirkulation:</strong> SVR&darr;&darr; (NO, Prostaglandine) &rarr; distributiver Schock, trotz initial erhaltener/erhoehter CO</li>
+              <li><strong>Mikrozirkulation:</strong> Endothelschaden &rarr; Kapillarleck, Oedembildung, Mikrothrombosen &rarr; Sauerstoffschuld trotz „normaler" globaler Haemodynamik</li>
+              <li><strong>Mitochondriale Dysfunktion:</strong> Zytopathische Hypoxie — Zellen koennen O&#8322; nicht verwerten, auch bei adaequater Lieferung</li>
+              <li><strong>Laktat:</strong> Nicht nur Hypoxie-Marker! Auch aerobe Laktatproduktion durch Katecholamin-getriebene Na/K-ATPase-Stimulation und hepatische Clearance-Reduktion</li>
+            </ul>
+            <p style="margin-top: 8px;"><strong>Warum Laktat &gt;2 + Vasopressorbedarf?</strong></p>
+            <p>Die Kombination identifiziert Patienten mit <strong>zellulaerer Dysfunktion</strong> (Laktat) UND <strong>vasomotorischem Versagen</strong> (Vasopressor). Beide zusammen = Mortalitaet &gt;40%, vs. ~25% mit nur einem der beiden Kriterien.</p>
+          </div>
+        </div>
+
+        <div class="hinweis hinweis-warnung" style="margin-top: 12px;">
+          <strong>Fruehe Sepsis erkennen — klinische Red Flags:</strong> Neue Verwirrtheit, unerklarte Tachykardie/-pnoe, Oligurie, marmorierte Haut, verlaengerte Rekapillarisierungszeit (&gt;3s), fallender Trend in MAP/ScvO&#8322;. Bei diesen Zeichen: Laktat + SOFA SOFORT, nicht auf Laborroutine warten!
         </div>
       </div>
 
