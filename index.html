@@ -123,20 +123,61 @@
       display: block;
     }
 
-    /* === CARDS === */
+    /* === CARDS (collapsible) === */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 20px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
+      overflow: hidden;
     }
 
     .card h2 {
-      font-size: 1.1rem;
-      margin-bottom: 12px;
+      font-size: 1rem;
       color: var(--accent);
+      padding: 14px 20px;
+      margin: 0;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px solid transparent;
+      transition: background 0.15s;
+    }
+
+    .card h2:hover {
+      background: var(--accent-light);
+    }
+
+    .card h2::after {
+      content: '\25BC';
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .card.collapsed h2::after {
+      transform: rotate(-90deg);
+    }
+
+    .card.collapsed h2 {
+      border-bottom: none;
+    }
+
+    .card h2 + *, .card-body {
+      /* handled by JS */
+    }
+
+    .card-body {
+      padding: 16px 20px;
+    }
+
+    .card.collapsed .card-body {
+      display: none;
     }
 
     .card h3 {
@@ -469,6 +510,15 @@
 
       th {
         white-space: normal;
+      }
+
+      .card h2 {
+        padding: 12px 14px;
+        font-size: 0.92rem;
+      }
+
+      .card-body {
+        padding: 12px 14px;
       }
 
       .card {
@@ -4282,8 +4332,30 @@
         document.querySelectorAll('#rrt-checklist input[type="checkbox"]').forEach(function(c) {
           c.addEventListener('change', function() { self.updateRRTStatus(); });
         });
+        // Cards einklappbar machen
+        document.querySelectorAll('.card').forEach(function(card) {
+          var h2 = card.querySelector('h2');
+          if (!h2) return;
+          // Wrap alles nach h2 in .card-body
+          var body = document.createElement('div');
+          body.className = 'card-body';
+          var sibling = h2.nextSibling;
+          while (sibling) {
+            var next = sibling.nextSibling;
+            body.appendChild(sibling);
+            sibling = next;
+          }
+          card.appendChild(body);
+          // Standard: eingeklappt
+          card.classList.add('collapsed');
+          // Click-Handler
+          h2.addEventListener('click', function() {
+            card.classList.toggle('collapsed');
+          });
+        });
+
         // Breite Tabellen in scrollbare Container wickeln
-        document.querySelectorAll('.card table, .score-body table').forEach(function(t) {
+        document.querySelectorAll('.card-body table, .score-body table').forEach(function(t) {
           var firstRow = t.querySelector('tr');
           if (firstRow && firstRow.children.length >= 4) {
             if (!t.parentElement.classList.contains('table-wrap')) {
