@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IntensivScan1 — Sepsis · ARDS · AKI</title>
+  <style>
+    /* === DESIGN TOKENS === */
+    :root {
+      --bg: #f4f6f9;
+      --surface: #ffffff;
+      --border: #dde2ea;
+      --text: #1a2130;
+      --text-muted: #5a6476;
+      --accent: #1a5fa8;
+      --accent-light: #e8f0fb;
+
+      /* Ampel */
+      --green: #1a7a4a;    --green-bg: #eaf6f0;
+      --yellow: #8a6200;   --yellow-bg: #fef8e7;
+      --orange: #b84a00;   --orange-bg: #fff1e8;
+      --red: #b71c1c;      --red-bg: #fdecea;
+
+      --radius: 8px;
+      --shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    /* === RESET === */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-width: 320px;
+    }
+
+    /* === LAYOUT === */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 16px 32px;
+    }
+
+    /* === HEADER === */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    header .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    header .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    header .badge {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: var(--accent-light);
+      padding: 2px 10px;
+      border-radius: 12px;
+    }
+
+    /* === TAB-BAR === */
+    .tab-bar {
+      display: flex;
+      gap: 0;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 16px;
+      background: var(--surface);
+      border-bottom: 2px solid var(--border);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px 8px;
+      border: none;
+      background: transparent;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: var(--accent);
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* === TAB PANELS === */
+    .tab-panel {
+      display: none;
+      padding-top: 20px;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* === CARDS === */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    /* === AMPEL === */
+    .ampel {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .ampel-gruen {
+      color: var(--green);
+      background: var(--green-bg);
+    }
+
+    .ampel-gelb {
+      color: var(--yellow);
+      background: var(--yellow-bg);
+    }
+
+    .ampel-orange {
+      color: var(--orange);
+      background: var(--orange-bg);
+    }
+
+    .ampel-rot {
+      color: var(--red);
+      background: var(--red-bg);
+    }
+
+    /* === SCORE-KARTEN === */
+    .score-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .score-header {
+      padding: 10px 16px;
+      background: var(--accent-light);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      user-select: none;
+      color: var(--accent);
+    }
+
+    .score-header:hover {
+      background: #d6e6f8;
+    }
+
+    .score-body {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* === INPUTS === */
+    .input-group {
+      margin-bottom: 12px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      color: var(--text);
+      background: var(--surface);
+      transition: border-color 0.2s;
+    }
+
+    .input-group input:focus,
+    .input-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(26, 95, 168, 0.12);
+    }
+
+    /* === BUTTONS === */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #15508e;
+    }
+
+    .export-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .export-btn:hover {
+      background: #d6e6f8;
+    }
+
+    /* === HINWEIS-BOX === */
+    .hinweis {
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+      border-left: 4px solid;
+    }
+
+    .hinweis-info {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .hinweis-warnung {
+      background: var(--yellow-bg);
+      border-color: var(--yellow);
+      color: var(--yellow);
+    }
+
+    .hinweis-kritisch {
+      background: var(--red-bg);
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    /* === CHECKLISTE === */
+    .checklist {
+      list-style: none;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 6px 0;
+      font-size: 0.9rem;
+    }
+
+    .checklist input[type="checkbox"] {
+      margin-top: 4px;
+      accent-color: var(--accent);
+    }
+
+    /* === TOAST === */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      z-index: 9999;
+      animation: toastIn 0.3s ease, toastOut 0.3s ease 2.2s;
+      opacity: 1;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateX(-50%) translateY(0); }
+      to   { opacity: 0; transform: translateX(-50%) translateY(12px); }
+    }
+
+    /* === ERGEBNIS-BOX === */
+    .ergebnis {
+      padding: 16px;
+      border-radius: var(--radius);
+      margin-top: 12px;
+      font-weight: 600;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    /* === TABELLE === */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+    }
+
+    th, td {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+
+    th {
+      background: var(--accent-light);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* === PRINT === */
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      header .badge,
+      .tab-bar,
+      .export-btn,
+      .toast {
+        display: none !important;
+      }
+
+      .tab-panel {
+        display: block !important;
+        page-break-inside: avoid;
+      }
+
+      .tab-panel:not(.active) {
+        display: none !important;
+      }
+
+      .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        break-inside: avoid;
+      }
+
+      main {
+        max-width: 100%;
+      }
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 600px) {
+      header {
+        padding: 12px 16px;
+      }
+
+      header .logo {
+        font-size: 1.25rem;
+      }
+
+      .tab-btn {
+        font-size: 0.82rem;
+        padding: 10px 4px;
+      }
+
+      .card {
+        padding: 14px;
+      }
+
+      main {
+        padding: 0 10px 24px;
+      }
+
+      .tab-bar {
+        padding: 0 10px;
+      }
+    }
+
+    /* === FOOTER === */
+    footer.disclaimer {
+      max-width: 960px;
+      margin: 16px auto 32px;
+      padding: 16px 20px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+      border-top: 1px solid var(--border);
+      line-height: 1.5;
+    }
+
+    footer.disclaimer .quellen {
+      margin-bottom: 10px;
+      text-align: left;
+      font-size: 0.72rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">IntensivTools</div>
+    <div class="subtitle">Klinische Entscheidungsunterstutzung · Intensivmedizin</div>
+    <div class="badge">v1.0 · Leitlinienstand 2024</div>
+  </header>
+
+  <!-- TAB-BAR -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="IntensivTools.showTab('sepsis', this)">Sepsis</button>
+    <button class="tab-btn" onclick="IntensivTools.showTab('ards', this)">ARDS</button>
+    <button class="tab-btn" onclick="IntensivTools.showTab('aki', this)">AKI</button>
+  </div>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- TAB: SEPSIS START -->
+    <div id="sepsis" class="tab-panel active">
+      <div class="card">
+        <h2>SepsisScan</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Screening, Klassifikation und Management nach SSC 2021 / Sepsis-3.
+        </p>
+      </div>
+      <div class="hinweis hinweis-info">
+        <strong>Leitlinie:</strong> Surviving Sepsis Campaign 2021 · DGAI/DIVI · Sepsis-3
+      </div>
+      <!-- Klinischer Inhalt folgt in Phase 2 -->
+    </div>
+    <!-- TAB: SEPSIS END -->
+
+    <!-- TAB: ARDS START -->
+    <div id="ards" class="tab-panel">
+      <div class="card">
+        <h2>ARDSScan</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Berlin-Klassifikation, Beatmungsziele und Rescue-Therapien.
+        </p>
+      </div>
+      <div class="hinweis hinweis-info">
+        <strong>Leitlinie:</strong> Berlin-Definition 2012 · ARDSNet · ATS/ERS/ESICM 2017
+      </div>
+      <!-- Klinischer Inhalt folgt in Phase 3 -->
+    </div>
+    <!-- TAB: ARDS END -->
+
+    <!-- TAB: AKI START -->
+    <div id="aki" class="tab-panel">
+      <div class="card">
+        <h2>AKIScan</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          KDIGO-Staging, RRT-Indikationen und Flussigkeitsmanagement.
+        </p>
+      </div>
+      <div class="hinweis hinweis-info">
+        <strong>Leitlinie:</strong> KDIGO AKI 2012 · KDIGO AKD 2020
+      </div>
+      <!-- Klinischer Inhalt folgt in Phase 4 -->
+    </div>
+    <!-- TAB: AKI END -->
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="disclaimer">
+    <div class="quellen">
+      Quellen: Surviving Sepsis Campaign 2021 (Evans et al., Crit Care Med 2021) ·
+      ARDS Berlin Definition (JAMA 2012); ARDSNet Protocol 2000 ·
+      KDIGO Clinical Practice Guideline for Acute Kidney Injury 2012; AKD 2020
+    </div>
+    IntensivTools unterstutzt klinische Entscheidungen — ersetzt nicht die arztliche Beurteilung.
+    Alle Empfehlungen basieren auf den zitierten Leitlinien. Keine Haftung fur Therapieentscheidungen.
+    Fur den Einsatz als Medizinprodukt (EU MDR) ist eine Konformitatsbewertung erforderlich.
+  </footer>
+
+  <script>
+    /* === IntensivTools Core === */
+    const IntensivTools = {
+
+      /* --- Tab-Navigation --- */
+      showTab(tabId, btn) {
+        document.querySelectorAll('.tab-panel').forEach(function(p) {
+          p.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-btn').forEach(function(b) {
+          b.classList.remove('active');
+        });
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+      },
+
+      /* --- Ampel-Badge erzeugen --- */
+      ampel(level, label) {
+        // level: 'gruen' | 'gelb' | 'orange' | 'rot'
+        var defaultLabels = {
+          gruen: 'Normal',
+          gelb: 'Erhoht',
+          orange: 'Hoch',
+          rot: 'Kritisch'
+        };
+        var text = label || defaultLabels[level] || level;
+        return '<span class="ampel ampel-' + level + '">' + text + '</span>';
+      },
+
+      /* --- Score-Karte auf-/zuklappen --- */
+      toggleScore(header) {
+        var body = header.nextElementSibling;
+        body.classList.toggle('hidden');
+        if (header.textContent.trim().charAt(0) === '\u25B6') {
+          header.textContent = header.textContent.replace('\u25B6', '\u25BC');
+        } else {
+          header.textContent = header.textContent.replace('\u25BC', '\u25B6');
+        }
+      },
+
+      /* --- Befund-Text generieren (Platzhalter) --- */
+      generateBefundText(tab) {
+        var now = new Date();
+        var ts = now.toLocaleDateString('de-DE') + ' ' + now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+        return 'IntensivScan1 — ' + tab.toUpperCase() + '\nZeitstempel: ' + ts + '\n\n[Befunddaten werden in Phase 2–4 implementiert]';
+      },
+
+      /* --- Befund in Zwischenablage kopieren --- */
+      exportBefund(tab) {
+        var text = this.generateBefundText(tab);
+        navigator.clipboard.writeText(text).then(function() {
+          IntensivTools.showToast('Befund in Zwischenablage kopiert');
+        }).catch(function() {
+          IntensivTools.showToast('Kopieren fehlgeschlagen');
+        });
+      },
+
+      /* --- Toast-Benachrichtigung --- */
+      showToast(msg) {
+        var t = document.createElement('div');
+        t.className = 'toast';
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(function() { t.remove(); }, 2500);
+      }
+    };
+  </script>
+
+</body>
+</html>
