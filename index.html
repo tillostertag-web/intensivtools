@@ -2459,8 +2459,10 @@
 
       <!-- G) BGA-Interpreter -->
       <div class="card">
-        <h2>G) BGA-Interpreter</h2>
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+        <h2>G) BGA-Interpreter — Vollstaendige Blutgasanalyse</h2>
+
+        <h3>Saeurebase + Ventilation</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px;">
           <div class="input-group">
             <label>pH</label>
             <input type="number" id="bga-ph" min="6.5" max="7.8" step="0.01" placeholder="7.38" onchange="IntensivTools.calcBGA()">
@@ -2474,23 +2476,61 @@
             <input type="number" id="bga-hco3" min="2" max="50" step="0.1" placeholder="24" onchange="IntensivTools.calcBGA()">
           </div>
           <div class="input-group">
+            <label>BE (mmol/l)</label>
+            <input type="number" id="bga-be" min="-30" max="30" step="0.1" placeholder="0" onchange="IntensivTools.calcBGA()">
+          </div>
+        </div>
+
+        <h3 style="margin-top: 12px;">Oxygenierung</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>PaO&#8322; (mmHg)</label>
+            <input type="number" id="bga-pao2" min="20" max="600" step="1" placeholder="90" onchange="IntensivTools.calcBGA()">
+          </div>
+          <div class="input-group">
+            <label>FiO&#8322;</label>
+            <input type="number" id="bga-fio2" min="0.21" max="1.0" step="0.01" placeholder="0.21" onchange="IntensivTools.calcBGA()">
+          </div>
+          <div class="input-group">
+            <label>Hb (g/dl)</label>
+            <input type="number" id="bga-hb" min="2" max="25" step="0.1" placeholder="13" onchange="IntensivTools.calcBGA()">
+          </div>
+        </div>
+
+        <h3 style="margin-top: 12px;">Elektrolyte + Metabolik</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px;">
+          <div class="input-group">
             <label>Na&#8314; (mmol/l)</label>
             <input type="number" id="bga-na" min="100" max="180" step="1" placeholder="140" onchange="IntensivTools.calcBGA()">
+          </div>
+          <div class="input-group">
+            <label>K&#8314; (mmol/l)</label>
+            <input type="number" id="bga-k" min="1" max="10" step="0.1" placeholder="4.2" onchange="IntensivTools.calcBGA()">
           </div>
           <div class="input-group">
             <label>Cl&#8315; (mmol/l)</label>
             <input type="number" id="bga-cl" min="70" max="130" step="1" placeholder="105" onchange="IntensivTools.calcBGA()">
           </div>
           <div class="input-group">
-            <label>Albumin (g/dl)</label>
-            <input type="number" id="bga-alb" min="0.5" max="6" step="0.1" placeholder="3.5" onchange="IntensivTools.calcBGA()">
+            <label>Ca&#178;&#8314; (mmol/l)</label>
+            <input type="number" id="bga-ca" min="0.5" max="2" step="0.01" placeholder="1.15" onchange="IntensivTools.calcBGA()">
+          </div>
+          <div class="input-group">
+            <label>Glucose (mg/dl)</label>
+            <input type="number" id="bga-glu" min="10" max="1000" step="1" placeholder="110" onchange="IntensivTools.calcBGA()">
           </div>
           <div class="input-group">
             <label>Laktat (mmol/l)</label>
             <input type="number" id="bga-lak" min="0" max="30" step="0.1" placeholder="1.2" onchange="IntensivTools.calcBGA()">
           </div>
+          <div class="input-group">
+            <label>Albumin (g/dl)</label>
+            <input type="number" id="bga-alb" min="0.5" max="6" step="0.1" placeholder="3.5" onchange="IntensivTools.calcBGA()">
+          </div>
         </div>
-        <div id="bga-ergebnis" style="margin-top: 12px;"></div>
+
+        <div id="bga-ergebnis" style="margin-top: 16px;"></div>
+        <div id="bga-zusammenfassung" class="ergebnis" style="background: var(--bg); color: var(--text-muted); margin-top: 8px; text-align: left; font-weight: normal; font-size: 0.88rem;"></div>
       </div>
 
       <!-- Export -->
@@ -3728,99 +3768,229 @@
         var ph = parseFloat(document.getElementById('bga-ph').value);
         var pco2 = parseFloat(document.getElementById('bga-pco2').value);
         var hco3 = parseFloat(document.getElementById('bga-hco3').value);
+        var be = parseFloat(document.getElementById('bga-be').value);
+        var pao2 = parseFloat(document.getElementById('bga-pao2').value);
+        var fio2 = parseFloat(document.getElementById('bga-fio2').value);
+        var hb = parseFloat(document.getElementById('bga-hb').value);
         var na = parseFloat(document.getElementById('bga-na').value);
+        var k = parseFloat(document.getElementById('bga-k').value);
         var cl = parseFloat(document.getElementById('bga-cl').value);
-        var alb = parseFloat(document.getElementById('bga-alb').value);
+        var ca = parseFloat(document.getElementById('bga-ca').value);
+        var glu = parseFloat(document.getElementById('bga-glu').value);
         var lak = parseFloat(document.getElementById('bga-lak').value);
+        var alb = parseFloat(document.getElementById('bga-alb').value);
         var el = document.getElementById('bga-ergebnis');
+        var sumEl = document.getElementById('bga-zusammenfassung');
 
-        if (isNaN(ph) || isNaN(pco2) || isNaN(hco3)) { el.innerHTML = ''; return; }
+        if (isNaN(ph) || isNaN(pco2) || isNaN(hco3)) { el.innerHTML = ''; sumEl.innerHTML = ''; return; }
         var results = [];
+        var actions = [];
         var self = this;
 
-        // 1. Primaere Stoerung
+        // ====== 1. PRIMAERE STOERUNG ======
         var acidBase = '';
+        var abDetail = '';
         if (ph < 7.35) {
-          if (pco2 > 45 && hco3 <= 26) acidBase = 'Respiratorische Azidose';
-          else if (hco3 < 22) acidBase = 'Metabolische Azidose';
-          else if (pco2 > 45) acidBase = 'Respiratorische Azidose';
-          else acidBase = 'Metabolische Azidose';
+          if (pco2 > 45 && hco3 < 22) { acidBase = 'Gemischte Azidose (resp. + met.)'; abDetail = 'Beide Systeme gestoert — schwerste Form'; }
+          else if (pco2 > 45) { acidBase = 'Respiratorische Azidose'; abDetail = 'Hypoventilation / CO\u2082-Retention'; }
+          else if (hco3 < 22) { acidBase = 'Metabolische Azidose'; abDetail = 'Saeureproduktion \u2191 oder Bikarbonatverlust'; }
+          else { acidBase = 'Azidose (unklar)'; abDetail = 'Atypisch — gemischte Stoerung?'; }
         } else if (ph > 7.45) {
-          if (pco2 < 35) acidBase = 'Respiratorische Alkalose';
-          else if (hco3 > 26) acidBase = 'Metabolische Alkalose';
-          else acidBase = 'Respiratorische Alkalose';
+          if (pco2 < 35 && hco3 > 26) { acidBase = 'Gemischte Alkalose (resp. + met.)'; abDetail = 'Beide Systeme — Cave Hypokaliämie'; }
+          else if (pco2 < 35) { acidBase = 'Respiratorische Alkalose'; abDetail = 'Hyperventilation'; }
+          else if (hco3 > 26) { acidBase = 'Metabolische Alkalose'; abDetail = 'HCO\u2083-Retention / Saereverlust'; }
+          else { acidBase = 'Alkalose (unklar)'; abDetail = 'Atypisch'; }
         } else {
-          if (pco2 > 45 && hco3 > 26) acidBase = 'Kompensierte respiratorische Azidose';
-          else if (pco2 < 35 && hco3 < 22) acidBase = 'Kompensierte metabolische Azidose';
-          else if (hco3 > 26 && pco2 < 35) acidBase = 'Gemischte Stoerung (Alkalosen)';
+          if (pco2 > 45 && hco3 > 26) { acidBase = 'Kompensierte resp. Azidose'; abDetail = 'Chronisch? COPD?'; }
+          else if (pco2 < 35 && hco3 < 22) { acidBase = 'Kompensierte met. Azidose'; abDetail = 'Renale tubulaere Azidose? Chronische Diarrhoe?'; }
+          else if (pco2 > 45 && hco3 < 22) { acidBase = 'Gemischte Azidose (kompensiert)'; }
           else acidBase = 'Normal';
         }
 
-        var abLevel = ph < 7.35 || ph > 7.45 ? (ph < 7.2 || ph > 7.55 ? 'rot' : 'orange') : 'gruen';
-        results.push(self.ampel(abLevel, 'pH ' + ph.toFixed(2) + ' — ' + acidBase));
+        var phSev = ph < 7.1 ? 'Lebensbedrohlich!' : (ph < 7.2 ? 'Schwere Azidaemie' : (ph < 7.35 ? 'Azidaemie' : (ph > 7.55 ? 'Schwere Alkalaemie' : (ph > 7.45 ? 'Alkalaemie' : 'Normal'))));
+        var abLevel = ph < 7.2 || ph > 7.55 ? 'rot' : (ph < 7.35 || ph > 7.45 ? 'orange' : 'gruen');
+        results.push(self.ampel(abLevel, 'pH ' + ph.toFixed(2) + ' — ' + acidBase) + (abDetail ? ' <span style="font-size:0.82rem;">' + abDetail + '</span>' : ''));
+        if (ph < 7.2) actions.push('pH &lt;7,2: Ursache sofort klaeren! Bei met. Azidose: Bikarbonat erwaegen wenn pH &lt;7,1');
+        if (ph > 7.55) actions.push('pH &gt;7,55: Arrhythmiegefahr! Kalium pruefen, Ursache behandeln');
 
-        // 2. pCO2 Bewertung
-        if (pco2 > 45) results.push(self.ampel('orange', 'pCO\u2082 ' + pco2 + ' mmHg \u2191') + ' <span style="font-size:0.82rem;">Hyperkapnie — Hypoventilation / respiratorisches Versagen</span>');
-        else if (pco2 < 35) results.push(self.ampel('gelb', 'pCO\u2082 ' + pco2 + ' mmHg \u2193') + ' <span style="font-size:0.82rem;">Hypokapnie — Hyperventilation / respiratorische Kompensation</span>');
-        else results.push(self.ampel('gruen', 'pCO\u2082 ' + pco2 + ' mmHg') + ' <span style="font-size:0.82rem;">Normal</span>');
+        // ====== 2. pCO2 ======
+        if (pco2 > 60) { results.push(self.ampel('rot', 'pCO\u2082 ' + pco2 + ' mmHg \u2191\u2191') + ' <span style="font-size:0.82rem;">Schwere Hyperkapnie — Beatmung/NIV pruefen!</span>'); actions.push('pCO\u2082 &gt;60: NIV oder Beatmungseskalation'); }
+        else if (pco2 > 45) results.push(self.ampel('orange', 'pCO\u2082 ' + pco2 + ' mmHg \u2191') + ' <span style="font-size:0.82rem;">Hyperkapnie — Hypoventilation, COPD, Erschoepfung, Sedierung</span>');
+        else if (pco2 < 30) { results.push(self.ampel('orange', 'pCO\u2082 ' + pco2 + ' mmHg \u2193\u2193') + ' <span style="font-size:0.82rem;">Ausgepraegt hypokapnisch — zerebrale Vasokonstriktion!</span>'); actions.push('pCO\u2082 &lt;30: Cave zerebrale Ischaemie bei prolongierter Hyperventilation'); }
+        else if (pco2 < 35) results.push(self.ampel('gelb', 'pCO\u2082 ' + pco2 + ' mmHg \u2193') + ' <span style="font-size:0.82rem;">Hypokapnie — Kompensation oder Hyperventilation</span>');
+        else results.push(self.ampel('gruen', 'pCO\u2082 ' + pco2 + ' mmHg') + ' <span style="font-size:0.82rem;">Normal (35–45)</span>');
 
-        // 3. HCO3
-        if (hco3 < 22) results.push(self.ampel('orange', 'HCO\u2083\u207B ' + hco3 + ' mmol/l \u2193') + ' <span style="font-size:0.82rem;">Metabolische Azidose / renale Kompensation</span>');
+        // ====== 3. HCO3 + BE ======
+        if (hco3 < 18) results.push(self.ampel('rot', 'HCO\u2083\u207B ' + hco3 + ' mmol/l \u2193\u2193') + ' <span style="font-size:0.82rem;">Deutlich erniedrigt — schwere metabolische Azidose</span>');
+        else if (hco3 < 22) results.push(self.ampel('orange', 'HCO\u2083\u207B ' + hco3 + ' mmol/l \u2193') + ' <span style="font-size:0.82rem;">Metabolische Azidose / renale Kompensation</span>');
+        else if (hco3 > 30) results.push(self.ampel('orange', 'HCO\u2083\u207B ' + hco3 + ' mmol/l \u2191\u2191') + ' <span style="font-size:0.82rem;">Deutliche metabolische Alkalose — Volumen? Diuretika? Erbrechen?</span>');
         else if (hco3 > 26) results.push(self.ampel('gelb', 'HCO\u2083\u207B ' + hco3 + ' mmol/l \u2191') + ' <span style="font-size:0.82rem;">Metabolische Alkalose / renale Kompensation</span>');
-        else results.push(self.ampel('gruen', 'HCO\u2083\u207B ' + hco3 + ' mmol/l') + ' <span style="font-size:0.82rem;">Normal</span>');
+        else results.push(self.ampel('gruen', 'HCO\u2083\u207B ' + hco3 + ' mmol/l') + ' <span style="font-size:0.82rem;">Normal (22–26)</span>');
 
-        // 4. Erwartete Kompensation
-        if (ph < 7.35 && hco3 < 22) {
-          var expPco2 = (1.5 * hco3 + 8);
-          var komp = Math.abs(pco2 - expPco2) <= 2 ? 'Adaequat kompensiert' : (pco2 > expPco2 + 2 ? 'Zusaetzliche resp. Azidose!' : 'Zusaetzliche resp. Alkalose!');
-          var kompLevel = Math.abs(pco2 - expPco2) <= 2 ? 'gruen' : 'rot';
-          results.push(self.ampel(kompLevel, 'Kompensation: ' + komp) + ' <span style="font-size:0.82rem;">Erwartet pCO\u2082: ' + expPco2.toFixed(0) + ' mmHg (Winters-Formel), gemessen: ' + pco2 + '</span>');
-        }
-        if (ph > 7.45 && hco3 > 26) {
-          var expPco2Alk = 0.7 * hco3 + 21;
-          var kompAlk = Math.abs(pco2 - expPco2Alk) <= 2 ? 'Adaequat kompensiert' : (pco2 > expPco2Alk + 2 ? 'Zusaetzliche resp. Azidose!' : 'Zusaetzliche resp. Alkalose!');
-          var kompAlkLevel = Math.abs(pco2 - expPco2Alk) <= 2 ? 'gruen' : 'rot';
-          results.push(self.ampel(kompAlkLevel, 'Kompensation: ' + kompAlk) + ' <span style="font-size:0.82rem;">Erwartet pCO\u2082: ' + expPco2Alk.toFixed(0) + ' mmHg, gemessen: ' + pco2 + '</span>');
+        if (!isNaN(be)) {
+          if (be < -6) results.push(self.ampel('orange', 'BE ' + be.toFixed(1) + ' mmol/l') + ' <span style="font-size:0.82rem;">Basenueberschuss negativ — metabolische Azidose (nicht-respiratorisch)</span>');
+          else if (be > 6) results.push(self.ampel('gelb', 'BE +' + be.toFixed(1) + ' mmol/l') + ' <span style="font-size:0.82rem;">Basenexzess — metabolische Alkalose</span>');
+          else results.push(self.ampel('gruen', 'BE ' + (be >= 0 ? '+' : '') + be.toFixed(1) + ' mmol/l') + ' <span style="font-size:0.82rem;">Normal (-2 bis +2)</span>');
         }
 
-        // 5. Anionenluecke
-        if (!isNaN(na) && !isNaN(cl)) {
-          var ag = na - (cl + hco3);
-          ag = Math.round(ag * 10) / 10;
-          // Albumin-korrigiert
-          var agCorr = ag;
-          if (!isNaN(alb)) {
-            agCorr = ag + 2.5 * (4.0 - alb);
-            agCorr = Math.round(agCorr * 10) / 10;
+        // ====== 4. KOMPENSATION (alle 4 Stoerungen) ======
+        var kompText = '';
+        var expPco2, kompOK;
+        // Met. Azidose: Winters
+        if (hco3 < 22 && (ph < 7.35 || (ph <= 7.45 && pco2 < 40))) {
+          expPco2 = 1.5 * hco3 + 8;
+          kompOK = Math.abs(pco2 - expPco2) <= 2;
+          kompText = kompOK ? 'Adaequat kompensiert (Winters)' : (pco2 > expPco2 + 2 ? 'Unzureichend! Zusaetzliche resp. Azidose' : 'Ueberkompensiert! Zusaetzliche resp. Alkalose');
+          results.push(self.ampel(kompOK ? 'gruen' : 'rot', 'Kompensation: ' + kompText) + ' <span style="font-size:0.82rem;">Erwartet pCO\u2082: ' + expPco2.toFixed(0) + ' \u00b1 2 (Winters: 1,5 \u00d7 HCO\u2083 + 8), gemessen: ' + pco2 + '</span>');
+          if (!kompOK) actions.push('Kompensation inadaequat: Gemischte Stoerung — zweite Ursache suchen!');
+        }
+        // Met. Alkalose
+        if (hco3 > 26 && ph > 7.40) {
+          expPco2 = 0.7 * hco3 + 21;
+          kompOK = Math.abs(pco2 - expPco2) <= 5;
+          kompText = kompOK ? 'Adaequat kompensiert' : (pco2 > expPco2 + 5 ? 'Zusaetzliche resp. Azidose!' : 'Zusaetzliche resp. Alkalose!');
+          results.push(self.ampel(kompOK ? 'gruen' : 'orange', 'Kompensation: ' + kompText) + ' <span style="font-size:0.82rem;">Erwartet pCO\u2082: ' + expPco2.toFixed(0) + ' \u00b1 5 (0,7 \u00d7 HCO\u2083 + 21), gemessen: ' + pco2 + '</span>');
+        }
+        // Akute resp. Azidose: HCO3 steigt 1 pro 10 mmHg pCO2-Anstieg
+        if (pco2 > 45 && ph < 7.40) {
+          var expHco3Acute = 24 + (pco2 - 40) / 10;
+          var expHco3Chronic = 24 + 3.5 * (pco2 - 40) / 10;
+          if (hco3 <= expHco3Acute + 2) results.push(self.ampel('gelb', 'Resp. Azidose: akut') + ' <span style="font-size:0.82rem;">HCO\u2083 ' + hco3 + ' passt zu akuter Kompensation (erwartet ' + expHco3Acute.toFixed(0) + ')</span>');
+          else if (hco3 >= expHco3Chronic - 2) results.push(self.ampel('gelb', 'Resp. Azidose: chronisch') + ' <span style="font-size:0.82rem;">HCO\u2083 ' + hco3 + ' passt zu chronischer Kompensation (erwartet ' + expHco3Chronic.toFixed(0) + ') — COPD? Adipositas-Hypoventilation?</span>');
+          else results.push(self.ampel('orange', 'Resp. Azidose: Uebergang akut→chronisch') + ' <span style="font-size:0.82rem;">HCO\u2083 zwischen akut (' + expHco3Acute.toFixed(0) + ') und chronisch (' + expHco3Chronic.toFixed(0) + ')</span>');
+        }
+
+        // ====== 5. OXYGENIERUNG ======
+        if (!isNaN(pao2)) {
+          if (!isNaN(fio2) && fio2 > 0) {
+            var pfRatio = Math.round(pao2 / fio2);
+            if (pfRatio < 100) { results.push(self.ampel('rot', 'PaO\u2082/FiO\u2082 = ' + pfRatio) + ' <span style="font-size:0.82rem;">Schweres ARDS (&lt;100) — Rescue-Therapien pruefen</span>'); actions.push('PF-Ratio &lt;100: Bauchlage, Beatmung optimieren, ECMO erwaegen'); }
+            else if (pfRatio < 200) results.push(self.ampel('orange', 'PaO\u2082/FiO\u2082 = ' + pfRatio) + ' <span style="font-size:0.82rem;">Moderates ARDS (100–200)</span>');
+            else if (pfRatio < 300) results.push(self.ampel('gelb', 'PaO\u2082/FiO\u2082 = ' + pfRatio) + ' <span style="font-size:0.82rem;">Mildes ARDS (200–300)</span>');
+            else results.push(self.ampel('gruen', 'PaO\u2082/FiO\u2082 = ' + pfRatio) + ' <span style="font-size:0.82rem;">Kein ARDS (&gt;300)</span>');
+
+            // AaDO2
+            var pAlvO2 = (fio2 * (760 - 47)) - (pco2 / 0.8);
+            var aado2 = Math.round(pAlvO2 - pao2);
+            var aado2Normal = Math.round(2.5 + 0.21 * 40); // ~11 fuer 40-Jaehrigen, vereinfacht
+            if (aado2 > 20) results.push(self.ampel('orange', 'AaDO\u2082 = ' + aado2 + ' mmHg \u2191') + ' <span style="font-size:0.82rem;">Erhoht (normal &lt;15 bei Raumluft) — Shunt, V/Q-Mismatch, Diffusionsstoerung</span>');
+            else if (aado2 >= 0) results.push(self.ampel('gruen', 'AaDO\u2082 = ' + aado2 + ' mmHg') + ' <span style="font-size:0.82rem;">Normal — Gasaustausch intakt (Hypoventilation wenn pO\u2082\u2193)</span>');
           }
-          var agLevel = agCorr > 12 ? 'rot' : 'gruen';
-          results.push(self.ampel(agLevel, 'Anionenluecke: ' + ag + ' mmol/l' + (!isNaN(alb) ? ' (korrigiert: ' + agCorr + ')' : '')) +
-            (agCorr > 12 ? ' <span style="font-size:0.82rem;">Erhoht — DD: Laktat, Ketoazidose, Uraemie, Intoxikation (Methanol, Ethylenglykol, Salicylate)</span>' : ' <span style="font-size:0.82rem;">Normal</span>'));
+          // PaO2 absolut
+          if (pao2 < 55) { results.push(self.ampel('rot', 'PaO\u2082 ' + pao2 + ' mmHg \u2193\u2193') + ' <span style="font-size:0.82rem;">Schwere Hypoxaemie — O\u2082-Therapie/Beatmung!</span>'); actions.push('PaO\u2082 &lt;55: Sauerstoff eskalieren, Beatmung erwaegen'); }
+          else if (pao2 < 60) results.push(self.ampel('orange', 'PaO\u2082 ' + pao2 + ' mmHg \u2193') + ' <span style="font-size:0.82rem;">Hypoxaemie — O\u2082-Therapie noetig</span>');
+          else if (pao2 > 100 && !isNaN(fio2) && fio2 > 0.21) results.push(self.ampel('gelb', 'PaO\u2082 ' + pao2 + ' mmHg') + ' <span style="font-size:0.82rem;">Hyperoxie bei FiO\u2082 ' + fio2 + ' — FiO\u2082 reduzieren (Ziel SpO\u2082 94–98%)</span>');
+          else results.push(self.ampel('gruen', 'PaO\u2082 ' + pao2 + ' mmHg') + ' <span style="font-size:0.82rem;">Adaequat</span>');
+        }
 
-          // 6. Delta-Delta-Ratio
-          if (agCorr > 12 && hco3 < 24) {
+        // ====== 6. ANIONENLUECKE + DELTA-DELTA + SID ======
+        var agCorr = null;
+        if (!isNaN(na) && !isNaN(cl)) {
+          var ag = Math.round((na - (cl + hco3)) * 10) / 10;
+          agCorr = ag;
+          if (!isNaN(alb)) { agCorr = Math.round((ag + 2.5 * (4.0 - alb)) * 10) / 10; }
+          var agLevel = agCorr > 12 ? 'rot' : 'gruen';
+          var agDD = '';
+          if (agCorr > 12) {
+            agDD = ' DD: ';
+            var ddItems = [];
+            if (!isNaN(lak) && lak > 2) ddItems.push('<strong>Laktatazidose</strong>');
+            else ddItems.push('Laktat?');
+            ddItems.push('Ketoazidose (DKA, Alkohol, Hunger)');
+            ddItems.push('Uraemie');
+            ddItems.push('Intoxikation (Methanol, Ethylenglykol, Salicylate)');
+            agDD += ddItems.join(', ');
+          }
+          results.push(self.ampel(agLevel, 'Anionenluecke: ' + ag + (!isNaN(alb) ? ' (Alb-korr: ' + agCorr + ')' : '') + ' mmol/l') +
+            (agCorr > 12 ? ' <span style="font-size:0.82rem;">\u2191 Erhoht — ' + agDD + '</span>' : ' <span style="font-size:0.82rem;">Normal (\u226412)</span>'));
+
+          // Delta-Delta-Ratio
+          if (agCorr > 12) {
             var deltaAG = agCorr - 12;
             var deltaHCO3 = 24 - hco3;
-            var deltaRatio = deltaHCO3 > 0 ? Math.round(deltaAG / deltaHCO3 * 10) / 10 : 0;
-            var drText = '';
-            var drLevel = 'gruen';
-            if (deltaRatio < 1) { drText = 'Zusaetzliche non-AG metabolische Azidose (hyperchloraem)'; drLevel = 'orange'; }
-            else if (deltaRatio <= 2) { drText = 'Reine AG-Azidose'; drLevel = 'gruen'; }
-            else { drText = 'Zusaetzliche metabolische Alkalose (oder vorbestehend erhoehtes HCO\u2083)'; drLevel = 'gelb'; }
-            results.push(self.ampel(drLevel, 'Delta-Delta-Ratio: ' + deltaRatio) + ' <span style="font-size:0.82rem;">' + drText + '</span>');
+            if (deltaHCO3 > 0) {
+              var dr = Math.round(deltaAG / deltaHCO3 * 10) / 10;
+              var drText = '', drLevel = 'gruen';
+              if (dr < 1) { drText = 'Zusaetzliche non-AG (hyperchloraeme) Azidose! NaCl 0,9%-Ueberladung? Diarrhoe? RTA?'; drLevel = 'orange'; actions.push('Delta-Ratio &lt;1: Hyperchloraeme Azidose — NaCl 0,9% stoppen, auf balanced crystalloids wechseln'); }
+              else if (dr <= 2) { drText = 'Reine AG-Azidose (passend)'; drLevel = 'gruen'; }
+              else { drText = 'Gleichzeitige metabolische Alkalose verborgen! Erbrechen? Diuretika? Praeexistente COPD-Kompensation?'; drLevel = 'gelb'; }
+              results.push(self.ampel(drLevel, 'Delta-Delta: ' + dr + ' (\u0394AG ' + deltaAG.toFixed(1) + ' / \u0394HCO\u2083 ' + deltaHCO3.toFixed(1) + ')') + ' <span style="font-size:0.82rem;">' + drText + '</span>');
+            }
           }
+
+          // Strong Ion Difference (vereinfacht)
+          var sid = na + (!isNaN(k) ? k : 4) - cl - (!isNaN(lak) ? lak : 0);
+          sid = Math.round(sid * 10) / 10;
+          if (sid < 38) results.push(self.ampel('orange', 'SID (apparent): ' + sid + ' mEq/l \u2193') + ' <span style="font-size:0.82rem;">Erniedrigt — Stewart-Azidose (hyperchloraem, Laktat, andere Anionen)</span>');
+          else if (sid > 42) results.push(self.ampel('gelb', 'SID (apparent): ' + sid + ' mEq/l \u2191') + ' <span style="font-size:0.82rem;">Erhoht — Stewart-Alkalose (Hypoalbuminaemie? Chloridverlust?)</span>');
+          else results.push(self.ampel('gruen', 'SID (apparent): ' + sid + ' mEq/l') + ' <span style="font-size:0.82rem;">Normal (38–42)</span>');
         }
 
-        // 7. Laktat
+        // Osmolale Luecke
+        if (!isNaN(na) && !isNaN(glu)) {
+          var osmCalc = 2 * na + glu / 18 + ((!isNaN(document.getElementById('bga-hco3').value)) ? 0 : 0);
+          // BUN nicht verfuegbar, vereinfacht
+          osmCalc = Math.round(osmCalc);
+          results.push(self.ampel('gelb', 'Berechn. Osmolalitaet: ~' + osmCalc + ' mosmol/kg') + ' <span style="font-size:0.82rem;">(vereinfacht: 2\u00d7Na + Glu/18, ohne Harnstoff). Bei V.a. Intoxikation: gemessene Osmolalitaet anfordern, Luecke &gt;10 = Methanol/Ethylenglykol!</span>');
+        }
+
+        // ====== 7. ELEKTROLYTE ======
+        if (!isNaN(k)) {
+          if (k < 3.0) { results.push(self.ampel('rot', 'K\u207A ' + k.toFixed(1) + ' mmol/l \u2193\u2193') + ' <span style="font-size:0.82rem;">Schwere Hypokaliämie — Arrhythmiegefahr! KCl i.v. (max. 20 mmol/h peripher, 40 zentral)</span>'); actions.push('K &lt;3,0: EKG! KCl-Substitution, Mg pruefen'); }
+          else if (k < 3.5) results.push(self.ampel('orange', 'K\u207A ' + k.toFixed(1) + ' mmol/l \u2193') + ' <span style="font-size:0.82rem;">Hypokaliämie — Substitution, Mg pruefen (Mg-Mangel verhindert K-Korrektur!)</span>');
+          else if (k > 6.0) { results.push(self.ampel('rot', 'K\u207A ' + k.toFixed(1) + ' mmol/l \u2191\u2191') + ' <span style="font-size:0.82rem;">Schwere Hyperkaliämie — EKG! Ca-Glukonat + Insulin/Glukose + Bikarbonat, RRT erwaegen</span>'); actions.push('K &gt;6,0: Kalziumglukonat 10% 10ml i.v., Insulin 10IE + 25g Glukose'); }
+          else if (k > 5.5) results.push(self.ampel('orange', 'K\u207A ' + k.toFixed(1) + ' mmol/l \u2191') + ' <span style="font-size:0.82rem;">Hyperkaliämie — Ursache (AKI? Medikamente? Azidose?), EKG pruefen</span>');
+          else results.push(self.ampel('gruen', 'K\u207A ' + k.toFixed(1) + ' mmol/l') + ' <span style="font-size:0.82rem;">Normal</span>');
+        }
+
+        if (!isNaN(ca)) {
+          if (ca < 1.0) { results.push(self.ampel('rot', 'Ca\u00B2\u207A ' + ca.toFixed(2) + ' mmol/l \u2193\u2193') + ' <span style="font-size:0.82rem;">Schwere Hypokalzaemie — Tetanie? QTc? Ca-Glukonat 10% 10–20ml i.v.</span>'); actions.push('Ca\u00B2\u207A &lt;1,0: Kalziumglukonat i.v.'); }
+          else if (ca < 1.1) results.push(self.ampel('orange', 'Ca\u00B2\u207A ' + ca.toFixed(2) + ' mmol/l \u2193') + ' <span style="font-size:0.82rem;">Hypokalzaemie — Symptome? Citrat-CRRT? Substitution</span>');
+          else if (ca > 1.35) results.push(self.ampel('orange', 'Ca\u00B2\u207A ' + ca.toFixed(2) + ' mmol/l \u2191') + ' <span style="font-size:0.82rem;">Hyperkalzaemie — Malignom? Hyperparathyreoidismus? Volumengabe</span>');
+          else results.push(self.ampel('gruen', 'Ca\u00B2\u207A ' + ca.toFixed(2) + ' mmol/l') + ' <span style="font-size:0.82rem;">Normal</span>');
+        }
+
+        if (!isNaN(glu)) {
+          if (glu < 60) { results.push(self.ampel('rot', 'Glucose ' + glu + ' mg/dl \u2193\u2193') + ' <span style="font-size:0.82rem;">Hypoglykaemie! Glukose 40% 10–20ml i.v. (= 4–8g)</span>'); actions.push('Glucose &lt;60: Sofort Glukose i.v.!'); }
+          else if (glu < 70) results.push(self.ampel('orange', 'Glucose ' + glu + ' mg/dl \u2193') + ' <span style="font-size:0.82rem;">Grenzwertig niedrig — Insulindosis reduzieren, engmaschig</span>');
+          else if (glu > 250) results.push(self.ampel('rot', 'Glucose ' + glu + ' mg/dl \u2191\u2191') + ' <span style="font-size:0.82rem;">Deutliche Hyperglyk. — DKA/HHS pruefen (Ketone, Osmolalitaet)</span>');
+          else if (glu > 180) results.push(self.ampel('orange', 'Glucose ' + glu + ' mg/dl \u2191') + ' <span style="font-size:0.82rem;">Hyperglyk. — Insulin-Protokoll, Ziel ICU 140–180 mg/dl</span>');
+          else results.push(self.ampel('gruen', 'Glucose ' + glu + ' mg/dl') + ' <span style="font-size:0.82rem;">Im Zielbereich</span>');
+        }
+
+        // ====== 8. LAKTAT ======
         if (!isNaN(lak)) {
-          if (lak <= 2) results.push(self.ampel('gruen', 'Laktat ' + lak + ' mmol/l') + ' <span style="font-size:0.82rem;">Normal</span>');
-          else if (lak <= 4) results.push(self.ampel('orange', 'Laktat ' + lak + ' mmol/l \u2191') + ' <span style="font-size:0.82rem;">Erhoht — Hypoperfusion? Katecholamine? Leber?</span>');
-          else results.push(self.ampel('rot', 'Laktat ' + lak + ' mmol/l \u2191\u2191') + ' <span style="font-size:0.82rem;">Schwere Laktatazidose — Schock? Ischaemie? Leberversagen?</span>');
+          if (lak <= 1.0) results.push(self.ampel('gruen', 'Laktat ' + lak + ' mmol/l') + ' <span style="font-size:0.82rem;">Normal</span>');
+          else if (lak <= 2.0) results.push(self.ampel('gruen', 'Laktat ' + lak + ' mmol/l') + ' <span style="font-size:0.82rem;">Grenzwertig normal (&le;2)</span>');
+          else if (lak <= 4.0) { results.push(self.ampel('orange', 'Laktat ' + lak + ' mmol/l \u2191') + ' <span style="font-size:0.82rem;">Erhoht — Hypoperfusion? Katecholamine? Leberinsuff.? Medikamente (Metformin, Linezolid)?</span>'); actions.push('Laktat 2–4: Perfusion pruefen, Laktat-Clearance in 2h kontrollieren'); }
+          else { results.push(self.ampel('rot', 'Laktat ' + lak + ' mmol/l \u2191\u2191') + ' <span style="font-size:0.82rem;">Schwere Hyperlaktat. — Schock? Mesenterialischaemie? Leberversagen? Krampfanfall? Intoxikation?</span>'); actions.push('Laktat &gt;4: Sofort Ursache klaeren! Volumen/Katecholamine, Fokussuche'); }
         }
 
+        // ====== 9. Hb ======
+        if (!isNaN(hb)) {
+          if (hb < 7.0) { results.push(self.ampel('rot', 'Hb ' + hb.toFixed(1) + ' g/dl \u2193\u2193') + ' <span style="font-size:0.82rem;">Schwere Anaemie — Transfusion (Trigger &lt;7 g/dl, bei KHK &lt;8)</span>'); actions.push('Hb &lt;7: Erythrozytenkonzentrat!'); }
+          else if (hb < 8.0) results.push(self.ampel('orange', 'Hb ' + hb.toFixed(1) + ' g/dl \u2193') + ' <span style="font-size:0.82rem;">Anaemie — Transfusion bei KHK/instabil, sonst Trend + Klinik</span>');
+          else if (hb < 10.0) results.push(self.ampel('gelb', 'Hb ' + hb.toFixed(1) + ' g/dl') + ' <span style="font-size:0.82rem;">Leichte Anaemie — Ursache klaeren, restriktive Strategie</span>');
+          else results.push(self.ampel('gruen', 'Hb ' + hb.toFixed(1) + ' g/dl') + ' <span style="font-size:0.82rem;">Adaequat</span>');
+        }
+
+        // Render
         el.innerHTML = results.map(function(r) {
           return '<div style="padding:6px 0;border-bottom:1px solid var(--border);">' + r + '</div>';
         }).join('');
+
+        // Zusammenfassung
+        if (actions.length > 0) {
+          sumEl.style.background = 'var(--red-bg)';
+          sumEl.style.color = 'var(--red)';
+          sumEl.innerHTML = '<strong>Handlungsbedarf:</strong><br>' + actions.map(function(a) { return '\u2022 ' + a; }).join('<br>');
+        } else if (acidBase === 'Normal' && results.length > 3) {
+          sumEl.style.background = 'var(--green-bg)';
+          sumEl.style.color = 'var(--green)';
+          sumEl.innerHTML = '<strong>Keine akute Handlung erforderlich.</strong> Saeure-Base-Status und Oxygenierung im Normbereich.';
+        } else {
+          sumEl.innerHTML = '';
+        }
       },
 
       /* === ROTEM-INTERPRETER === */
