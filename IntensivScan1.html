@@ -486,16 +486,249 @@
 
     <!-- TAB: SEPSIS START -->
     <div id="sepsis" class="tab-panel active">
-      <div class="card">
-        <h2>SepsisScan</h2>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">
-          Screening, Klassifikation und Management nach SSC 2021 / Sepsis-3.
-        </p>
-      </div>
+
       <div class="hinweis hinweis-info">
-        <strong>Leitlinie:</strong> Surviving Sepsis Campaign 2021 · DGAI/DIVI · Sepsis-3
+        <strong>Leitlinie:</strong> Surviving Sepsis Campaign 2021 (Evans et al.) · DGAI/DIVI · Sepsis-3-Definition
       </div>
-      <!-- Klinischer Inhalt folgt in Phase 2 -->
+
+      <!-- A) qSOFA-Screening -->
+      <div class="card">
+        <h2>A) qSOFA-Screening</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Quick-SOFA: Bedside-Screening bei V.a. Infektion (Sepsis-3)
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="qsofa-rr" onchange="IntensivTools.calcQSOFA()">
+            RR systolisch &le;100 mmHg
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="qsofa-af" onchange="IntensivTools.calcQSOFA()">
+            Atemfrequenz &ge;22/min
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="qsofa-gcs" onchange="IntensivTools.calcQSOFA()">
+            GCS &lt;15 (veraenderte Bewusstseinslage)
+          </label>
+        </div>
+        <div id="qsofa-ergebnis" class="ergebnis" style="background: var(--green-bg); color: var(--green);">
+          qSOFA: 0/3 — <span class="ampel ampel-gruen">Kein Hinweis</span>
+        </div>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; qSOFA — Bewertung anzeigen</div>
+          <div class="score-body hidden">
+            <table>
+              <tr><th>Score</th><th>Bewertung</th><th>Konsequenz</th></tr>
+              <tr><td>0–1</td><td><span class="ampel ampel-gruen">Niedrig</span></td><td>Kein Sepsis-Verdacht allein durch qSOFA</td></tr>
+              <tr><td>2–3</td><td><span class="ampel ampel-rot">Hoch</span></td><td>Sepsis-Verdacht &rarr; SOFA-Score pruefen</td></tr>
+            </table>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+              Hinweis: qSOFA ist ein Screening-Tool, kein diagnostisches Kriterium. Bei Verdacht immer SOFA-Score erheben.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- B) SOFA-Score (vereinfacht) -->
+      <div class="card">
+        <h2>B) SOFA-Score (vereinfacht)</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Sequential Organ Failure Assessment — 6 Organsysteme, je 0–4 Punkte. Sepsis = SOFA &ge;2 ueber Baseline + Infektionsverdacht.
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Respiration (PaO2/FiO2)</label>
+            <select id="sofa-resp" onchange="IntensivTools.calcSOFA()">
+              <option value="0">&ge;400 (0 Pkt)</option>
+              <option value="1">300–399 (1 Pkt)</option>
+              <option value="2">200–299 (2 Pkt)</option>
+              <option value="3">100–199 + Beatmung (3 Pkt)</option>
+              <option value="4">&lt;100 + Beatmung (4 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Gerinnung (Thrombozyten G/l)</label>
+            <select id="sofa-coag" onchange="IntensivTools.calcSOFA()">
+              <option value="0">&ge;150 (0 Pkt)</option>
+              <option value="1">100–149 (1 Pkt)</option>
+              <option value="2">50–99 (2 Pkt)</option>
+              <option value="3">20–49 (3 Pkt)</option>
+              <option value="4">&lt;20 (4 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Leber (Bilirubin mg/dl)</label>
+            <select id="sofa-liver" onchange="IntensivTools.calcSOFA()">
+              <option value="0">&lt;1,2 (0 Pkt)</option>
+              <option value="1">1,2–1,9 (1 Pkt)</option>
+              <option value="2">2,0–5,9 (2 Pkt)</option>
+              <option value="3">6,0–11,9 (3 Pkt)</option>
+              <option value="4">&ge;12,0 (4 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Kreislauf (MAP / Vasopressoren)</label>
+            <select id="sofa-cardio" onchange="IntensivTools.calcSOFA()">
+              <option value="0">MAP &ge;70 (0 Pkt)</option>
+              <option value="1">MAP &lt;70 (1 Pkt)</option>
+              <option value="2">Dopamin &le;5 / Dobutamin (2 Pkt)</option>
+              <option value="3">Dopamin &gt;5 / NA &le;0,1 (3 Pkt)</option>
+              <option value="4">Dopamin &gt;15 / NA &gt;0,1 (4 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>ZNS (GCS)</label>
+            <select id="sofa-cns" onchange="IntensivTools.calcSOFA()">
+              <option value="0">15 (0 Pkt)</option>
+              <option value="1">13–14 (1 Pkt)</option>
+              <option value="2">10–12 (2 Pkt)</option>
+              <option value="3">6–9 (3 Pkt)</option>
+              <option value="4">&lt;6 (4 Pkt)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Niere (Kreatinin mg/dl / Diurese)</label>
+            <select id="sofa-renal" onchange="IntensivTools.calcSOFA()">
+              <option value="0">&lt;1,2 (0 Pkt)</option>
+              <option value="1">1,2–1,9 (1 Pkt)</option>
+              <option value="2">2,0–3,4 (2 Pkt)</option>
+              <option value="3">3,5–4,9 / &lt;500 ml/d (3 Pkt)</option>
+              <option value="4">&ge;5,0 / &lt;200 ml/d (4 Pkt)</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group" style="margin-top: 8px;">
+          <label>SOFA-Baseline (bekannter Vorscore, Standard: 0)</label>
+          <input type="number" id="sofa-baseline" value="0" min="0" max="24" onchange="IntensivTools.calcSOFA()">
+        </div>
+        <div id="sofa-ergebnis" class="ergebnis" style="background: var(--green-bg); color: var(--green);">
+          SOFA: 0/24 (Delta: 0) — <span class="ampel ampel-gruen">Kein Organversagen</span>
+        </div>
+      </div>
+
+      <!-- C) Klassifikation -->
+      <div class="card">
+        <h2>C) Sepsis-Klassifikation</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Automatische Einstufung basierend auf qSOFA, SOFA und klinischen Kriterien.
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="class-infektion" onchange="IntensivTools.calcKlassifikation()">
+            Infektionsverdacht / gesicherte Infektion
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="class-vasopressor" onchange="IntensivTools.calcKlassifikation()">
+            Vasopressorbedarf (MAP &lt;65 trotz Volumengabe)
+          </label>
+          <div class="input-group" style="max-width: 280px;">
+            <label>Laktat (mmol/l)</label>
+            <input type="number" id="class-laktat" step="0.1" min="0" placeholder="z.B. 2.4" onchange="IntensivTools.calcKlassifikation()">
+          </div>
+        </div>
+        <div id="class-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Kriterien oben angeben
+        </div>
+      </div>
+
+      <!-- D) 1-Stunden-Bundle -->
+      <div class="card">
+        <h2>D) 1-Stunden-Bundle (SSC 2021)</h2>
+        <div class="hinweis hinweis-warnung" style="margin-bottom: 12px;">
+          <strong>Zeitkritisch:</strong> Alle Massnahmen innerhalb 1 Stunde nach Erkennung beginnen!
+        </div>
+        <ul class="checklist" id="bundle-checklist">
+          <li><input type="checkbox" id="bundle-laktat"> Laktat messen (Ziel &lt;2 mmol/l, bei &gt;2: Kontrolle in 2–4h)</li>
+          <li><input type="checkbox" id="bundle-bk"> Blutkulturen &times; 2 (aerob + anaerob, vor Antibiotikagabe!)</li>
+          <li><input type="checkbox" id="bundle-abx"> Breitspektrum-Antibiotikum i.v. (innerhalb 1h bei Schock, 3h bei Sepsis)</li>
+          <li><input type="checkbox" id="bundle-fluid"> 30 ml/kg kristalloide Fluessigkeit bei Hypotonie oder Laktat &ge;4 mmol/l</li>
+          <li><input type="checkbox" id="bundle-vaso"> Vasopressoren starten bei MAP &lt;65 mmHg trotz Volumengabe</li>
+        </ul>
+        <div id="bundle-status" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+          0/5 Massnahmen abgeschlossen
+        </div>
+      </div>
+
+      <!-- E) Antibiotika-Hinweise -->
+      <div class="card">
+        <h2>E) Empirische Antibiotikatherapie</h2>
+        <div class="hinweis hinweis-warnung" style="margin-bottom: 12px;">
+          <strong>Hinweis:</strong> Immer lokale Resistenzlage beachten! Kein verbindlicher Algorithmus — Ruecksprache Mikrobiologie/ABS-Team.
+        </div>
+        <table>
+          <tr><th>Fokus</th><th>Empfehlung (empirisch)</th><th>Anmerkung</th></tr>
+          <tr>
+            <td>Community-acquired</td>
+            <td>Piperacillin/Tazobactam 4,5g q8h</td>
+            <td>&plusmn; Aminoglykosid bei schwerer Sepsis</td>
+          </tr>
+          <tr>
+            <td>Nosokomial / VAP</td>
+            <td>Meropenem 1–2g q8h</td>
+            <td>&plusmn; Vancomycin/Linezolid bei MRSA-Risiko</td>
+          </tr>
+          <tr>
+            <td>Abdominell</td>
+            <td>Meropenem oder Pip/Taz + Metronidazol</td>
+            <td>Fokussanierung pruefen (Chirurgie!)</td>
+          </tr>
+          <tr>
+            <td>Urosepsis</td>
+            <td>Pip/Taz oder Ceftriaxon + Aminoglykosid</td>
+            <td>Harnableitung sicherstellen</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- F) Vasopressoren -->
+      <div class="card">
+        <h2>F) Vasopressoren &amp; Adjunktive Therapie</h2>
+        <table>
+          <tr><th>Substanz</th><th>Indikation</th><th>Dosis</th><th>Cave</th></tr>
+          <tr>
+            <td><strong>Noradrenalin</strong></td>
+            <td>First-line bei sept. Schock</td>
+            <td>0,01–3 &mu;g/kg/min</td>
+            <td>Ziel MAP &ge;65 mmHg</td>
+          </tr>
+          <tr>
+            <td>Vasopressin</td>
+            <td>Add-on bei NE &gt;0,25 &mu;g/kg/min</td>
+            <td>0,03 U/min fix</td>
+            <td>Nicht titrieren</td>
+          </tr>
+          <tr>
+            <td>Adrenalin</td>
+            <td>Refraktaerer Schock</td>
+            <td>0,01–1 &mu;g/kg/min</td>
+            <td>Laktatanstieg, Tachykardie</td>
+          </tr>
+        </table>
+        <div class="hinweis hinweis-kritisch" style="margin-top: 12px;">
+          <strong>Hydrocortison:</strong> 200 mg/d i.v. (50 mg q6h) bei refraktaerem septischem Schock (Vasopressor-Eskalation trotz adaequater Volumengabe).
+        </div>
+      </div>
+
+      <!-- G) Monitoring-Ziele -->
+      <div class="card">
+        <h2>G) Monitoring-Ziele</h2>
+        <table>
+          <tr><th>Parameter</th><th>Zielwert</th><th>Kontrolle</th></tr>
+          <tr><td>MAP</td><td>&ge;65 mmHg</td><td>Kontinuierlich (art. Katheter)</td></tr>
+          <tr><td>ScvO&#8322;</td><td>&ge;70%</td><td>ZVK, initial alle 6h</td></tr>
+          <tr><td>Laktat-Clearance</td><td>&ge;10% / 2h</td><td>Seriell bei Laktat &gt;2 mmol/l</td></tr>
+          <tr><td>Diurese</td><td>&ge;0,5 ml/kg/h</td><td>Stundlich (Dauerkatheter)</td></tr>
+          <tr><td>ZVD</td><td>8–12 mmHg (beatmet: 12–15)</td><td>Nur als Trend, nicht als alleiniger Zielwert</td></tr>
+        </table>
+      </div>
+
+      <!-- Export -->
+      <div style="text-align: center; margin-top: 8px;">
+        <button class="export-btn" onclick="IntensivTools.exportBefund('sepsis')">
+          Befund kopieren
+        </button>
+      </div>
+
     </div>
     <!-- TAB: SEPSIS END -->
 
@@ -583,11 +816,156 @@
         }
       },
 
-      /* --- Befund-Text generieren (Platzhalter) --- */
+      /* --- qSOFA berechnen --- */
+      calcQSOFA() {
+        var rr = document.getElementById('qsofa-rr').checked ? 1 : 0;
+        var af = document.getElementById('qsofa-af').checked ? 1 : 0;
+        var gcs = document.getElementById('qsofa-gcs').checked ? 1 : 0;
+        var score = rr + af + gcs;
+        var el = document.getElementById('qsofa-ergebnis');
+        if (score >= 2) {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = 'qSOFA: ' + score + '/3 — ' + this.ampel('rot', 'Sepsis-Verdacht') + ' &rarr; SOFA-Score pruefen!';
+        } else {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = 'qSOFA: ' + score + '/3 — ' + this.ampel('gruen', 'Kein Hinweis');
+        }
+        this.calcKlassifikation();
+      },
+
+      /* --- SOFA berechnen --- */
+      calcSOFA() {
+        var ids = ['sofa-resp', 'sofa-coag', 'sofa-liver', 'sofa-cardio', 'sofa-cns', 'sofa-renal'];
+        var total = 0;
+        for (var i = 0; i < ids.length; i++) {
+          total += parseInt(document.getElementById(ids[i]).value, 10);
+        }
+        var baseline = parseInt(document.getElementById('sofa-baseline').value, 10) || 0;
+        var delta = total - baseline;
+        var el = document.getElementById('sofa-ergebnis');
+        if (delta >= 2) {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = 'SOFA: ' + total + '/24 (Delta: ' + delta + ') — ' + this.ampel('rot', 'Organversagen (Sepsis-Kriterium)');
+        } else if (total >= 1) {
+          el.style.background = 'var(--yellow-bg)';
+          el.style.color = 'var(--yellow)';
+          el.innerHTML = 'SOFA: ' + total + '/24 (Delta: ' + delta + ') — ' + this.ampel('gelb', 'Organdysfunktion');
+        } else {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = 'SOFA: ' + total + '/24 (Delta: ' + delta + ') — ' + this.ampel('gruen', 'Kein Organversagen');
+        }
+        this._sofaTotal = total;
+        this._sofaDelta = delta;
+        this.calcKlassifikation();
+      },
+
+      _sofaTotal: 0,
+      _sofaDelta: 0,
+
+      /* --- Klassifikation berechnen --- */
+      calcKlassifikation() {
+        var infektion = document.getElementById('class-infektion').checked;
+        var vasopressor = document.getElementById('class-vasopressor').checked;
+        var laktatInput = document.getElementById('class-laktat').value;
+        var laktat = laktatInput ? parseFloat(laktatInput) : null;
+        var el = document.getElementById('class-ergebnis');
+
+        if (!infektion) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Kein Infektionsverdacht angegeben — Sepsis-Kriterien nicht pruefbar';
+          return;
+        }
+
+        var sepsis = infektion && this._sofaDelta >= 2;
+        var schock = sepsis && vasopressor && laktat !== null && laktat > 2;
+
+        if (schock) {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = this.ampel('rot', 'SEPTISCHER SCHOCK') +
+            '<br><span style="font-size:0.85rem; font-weight:normal;">Sepsis + Vasopressorbedarf + Laktat &gt;2 mmol/l &mdash; Mortalitaet &gt;40%</span>';
+        } else if (sepsis) {
+          el.style.background = 'var(--orange-bg)';
+          el.style.color = 'var(--orange)';
+          el.innerHTML = this.ampel('orange', 'SEPSIS') +
+            '<br><span style="font-size:0.85rem; font-weight:normal;">SOFA &ge;2 ueber Baseline + Infektionsverdacht (Sepsis-3)</span>';
+        } else {
+          el.style.background = 'var(--yellow-bg)';
+          el.style.color = 'var(--yellow)';
+          el.innerHTML = this.ampel('gelb', 'INFEKTIONSVERDACHT') +
+            '<br><span style="font-size:0.85rem; font-weight:normal;">Infektion vermutet, SOFA-Kriterium noch nicht erfuellt (Delta &lt;2)</span>';
+        }
+      },
+
+      /* --- Bundle-Zaehler --- */
+      updateBundleStatus() {
+        var checks = document.querySelectorAll('#bundle-checklist input[type="checkbox"]');
+        var done = 0;
+        checks.forEach(function(c) { if (c.checked) done++; });
+        var el = document.getElementById('bundle-status');
+        el.textContent = done + '/5 Massnahmen abgeschlossen';
+        if (done === 5) {
+          el.style.color = 'var(--green)';
+          el.style.fontWeight = '700';
+        } else {
+          el.style.color = 'var(--text-muted)';
+          el.style.fontWeight = 'normal';
+        }
+      },
+
+      /* --- Befund-Text generieren --- */
       generateBefundText(tab) {
         var now = new Date();
         var ts = now.toLocaleDateString('de-DE') + ' ' + now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-        return 'IntensivScan1 — ' + tab.toUpperCase() + '\nZeitstempel: ' + ts + '\n\n[Befunddaten werden in Phase 2–4 implementiert]';
+
+        if (tab === 'sepsis') {
+          var qsofa = (document.getElementById('qsofa-rr').checked ? 1 : 0)
+                    + (document.getElementById('qsofa-af').checked ? 1 : 0)
+                    + (document.getElementById('qsofa-gcs').checked ? 1 : 0);
+          var sofa = this._sofaTotal;
+          var delta = this._sofaDelta;
+          var laktat = document.getElementById('class-laktat').value || '-';
+          var infektion = document.getElementById('class-infektion').checked ? 'Ja' : 'Nein';
+          var vasopressor = document.getElementById('class-vasopressor').checked ? 'Ja' : 'Nein';
+
+          var klasse = 'Nicht beurteilbar';
+          if (document.getElementById('class-infektion').checked) {
+            if (delta >= 2 && document.getElementById('class-vasopressor').checked && parseFloat(laktat) > 2) {
+              klasse = 'Septischer Schock';
+            } else if (delta >= 2) {
+              klasse = 'Sepsis';
+            } else {
+              klasse = 'Infektionsverdacht (SOFA-Kriterium nicht erfuellt)';
+            }
+          }
+
+          var checks = document.querySelectorAll('#bundle-checklist input[type="checkbox"]');
+          var done = 0;
+          checks.forEach(function(c) { if (c.checked) done++; });
+
+          return [
+            'IntensivScan1 — SEPSIS-ASSESSMENT',
+            'Zeitstempel: ' + ts,
+            '',
+            'qSOFA-Score: ' + qsofa + '/3',
+            'SOFA-Score: ' + sofa + '/24 (Delta: ' + delta + ')',
+            'Infektionsverdacht: ' + infektion,
+            'Vasopressorbedarf: ' + vasopressor,
+            'Laktat: ' + laktat + ' mmol/l',
+            'Klassifikation: ' + klasse,
+            '',
+            '1h-Bundle: ' + done + '/5 Massnahmen abgeschlossen',
+            '',
+            'Quelle: SSC 2021 / Sepsis-3'
+          ].join('\n');
+        }
+
+        return 'IntensivScan1 — ' + tab.toUpperCase() + '\nZeitstempel: ' + ts + '\n\n[Befunddaten folgen]';
       },
 
       /* --- Befund in Zwischenablage kopieren --- */
@@ -607,8 +985,21 @@
         t.textContent = msg;
         document.body.appendChild(t);
         setTimeout(function() { t.remove(); }, 2500);
+      },
+
+      /* --- Init --- */
+      init() {
+        // Bundle-Checklist Event-Listener
+        var checks = document.querySelectorAll('#bundle-checklist input[type="checkbox"]');
+        var self = this;
+        checks.forEach(function(c) {
+          c.addEventListener('change', function() { self.updateBundleStatus(); });
+        });
       }
     };
+
+    // Init on DOM ready
+    IntensivTools.init();
   </script>
 
 </body>
