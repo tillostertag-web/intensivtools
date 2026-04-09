@@ -492,6 +492,7 @@
     <button class="tab-btn" onclick="IntensivTools.showTab('kardio', this)">Kardio</button>
     <button class="tab-btn" onclick="IntensivTools.showTab('gerinnung', this)">Gerinnung</button>
     <button class="tab-btn" onclick="IntensivTools.showTab('stoffwechsel', this)">Stoffwechsel</button>
+    <button class="tab-btn" onclick="IntensivTools.showTab('sedierung', this)">Sedierung</button>
   </div>
 
   <!-- MAIN -->
@@ -720,6 +721,47 @@
         <div class="hinweis hinweis-kritisch" style="margin-top: 12px;">
           <strong>Hydrocortison:</strong> 200 mg/d i.v. (50 mg q6h) bei refraktaerem septischem Schock (Vasopressor-Eskalation trotz adaequater Volumengabe).
         </div>
+
+        <h3 style="margin-top: 16px;">Katecholamin-Eskalationsschema (SSC 2021 / DIVI)</h3>
+        <table style="font-size: 0.82rem;">
+          <tr><th>Stufe</th><th>Situation</th><th>Massnahme</th><th>Evidenz</th></tr>
+          <tr>
+            <td><span class="ampel ampel-gruen">1</span></td>
+            <td>MAP &lt;65 nach Volumengabe</td>
+            <td><strong>Noradrenalin</strong> starten, 0,05 &mu;g/kg/min, titrieren</td>
+            <td>SSC: starke Empfehlung</td>
+          </tr>
+          <tr>
+            <td><span class="ampel ampel-gelb">2</span></td>
+            <td>NE &gt;0,25 &mu;g/kg/min</td>
+            <td><strong>+ Vasopressin</strong> 0,03 U/min fix (NE-sparend)</td>
+            <td>SSC: schwache Empfehlung</td>
+          </tr>
+          <tr>
+            <td><span class="ampel ampel-orange">3</span></td>
+            <td>NE &gt;0,5 &mu;g/kg/min trotz Vasopressin</td>
+            <td><strong>+ Hydrocortison</strong> 200 mg/d + Reevaluation Volumen/Fokus</td>
+            <td>SSC: schwache Empfehlung</td>
+          </tr>
+          <tr>
+            <td><span class="ampel ampel-rot">4</span></td>
+            <td>Refraktaer trotz Stufe 3</td>
+            <td><strong>+ Adrenalin</strong> 0,01–0,5 &mu;g/kg/min ODER <strong>Angiotensin II</strong> erwaegen</td>
+            <td>Individuell, keine starke Evidenz</td>
+          </tr>
+        </table>
+        <div class="hinweis hinweis-warnung" style="margin-top: 8px;">
+          <strong>Parallel bei jeder Stufe:</strong> Fokussuche (Bildgebung, Kulturen), Volumenstatus reevaluieren (Echo/PLR), Laktat-Trend pruefen. Katecholamin-Eskalation ist kein Ersatz fuer Kausaltherapie!
+        </div>
+
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; NE-Aequivalenz (Katecholamin-Index)</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <p><strong>Vasopressor-Aequivalenzdosis:</strong></p>
+            <p>NE-Aequivalent = Noradrenalin + Adrenalin + (Vasopressin &times; 2,5) + (Dopamin / 100) + (Phenylephrin / 10)</p>
+            <p style="margin-top: 8px;">NE-Aequivalent &gt;1 &mu;g/kg/min = <span class="ampel ampel-rot">Hohe Mortalitaet</span> — ECMO/MCS erwaegen</p>
+          </div>
+        </div>
       </div>
 
       <!-- G) Monitoring-Ziele -->
@@ -836,7 +878,68 @@
         </table>
       </div>
 
-      <!-- D) PEEP/FiO2-Tabelle -->
+      <!-- D) Beatmungsmodi-Wahl -->
+      <div class="card">
+        <h2>D) Beatmungsmodi — Wann welcher?</h2>
+        <table>
+          <tr><th>Modus</th><th>Wann einsetzen</th><th>Vorteile</th><th>Nachteile / Cave</th></tr>
+          <tr>
+            <td><strong>VCV</strong><br>(Volume Controlled)</td>
+            <td>Standard-Initialmodus, definiertes Vt bei ARDS</td>
+            <td>Garantiertes Vt, einfach 6 ml/kg IBW umzusetzen</td>
+            <td>Druckspitzen bei Compliance-Aenderung; Pplat ueberwachen!</td>
+          </tr>
+          <tr>
+            <td><strong>PCV</strong><br>(Pressure Controlled)</td>
+            <td>Bevorzugt bei ARDS (viele Zentren), Pplat-Limitation</td>
+            <td>Druckbegrenzung, dezelerierender Flow, besserer Gasaustausch</td>
+            <td>Vt variiert mit Compliance — engmaschige Vt-Kontrolle!</td>
+          </tr>
+          <tr>
+            <td><strong>PSV / ASB</strong><br>(Pressure Support)</td>
+            <td>Spontanatmend, Weaning-Phase</td>
+            <td>Patientengetriggerter Modus, weniger Sedierung noetig</td>
+            <td>Kein garantiertes MV; CAVE bei schwachem Atemantrieb</td>
+          </tr>
+          <tr>
+            <td><strong>APRV</strong><br>(Airway Pressure Release)</td>
+            <td>Schweres ARDS, refraktaere Hypoxaemie, Spontanatmung erwuenscht</td>
+            <td>Open-Lung-Konzept, Spontanatmung jederzeit moeglich</td>
+            <td>Komplexe Einstellung; T-high/T-low Optimierung; erfahrenes Team noetig</td>
+          </tr>
+          <tr>
+            <td><strong>ASV / IntelliVent</strong><br>(Hamilton-spezifisch)</td>
+            <td>Automatisiertes Weaning, Standardbeatmung</td>
+            <td>Automatische Vt/AF-Optimierung nach %MinVol, weniger Alarme</td>
+            <td>Black-Box-Charakter; nicht fuer schweres ARDS validiert</td>
+          </tr>
+        </table>
+
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Modus-Entscheidungsbaum</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <p><strong>Intubation / ARDS:</strong></p>
+            <ul style="padding-left: 16px; margin-bottom: 8px;">
+              <li>Start mit <strong>PCV oder VCV</strong> (6 ml/kg IBW, Pplat &le;30)</li>
+              <li>Schweres ARDS + refraktaer &rarr; Bauchlage + ggf. <strong>APRV</strong> erwaegen</li>
+            </ul>
+            <p><strong>Weaning-Phase:</strong></p>
+            <ul style="padding-left: 16px; margin-bottom: 8px;">
+              <li>Besserung &rarr; Umstellung auf <strong>PSV/ASB</strong></li>
+              <li>PS schrittweise reduzieren (12 &rarr; 8 &rarr; 5 cmH&#8322;O)</li>
+              <li>SBT bei PS 5 + PEEP 5 fuer 30–120 min</li>
+            </ul>
+            <p><strong>Hamilton IntelliVent-ASV:</strong></p>
+            <ul style="padding-left: 16px;">
+              <li>%MinVol &gt;100% = voll kontrolliert</li>
+              <li>%MinVol 30–70% = partiell unterstuetzt</li>
+              <li>%MinVol &lt;30% = Weaning-Readiness</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- E) PEEP/FiO2-Tabelle -->
       <div class="card">
         <h2>D) PEEP/FiO&#8322;-Tabelle (ARDSNet)</h2>
         <h3>Low-PEEP-Strategie</h3>
@@ -1342,7 +1445,49 @@
     <div id="kardio" class="tab-panel">
 
       <div class="hinweis hinweis-info">
-        <strong>Leitlinie:</strong> ESC Herzinsuffizienz 2023 · ESC Schock 2024 · ESC ACS 2023
+        <strong>Leitlinie:</strong> ESC Herzinsuffizienz 2023 · ESC Schock 2024 · ESC ACS 2023 · DIVI Haemodynamik
+      </div>
+
+      <!-- A0) Schock-Differenzialdiagnose -->
+      <div class="card">
+        <h2>Schock-Differenzialdiagnose</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Pathophysiologische Einteilung — denke in Mechanismen, nicht in Medikamenten.
+        </p>
+        <div class="input-group">
+          <label>Klinisches Bild</label>
+          <select id="schock-typ" onchange="IntensivTools.calcSchockTyp()">
+            <option value="">-- Schocktyp waehlen --</option>
+            <option value="distributiv">Distributiv (warm, vasodilatiert, niedriger SVR)</option>
+            <option value="kardiogen">Kardiogen (kalt, gestaut, niedriges CO)</option>
+            <option value="hypovolaem">Hypovolaem (kalt, leer, niedriger CVP)</option>
+            <option value="obstruktiv">Obstruktiv (gestaute Halsvenen, Pulsus paradoxus)</option>
+          </select>
+        </div>
+        <div id="schock-typ-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte Schocktyp waehlen
+        </div>
+        <table style="margin-top: 12px; font-size: 0.82rem;">
+          <tr><th>Parameter</th><th>Distributiv</th><th>Kardiogen</th><th>Hypovolaem</th><th>Obstruktiv</th></tr>
+          <tr><td><strong>SVR</strong></td><td><span class="ampel ampel-rot">&darr;&darr;</span></td><td><span class="ampel ampel-orange">&uarr;</span></td><td><span class="ampel ampel-orange">&uarr;</span></td><td><span class="ampel ampel-orange">&uarr;</span></td></tr>
+          <tr><td><strong>CO / CI</strong></td><td><span class="ampel ampel-gelb">&uarr; (frueh)</span></td><td><span class="ampel ampel-rot">&darr;&darr;</span></td><td><span class="ampel ampel-rot">&darr;</span></td><td><span class="ampel ampel-rot">&darr;</span></td></tr>
+          <tr><td><strong>ZVD / PCWP</strong></td><td>Normal/&darr;</td><td><span class="ampel ampel-rot">&uarr;&uarr;</span></td><td><span class="ampel ampel-gruen">&darr;&darr;</span></td><td><span class="ampel ampel-rot">&uarr;&uarr;</span></td></tr>
+          <tr><td><strong>ScvO&#8322;</strong></td><td>&uarr; (frueh) / &darr; (spaet)</td><td><span class="ampel ampel-rot">&darr;&darr;</span></td><td><span class="ampel ampel-rot">&darr;</span></td><td><span class="ampel ampel-rot">&darr;</span></td></tr>
+          <tr><td><strong>Laktat</strong></td><td>&uarr;</td><td>&uarr;</td><td>&uarr;</td><td>&uarr;</td></tr>
+          <tr><td><strong>Primaertherapie</strong></td><td>Volumen + Vasopressor</td><td>Inotropika &plusmn; MCS</td><td>Volumen, Blutung stoppen</td><td>Ursache beheben!</td></tr>
+        </table>
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Haeufige Ursachen pro Schocktyp</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <table>
+              <tr><th>Typ</th><th>Ursachen</th><th>Sofort-Diagnostik</th></tr>
+              <tr><td><strong>Distributiv</strong></td><td>Sepsis (#1), Anaphylaxie, Nebenniereninsuffizienz, neurogen, Leberversagen</td><td>Laktat, Kulturen, Prokalzitonin</td></tr>
+              <tr><td><strong>Kardiogen</strong></td><td>ACS, Myokarditis, Klappenversagen, Arrhythmie, Takotsubo</td><td>Echo, Troponin, EKG, BNP</td></tr>
+              <tr><td><strong>Hypovolaem</strong></td><td>Blutung (GI, OP, Trauma), Dehydratation, Verbrennungen, Pankreatitis</td><td>Hb-Verlauf, Sono Abdomen, Volumenstatus</td></tr>
+              <tr><td><strong>Obstruktiv</strong></td><td>Lungenembolie, Spannungspneu, Perikardtamponade, Aortendissektion</td><td>Echo (RV-Dilatation!), CT-Angio, POCUS</td></tr>
+            </table>
+          </div>
+        </div>
       </div>
 
       <!-- A) Schock-Klassifikation / Stevenson -->
@@ -1501,6 +1646,147 @@
           <tr><td>41–49%</td><td>HFmrEF</td><td>SGLT2i, ACEi/ARNI erwaegen</td></tr>
           <tr><td>&ge;50%</td><td>HFpEF</td><td>SGLT2i, Diuretika symptomatisch</td></tr>
         </table>
+      </div>
+
+      <!-- F) Volumenresponsivitaet -->
+      <div class="card">
+        <h2>F) Volumenresponsivitaet — Dynamische Parameter</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Statische Parameter (ZVD) sind schlechte Praediktoren. Nutze dynamische Tests!
+        </p>
+        <table>
+          <tr><th>Test / Parameter</th><th>Volumenresponsiv wenn</th><th>Voraussetzung</th><th>Evidenz</th></tr>
+          <tr>
+            <td><strong>Passive Leg Raise (PLR)</strong></td>
+            <td>CO/SV-Anstieg &ge;10% (gemessen!)</td>
+            <td>Keine Voraussetzungen — auch bei Spontanatmung</td>
+            <td><span class="ampel ampel-gruen">Beste Evidenz (A)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Pulse Pressure Variation (PPV)</strong></td>
+            <td>&gt;13%</td>
+            <td>Kontrolliert beatmet, Vt &ge;8 ml/kg, SR, geschlossener Thorax</td>
+            <td><span class="ampel ampel-gruen">Gut validiert (A)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Stroke Volume Variation (SVV)</strong></td>
+            <td>&gt;12%</td>
+            <td>Wie PPV (Flowtrac, PiCCO, EV1000)</td>
+            <td><span class="ampel ampel-gruen">Gut validiert (A)</span></td>
+          </tr>
+          <tr>
+            <td><strong>IVC-Variabilitaet (POCUS)</strong></td>
+            <td>Kollaps &gt;50% (Spontan) oder Distension &gt;18% (Beatmet)</td>
+            <td>B-Mode subcostal; Einschraenkungen bei IAH/PEEP &gt;15</td>
+            <td><span class="ampel ampel-gelb">Moderat (B)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Mini-Fluid-Challenge</strong></td>
+            <td>SV-Anstieg &ge;6% nach 100 ml in 1 min</td>
+            <td>CO-Monitoring noetig</td>
+            <td><span class="ampel ampel-gelb">Moderat (B)</span></td>
+          </tr>
+          <tr>
+            <td><strong>End-Expiratory Occlusion</strong></td>
+            <td>CO-Anstieg &ge;5% bei 15s Pause</td>
+            <td>Kontrolliert beatmet, toleriert Pause</td>
+            <td><span class="ampel ampel-gelb">Moderat (B)</span></td>
+          </tr>
+        </table>
+        <div class="hinweis hinweis-kritisch" style="margin-top: 12px;">
+          <strong>ZVD als alleiniger Volumenparameter ist NICHT empfohlen</strong> (SSC 2021: starke Empfehlung dagegen). Nur als Trend im Kontext verwenden.
+        </div>
+        <div class="hinweis hinweis-warnung" style="margin-top: 8px;">
+          <strong>Laktat-Trend &gt; Einzelwert:</strong> Laktat-Clearance &ge;10%/2h zeigt adaequate Perfusion an. Steigender Trend trotz Therapie = Reevaluation Schocktyp + Fokus!
+        </div>
+      </div>
+
+      <!-- G) POCUS auf der ICU -->
+      <div class="card">
+        <h2>G) POCUS — Fokussierte Sonographie auf der ICU</h2>
+
+        <h3>RUSH-Protokoll (Rapid Ultrasound in Shock and Hypotension)</h3>
+        <table style="font-size: 0.82rem;">
+          <tr><th>Schritt</th><th>Anlotung</th><th>Frage</th><th>Pathologie</th></tr>
+          <tr>
+            <td><strong>Pumpe</strong></td>
+            <td>Parasternal / Apikal</td>
+            <td>LV-Funktion? RV-Dilatation? Perikarderguss?</td>
+            <td>Kardiogener Schock, Tamponade, Rechtsherzversagen (LE)</td>
+          </tr>
+          <tr>
+            <td><strong>Tank</strong></td>
+            <td>IVC subcostal</td>
+            <td>IVC-Durchmesser? Atemvariabilitaet?</td>
+            <td>&lt;1,5 cm + Kollaps = Hypovolaemie; &gt;2,5 cm prall = Stauung/Obstruktion</td>
+          </tr>
+          <tr>
+            <td><strong>Tank</strong></td>
+            <td>Morison-Pouch / Koller-Pouch / Douglas</td>
+            <td>Freie Fluessigkeit?</td>
+            <td>Blutung (Trauma, post-OP), Aszites</td>
+          </tr>
+          <tr>
+            <td><strong>Rohre</strong></td>
+            <td>Thorax beidseits</td>
+            <td>Lungengleiten? B-Linien? Erguss?</td>
+            <td>Pneumothorax (kein Gleiten), Lungenoedem (B-Linien), Erguss</td>
+          </tr>
+          <tr>
+            <td><strong>Rohre</strong></td>
+            <td>Aorta laengs/quer</td>
+            <td>Aortenaneurysma? Dissektion?</td>
+            <td>AAA &gt;3 cm, Dissektionsmembran</td>
+          </tr>
+        </table>
+
+        <h3 style="margin-top: 16px;">BLUE-Protokoll (Bedside Lung Ultrasound in Emergency)</h3>
+        <table style="font-size: 0.82rem;">
+          <tr><th>Befund</th><th>A-Profil</th><th>B-Profil</th><th>A+B-Profil</th><th>Kein Gleiten</th></tr>
+          <tr>
+            <td><strong>Lungengleiten</strong></td>
+            <td>Ja</td>
+            <td>Ja</td>
+            <td>Ja</td>
+            <td><span class="ampel ampel-rot">Nein</span></td>
+          </tr>
+          <tr>
+            <td><strong>A-Linien</strong></td>
+            <td><span class="ampel ampel-gruen">Ja</span></td>
+            <td>Nein</td>
+            <td>Einseitig</td>
+            <td>Variabel</td>
+          </tr>
+          <tr>
+            <td><strong>B-Linien</strong></td>
+            <td>Nein</td>
+            <td><span class="ampel ampel-gelb">&ge;3 bilateral</span></td>
+            <td>Einseitig</td>
+            <td>Variabel</td>
+          </tr>
+          <tr>
+            <td><strong>Diagnose</strong></td>
+            <td>COPD/Asthma, Lungenembolie, Normalbefund</td>
+            <td><strong>Lungenoedem</strong></td>
+            <td><strong>Pneumonie</strong></td>
+            <td><strong>Pneumothorax</strong></td>
+          </tr>
+        </table>
+
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Fokussierte Echo-Befunde bei Schock</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <table>
+              <tr><th>Befund</th><th>Interpretation</th><th>Konsequenz</th></tr>
+              <tr><td>LV hyperkinetisch, leer</td><td>Hypovolaemie</td><td>Volumen!</td></tr>
+              <tr><td>LV dilatiert, hypokinetisch</td><td>Kardiogener Schock</td><td>Inotropika, ggf. MCS</td></tr>
+              <tr><td>RV dilatiert, D-Sign</td><td>Rechtsherzversagen / LE</td><td>CT-Angio, Thrombolyse erwaegen</td></tr>
+              <tr><td>Perikarderguss + RA/RV-Kollaps</td><td>Tamponade</td><td>Sofortige Perikardpunktion!</td></tr>
+              <tr><td>Kein Lungengleiten + Barcode</td><td>Pneumothorax</td><td>Sofortige Entlastung!</td></tr>
+              <tr><td>B-Linien bilateral</td><td>Lungenoedem</td><td>Diuretika, PEEP, ggf. NIV</td></tr>
+            </table>
+          </div>
+        </div>
       </div>
 
       <!-- Export -->
@@ -1857,6 +2143,262 @@
     </div>
     <!-- TAB: STOFFWECHSEL END -->
 
+    <!-- ============================================================ -->
+    <!-- TAB: SEDIERUNG START -->
+    <!-- ============================================================ -->
+    <div id="sedierung" class="tab-panel">
+
+      <div class="hinweis hinweis-info">
+        <strong>Leitlinie:</strong> DAS-Leitlinie 2021 (DGAI) · PADIS Guidelines 2018 (SCCM) · S3-Analgesie/Sedierung/Delir 2021
+      </div>
+
+      <!-- A) RASS-Score -->
+      <div class="card">
+        <h2>A) RASS — Richmond Agitation-Sedation Scale</h2>
+        <div class="input-group">
+          <label>RASS-Score</label>
+          <select id="rass-score" onchange="IntensivTools.calcRASS()">
+            <option value="">-- waehlen --</option>
+            <option value="4">+4 Streitlustig (gewalttaetig, akute Gefahr)</option>
+            <option value="3">+3 Sehr agitiert (zieht an Kabel/Tubus)</option>
+            <option value="2">+2 Agitiert (haeufige ungerichtete Bewegungen)</option>
+            <option value="1">+1 Unruhig (aengstlich, aber Bewegungen nicht aggressiv)</option>
+            <option value="0">0 Wach und ruhig</option>
+            <option value="-1">-1 Schlaefrig (nicht voll wach, Augenkontakt &gt;10s auf Ansprache)</option>
+            <option value="-2">-2 Leichte Sedierung (Augenkontakt &lt;10s auf Ansprache)</option>
+            <option value="-3">-3 Moderate Sedierung (Bewegung auf Ansprache, kein Augenkontakt)</option>
+            <option value="-4">-4 Tiefe Sedierung (keine Reaktion auf Ansprache, Bewegung auf Schmerzreiz)</option>
+            <option value="-5">-5 Nicht erweckbar (keine Reaktion auf Stimuli)</option>
+          </select>
+        </div>
+        <div id="rass-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte RASS-Score waehlen
+        </div>
+        <div class="hinweis hinweis-info" style="margin-top: 12px;">
+          <strong>Ziel-RASS:</strong> 0 bis -1 fuer die meisten ICU-Patienten (DAS-Leitlinie). Tiefere Sedierung (-3 bis -5) nur bei: Status epilepticus, schwerem ARDS mit Bauchlage/NMB, erhoehtem ICP, offenes Abdomen.
+        </div>
+      </div>
+
+      <!-- B) Analgosedierung -->
+      <div class="card">
+        <h2>B) Analgosedierung — Substanzwahl</h2>
+        <div class="hinweis hinweis-warnung" style="margin-bottom: 12px;">
+          <strong>Prinzip:</strong> Analgesie first! Sedierung nur wenn Analgesie allein nicht ausreicht. Taegliche Sedierungspause (SAT) erwägen.
+        </div>
+
+        <h3>Analgesie (First-Line)</h3>
+        <table>
+          <tr><th>Substanz</th><th>Dosis</th><th>Vorteil</th><th>Cave</th></tr>
+          <tr>
+            <td><strong>Sufentanil</strong></td>
+            <td>0,15–0,7 &mu;g/kg/h</td>
+            <td>Gut steuerbar, stark wirksam</td>
+            <td>Atemdepression, Rigidität bei Bolus</td>
+          </tr>
+          <tr>
+            <td><strong>Remifentanil</strong></td>
+            <td>0,05–0,3 &mu;g/kg/min</td>
+            <td>Ultrakurz, keine Akkumulation, ideal fuer Neuro-ICU</td>
+            <td>Hyperalgesie bei Langzeit, teuer, kein Nachanalgesie-Effekt</td>
+          </tr>
+          <tr>
+            <td>Piritramid</td>
+            <td>Bolus 2–4 mg i.v. (bei Bedarf)</td>
+            <td>Gut fuer intermittierende Gabe</td>
+            <td>Akkumulation bei Leber-/Niereninsuffizienz</td>
+          </tr>
+          <tr>
+            <td>Metamizol</td>
+            <td>1g q6h i.v. (max. 5g/d)</td>
+            <td>Spasmolytisch, Opioid-sparend</td>
+            <td>Agranulozytose (selten), Hypotonie bei schneller Gabe</td>
+          </tr>
+        </table>
+
+        <h3 style="margin-top: 16px;">Sedierung (wenn Analgesie nicht ausreicht)</h3>
+        <table>
+          <tr><th>Substanz</th><th>Dosis</th><th>Wann bevorzugt</th><th>Cave</th></tr>
+          <tr>
+            <td><strong>Propofol</strong></td>
+            <td>0,5–4 mg/kg/h</td>
+            <td>Kurzzeit (&lt;7d), neurochirurgisch, schnelles Aufwachen</td>
+            <td><span class="ampel ampel-rot">PRIS bei &gt;4 mg/kg/h &gt;48h!</span> Triglyzeride, CK kontrollieren</td>
+          </tr>
+          <tr>
+            <td><strong>Dexmedetomidin</strong></td>
+            <td>0,2–1,4 &mu;g/kg/h</td>
+            <td>Leichte Sedierung (RASS 0 bis -2), Delir-Praevention, Weaning</td>
+            <td>Bradykardie, Hypotonie; NICHT fuer tiefe Sedierung geeignet</td>
+          </tr>
+          <tr>
+            <td>Midazolam</td>
+            <td>0,03–0,2 mg/kg/h</td>
+            <td>Nur wenn Propofol/Dex kontraindiziert, Status epilepticus</td>
+            <td><span class="ampel ampel-rot">Delir-foerdernd!</span> Akkumulation, paradoxe Reaktion bei Aelteren</td>
+          </tr>
+          <tr>
+            <td>Ketamin (S)</td>
+            <td>0,5–2 mg/kg/h</td>
+            <td>Bronchospasmus, haemodynamische Instabilitaet, Opioid-Reduktion</td>
+            <td>Halluzinationen (+ niedrig-dosiertes Midazolam), ICP-Erhoehung (fraglich)</td>
+          </tr>
+          <tr>
+            <td>Clonidin</td>
+            <td>0,5–2 &mu;g/kg/h</td>
+            <td>Entzugssyndrom, adjuvant, sympathikolytisch</td>
+            <td>Bradykardie, Rebound-Hypertonie bei abruptem Stopp</td>
+          </tr>
+        </table>
+
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Substanzwahl-Algorithmus</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <p><strong>Ziel RASS 0 bis -1 (Standard):</strong></p>
+            <ul style="padding-left: 16px; margin-bottom: 8px;">
+              <li>Sufentanil/Remifentanil + <strong>Dexmedetomidin</strong> (bevorzugt) oder niedrig-dosiertes Propofol</li>
+            </ul>
+            <p><strong>Ziel RASS -3 bis -5 (tiefe Sedierung):</strong></p>
+            <ul style="padding-left: 16px; margin-bottom: 8px;">
+              <li>Sufentanil + <strong>Propofol</strong> (&lt;7d) oder Midazolam (&gt;7d wenn Propofol-Limit)</li>
+              <li>Erwaege Ketamin-Additiv bei hohem Opioidbedarf</li>
+            </ul>
+            <p><strong>Weaning-Phase:</strong></p>
+            <ul style="padding-left: 16px;">
+              <li>Umstellung auf Dexmedetomidin + intermittierende Analgesie</li>
+              <li>Taegliche Sedierungspause (SAT) + SBT (Spontaneous Breathing Trial)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- C) Delir -->
+      <div class="card">
+        <h2>C) Delir — Screening &amp; Management</h2>
+
+        <h3>CAM-ICU (Confusion Assessment Method for ICU)</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+          Voraussetzung: RASS &ge;-3. Bei RASS -4/-5 nicht bewertbar — spaeter reevaluieren.
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="cam-1" onchange="IntensivTools.calcCAMICU()">
+            1. Akute Veraenderung oder fluktuierender Verlauf
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="cam-2" onchange="IntensivTools.calcCAMICU()">
+            2. Aufmerksamkeitsstoerung (ASE: &lt;8/10 Buchstaben korrekt)
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="cam-3" onchange="IntensivTools.calcCAMICU()">
+            3. Bewusstseinsveraenderung (RASS &ne; 0)
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <input type="checkbox" id="cam-4" onchange="IntensivTools.calcCAMICU()">
+            4. Desorganisiertes Denken (Fragen falsch / Kommandos nicht ausfuehrbar)
+          </label>
+        </div>
+        <div id="cam-ergebnis" class="ergebnis" style="background: var(--bg); color: var(--text-muted);">
+          Bitte CAM-ICU-Kriterien pruefen
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
+          Delir positiv = Merkmal 1 + 2 + (3 ODER 4). Screening alle 8h empfohlen.
+        </p>
+      </div>
+
+      <!-- D) Delir-Management -->
+      <div class="card">
+        <h2>D) Delir-Management</h2>
+        <div class="hinweis hinweis-kritisch" style="margin-bottom: 12px;">
+          <strong>Primaer nicht-pharmakologisch!</strong> Medikamente erst nach Ausschoepfung kausaler und nicht-pharmakologischer Massnahmen.
+        </div>
+
+        <h3>Nicht-pharmakologisch (ABCDEF-Bundle)</h3>
+        <ul class="checklist">
+          <li><input type="checkbox"> <strong>A</strong>ssess, prevent, manage pain (NRS / BPS)</li>
+          <li><input type="checkbox"> <strong>B</strong>oth SAT + SBT (taegliche Sedierungspause + Spontanatmungsversuch)</li>
+          <li><input type="checkbox"> <strong>C</strong>hoice of sedation (Dex/Propofol &gt; Benzos)</li>
+          <li><input type="checkbox"> <strong>D</strong>elirium monitoring (CAM-ICU q8h)</li>
+          <li><input type="checkbox"> <strong>E</strong>arly mobility (Fruehmobilisation ab Tag 1 wenn moeglich)</li>
+          <li><input type="checkbox"> <strong>F</strong>amily engagement + Schlafhygiene (Tag/Nacht-Rhythmus!)</li>
+        </ul>
+
+        <h3 style="margin-top: 16px;">Ursachensuche (THINK!)</h3>
+        <table style="font-size: 0.82rem;">
+          <tr><th>T</th><td><strong>T</strong>oxisch: Medikamente (Benzos, Opioide, Anticholinergika), Entzug (Alkohol!)</td></tr>
+          <tr><th>H</th><td><strong>H</strong>ypoxie, Hypotonie, Herzinsuffizienz, Hb-Abfall</td></tr>
+          <tr><th>I</th><td><strong>I</strong>nfektion / Sepsis (haeufigste Ursache auf ICU!)</td></tr>
+          <tr><th>N</th><td><strong>N</strong>on-pharmakologisch: Harnverhalt, Obstipation, Schmerz, Schlafentzug</td></tr>
+          <tr><th>K</th><td><strong>K</strong>-Ionen / Elektrolyte: Na, Ca, Glucose, Leber, Niere</td></tr>
+        </table>
+
+        <h3 style="margin-top: 16px;">Pharmakologisch (nur wenn nicht-pharmakologisch insuffizient)</h3>
+        <table>
+          <tr><th>Substanz</th><th>Dosis</th><th>Indikation</th><th>Cave</th></tr>
+          <tr>
+            <td><strong>Dexmedetomidin</strong></td>
+            <td>0,2–1,4 &mu;g/kg/h</td>
+            <td>First-Line bei ICU-Delir (PADIS 2018)</td>
+            <td>Bradykardie; NICHT bei Alkoholentzugsdelir allein</td>
+          </tr>
+          <tr>
+            <td>Haloperidol</td>
+            <td>0,5–2 mg i.v. q4–6h</td>
+            <td>Hyperaktives Delir mit Agitation</td>
+            <td><span class="ampel ampel-rot">QTc-Verlaengerung!</span> EKG vor + nach Gabe; NICHT bei Parkinson</td>
+          </tr>
+          <tr>
+            <td>Quetiapin</td>
+            <td>25–200 mg p.o. q12h</td>
+            <td>Adjuvant, Schlaffoerderung</td>
+            <td>Metabolisches Syndrom; QTc; nur oral</td>
+          </tr>
+          <tr>
+            <td>Clonidin</td>
+            <td>0,5–2 &mu;g/kg/h i.v.</td>
+            <td>Entzugsdelir (Alkohol, Opioide)</td>
+            <td>Bradykardie, Rebound-Hypertonie</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- E) Propofol-Infusionssyndrom -->
+      <div class="card">
+        <h2>E) PRIS — Propofol-Infusionssyndrom</h2>
+        <div class="hinweis hinweis-kritisch" style="margin-bottom: 12px;">
+          <strong>Lebensgefaehrlich!</strong> Mortalitaet &gt;50%. Fruehe Erkennung entscheidend.
+        </div>
+        <table>
+          <tr><th>Risikofaktor</th><th>Warnsignal</th></tr>
+          <tr><td>Propofol &gt;4 mg/kg/h</td><td rowspan="3" style="vertical-align: middle;">
+            <strong>Leitsymptome:</strong><br>
+            &bull; Metabolische Azidose (unerklaert)<br>
+            &bull; Rhabdomyolyse (CK &uarr;&uarr;)<br>
+            &bull; Hyperkaliämie<br>
+            &bull; Bradykardie / Brugada-EKG<br>
+            &bull; Lipaemisches Serum / Triglyzeride &uarr;<br>
+            &bull; Akutes Nierenversagen
+          </td></tr>
+          <tr><td>Dauer &gt;48h</td></tr>
+          <tr><td>Katecholaminbedarf + Propofol</td></tr>
+        </table>
+        <div class="hinweis hinweis-kritisch" style="margin-top: 12px;">
+          <strong>Sofortmassnahme:</strong> Propofol SOFORT stoppen! Umstellung auf Alternative (Midazolam/Ketamin/Dex). Symptomatische Therapie (Azidose, Hyperkaliämie, RRT bei AKI).
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
+          <strong>Monitoring:</strong> CK + Triglyzeride + Laktat alle 24h bei Propofol-Perfusor. CK &gt;5.000 U/l = PRIS bis zum Beweis des Gegenteils.
+        </p>
+      </div>
+
+      <!-- Export -->
+      <div style="text-align: center; margin-top: 8px;">
+        <button class="export-btn" onclick="IntensivTools.exportBefund('sedierung')">
+          Befund kopieren
+        </button>
+      </div>
+
+    </div>
+    <!-- TAB: SEDIERUNG END -->
+
   </main>
 
   <!-- FOOTER -->
@@ -1868,7 +2410,9 @@
       ESC Guidelines for Acute Heart Failure 2023 ·
       ISTH DIC Guidance 2023 ·
       ADA Standards of Care in Diabetes 2024 ·
-      DGEM/DGE Leitlinie Enterale Ernaehrung 2022
+      DGEM/DGE Leitlinie Enterale Ernaehrung 2022 ·
+      S3-Leitlinie Analgesie, Sedierung und Delirmanagement (DAS) 2021 ·
+      PADIS Guidelines (SCCM) 2018
     </div>
     IntensivTools unterstutzt klinische Entscheidungen — ersetzt nicht die arztliche Beurteilung.
     Alle Empfehlungen basieren auf den zitierten Leitlinien. Keine Haftung fur Therapieentscheidungen.
@@ -2416,6 +2960,89 @@
 
       /* === HAMILTON MONITORING === */
 
+      /* === SCHOCK-DIFFERENZIAL === */
+
+      calcSchockTyp: function() {
+        var typ = document.getElementById('schock-typ').value;
+        var el = document.getElementById('schock-typ-ergebnis');
+        var map = {
+          'distributiv': { level: 'rot', label: 'Distributiver Schock', desc: 'SVR&darr;&darr;, CO normal/&uarr; — Volumentherapie + Noradrenalin (First-Line). Fokussuche: Sepsis? Anaphylaxie? Nebenniereninsuffizienz?' },
+          'kardiogen': { level: 'rot', label: 'Kardiogener Schock', desc: 'CO&darr;&darr;, SVR&uarr; — NICHT viel Volumen! Inotropika (Dobutamin), MCS erwaegen. Echo sofort! Kein Noradrenalin als Monotherapie.' },
+          'hypovolaem': { level: 'orange', label: 'Hypovolaemer Schock', desc: 'CO&darr;, SVR&uarr;, ZVD&darr; — Volumen! Blutungsquelle suchen (Sono, CT). Bei Hb-Abfall: Transfusion + Massivtransfusions-Protokoll.' },
+          'obstruktiv': { level: 'rot', label: 'Obstruktiver Schock', desc: 'CO&darr;, ZVD&uarr;&uarr; — Ursache sofort beheben! Spannungspneu: Nadeldekompression. Tamponade: Perikardpunktion. LE: Thrombolyse erwaegen.' }
+        };
+        if (!typ || !map[typ]) {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte Schocktyp waehlen';
+          return;
+        }
+        var m = map[typ];
+        var bgMap = { gruen: '--green-bg', gelb: '--yellow-bg', orange: '--orange-bg', rot: '--red-bg' };
+        var colMap = { gruen: '--green', gelb: '--yellow', orange: '--orange', rot: '--red' };
+        el.style.background = 'var(' + bgMap[m.level] + ')';
+        el.style.color = 'var(' + colMap[m.level] + ')';
+        el.innerHTML = this.ampel(m.level, m.label) + '<br><span style="font-size:0.85rem;font-weight:normal;">' + m.desc + '</span>';
+      },
+
+      /* === SEDIERUNG/DELIR === */
+
+      calcRASS: function() {
+        var val = document.getElementById('rass-score').value;
+        var el = document.getElementById('rass-ergebnis');
+        if (val === '') {
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--text-muted)';
+          el.innerHTML = 'Bitte RASS-Score waehlen';
+          return;
+        }
+        var score = parseInt(val, 10);
+        if (score >= 2) {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = this.ampel('rot', 'RASS +' + score + ': Agitiert') + '<br><span style="font-size:0.85rem;font-weight:normal;">Ursache suchen (Schmerz? Delir? Hypoxie?). Erst Analgesie, dann ggf. Sedierung. Patientensicherheit!</span>';
+        } else if (score === 1) {
+          el.style.background = 'var(--yellow-bg)';
+          el.style.color = 'var(--yellow)';
+          el.innerHTML = this.ampel('gelb', 'RASS +1: Unruhig') + '<br><span style="font-size:0.85rem;font-weight:normal;">Ursache pruefen. Haeufig ausreichend: Orientierung, Schmerztherapie optimieren.</span>';
+        } else if (score >= -1) {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = this.ampel('gruen', 'RASS ' + score + ': Zielbereich') + '<br><span style="font-size:0.85rem;font-weight:normal;">Wach/leicht schlaefrig — optimaler Bereich fuer die meisten ICU-Patienten.</span>';
+        } else if (score >= -3) {
+          el.style.background = 'var(--yellow-bg)';
+          el.style.color = 'var(--yellow)';
+          el.innerHTML = this.ampel('gelb', 'RASS ' + score + ': Sediert') + '<br><span style="font-size:0.85rem;font-weight:normal;">Ist tiefere Sedierung indiziert? Sedierungspause (SAT) erwaegen. Delir-Screening bei RASS &ge;-3.</span>';
+        } else {
+          el.style.background = 'var(--orange-bg)';
+          el.style.color = 'var(--orange)';
+          el.innerHTML = this.ampel('orange', 'RASS ' + score + ': Tief sediert') + '<br><span style="font-size:0.85rem;font-weight:normal;">CAM-ICU nicht moeglich. Indikation pruefen! Nur bei: NMB, schwerem ARDS/Bauchlage, Status epilepticus, ICP-Krise.</span>';
+        }
+      },
+
+      calcCAMICU: function() {
+        var c1 = document.getElementById('cam-1').checked;
+        var c2 = document.getElementById('cam-2').checked;
+        var c3 = document.getElementById('cam-3').checked;
+        var c4 = document.getElementById('cam-4').checked;
+        var el = document.getElementById('cam-ergebnis');
+
+        var delir = c1 && c2 && (c3 || c4);
+        if (delir) {
+          el.style.background = 'var(--red-bg)';
+          el.style.color = 'var(--red)';
+          el.innerHTML = this.ampel('rot', 'CAM-ICU POSITIV — Delir') + '<br><span style="font-size:0.85rem;font-weight:normal;">Ursachensuche (THINK!), nicht-pharmakologische Massnahmen, Medikamentenreview, ggf. Dexmedetomidin</span>';
+        } else if (c1 || c2) {
+          el.style.background = 'var(--yellow-bg)';
+          el.style.color = 'var(--yellow)';
+          el.innerHTML = this.ampel('gelb', 'CAM-ICU negativ (Teilkriterien)') + '<br><span style="font-size:0.85rem;font-weight:normal;">Kein Delir aktuell, aber Risikofaktoren vorhanden. Reevaluation in 8h.</span>';
+        } else {
+          el.style.background = 'var(--green-bg)';
+          el.style.color = 'var(--green)';
+          el.innerHTML = this.ampel('gruen', 'CAM-ICU negativ — kein Delir') + '<br><span style="font-size:0.85rem;font-weight:normal;">Weiter praeventive Massnahmen (ABCDEF-Bundle). Naechstes Screening in 8h.</span>';
+        }
+      },
+
       calcHamilton: function() {
         var el = document.getElementById('ham-ergebnis');
         var results = [];
@@ -2630,6 +3257,25 @@
             'Anionenluecke: ' + ag + ' mmol/l',
             '',
             'Quelle: ADA 2024'
+          ].join('\n');
+        }
+
+        if (tab === 'sedierung') {
+          var rassEl = document.getElementById('rass-score');
+          var rass = rassEl.value !== '' ? 'RASS ' + rassEl.value : '-';
+          var cam1 = document.getElementById('cam-1').checked;
+          var cam2 = document.getElementById('cam-2').checked;
+          var cam3 = document.getElementById('cam-3').checked;
+          var cam4 = document.getElementById('cam-4').checked;
+          var delir = (cam1 && cam2 && (cam3 || cam4)) ? 'POSITIV' : 'negativ';
+          return [
+            'IntensivTools — SEDIERUNGS-ASSESSMENT',
+            'Zeitstempel: ' + ts,
+            '',
+            'RASS: ' + rass,
+            'CAM-ICU: ' + delir,
+            '',
+            'Quelle: DAS-Leitlinie 2021 / PADIS 2018'
           ].join('\n');
         }
 
