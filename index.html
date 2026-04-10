@@ -1316,6 +1316,184 @@
         </div>
       </div>
 
+      <!-- I) ECMO-Manager -->
+      <div class="card">
+        <h2>I) ECMO-Manager — Indikation, Einstellungen &amp; Monitoring</h2>
+
+        <h3>Modus &amp; Patientendaten</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>ECMO-Modus</label>
+            <select id="ecmo-modus" onchange="IntensivTools.calcECMO()">
+              <option value="">-- waehlen --</option>
+              <option value="vv">VV-ECMO (respiratorisch)</option>
+              <option value="va">VA-ECMO (kardial/kombiniert)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Koerpergewicht (kg)</label>
+            <input type="number" id="ecmo-kg" min="30" max="200" step="1" placeholder="z.B. 80" onchange="IntensivTools.calcECMO()">
+          </div>
+          <div class="input-group">
+            <label>Koerpergroesse (cm)</label>
+            <input type="number" id="ecmo-cm" min="100" max="230" step="1" placeholder="z.B. 175" onchange="IntensivTools.calcECMO()">
+          </div>
+          <div class="input-group">
+            <label>Hb (g/dl)</label>
+            <input type="number" id="ecmo-hb" min="3" max="20" step="0.1" placeholder="z.B. 10" onchange="IntensivTools.calcECMO()">
+          </div>
+          <div class="input-group">
+            <label>Ziel-PaO&#8322; (mmHg)</label>
+            <input type="number" id="ecmo-pao2" min="55" max="100" step="5" value="70" onchange="IntensivTools.calcECMO()">
+          </div>
+          <div class="input-group">
+            <label>Ziel-PaCO&#8322; (mmHg)</label>
+            <input type="number" id="ecmo-paco2" min="30" max="60" step="5" value="40" onchange="IntensivTools.calcECMO()">
+          </div>
+        </div>
+
+        <h3 style="margin-top: 12px;">Aktuelle Werte (fuer Feineinstellung)</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label>Blutfluss (l/min)</label>
+            <input type="number" id="ecmo-flow" min="0.5" max="7" step="0.1" placeholder="z.B. 4.0" onchange="IntensivTools.calcECMO()">
+          </div>
+          <div class="input-group">
+            <label>Sweep Gas (l/min)</label>
+            <input type="number" id="ecmo-sweep" min="0" max="15" step="0.5" placeholder="z.B. 4.0" onchange="IntensivTools.calcECMO()">
+          </div>
+          <div class="input-group">
+            <label>FdO&#8322; (Oxygenator)</label>
+            <input type="number" id="ecmo-fdo2" min="0.21" max="1.0" step="0.1" value="1.0" onchange="IntensivTools.calcECMO()">
+          </div>
+          <div class="input-group">
+            <label>Drehzahl (rpm)</label>
+            <input type="number" id="ecmo-rpm" min="1000" max="6000" step="100" placeholder="z.B. 3200" onchange="IntensivTools.calcECMO()">
+          </div>
+          <div class="input-group">
+            <label>Akt. PaO&#8322; (mmHg)</label>
+            <input type="number" id="ecmo-akt-pao2" min="20" max="500" step="1" placeholder="z.B. 65" onchange="IntensivTools.calcECMO()">
+          </div>
+          <div class="input-group">
+            <label>Akt. PaCO&#8322; (mmHg)</label>
+            <input type="number" id="ecmo-akt-paco2" min="15" max="120" step="1" placeholder="z.B. 48" onchange="IntensivTools.calcECMO()">
+          </div>
+          <div class="input-group">
+            <label>SpO&#8322; pre-Membran (%)</label>
+            <input type="number" id="ecmo-spo2-pre" min="30" max="100" step="1" placeholder="z.B. 65" onchange="IntensivTools.calcECMO()">
+          </div>
+          <div class="input-group">
+            <label>SpO&#8322; post-Membran (%)</label>
+            <input type="number" id="ecmo-spo2-post" min="80" max="100" step="1" placeholder="z.B. 99" onchange="IntensivTools.calcECMO()">
+          </div>
+        </div>
+
+        <div id="ecmo-ergebnis" style="margin-top: 16px;"></div>
+        <div id="ecmo-einstellungen" class="ergebnis" style="background: var(--bg); color: var(--text-muted); margin-top: 8px; text-align: left; font-weight: normal; font-size: 0.88rem;">
+          Bitte Modus und Gewicht eingeben
+        </div>
+
+        <div class="score-card" style="margin-top: 12px;">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; ECMO-Indikationen &amp; Kontraindikationen</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <h3>VV-ECMO (Lungenversagen)</h3>
+            <table>
+              <tr><th>Indikation</th><th>Kriterien</th></tr>
+              <tr><td>Schweres ARDS</td><td>PF-Ratio &lt;80 trotz Bauchlage + optimiertem PEEP + FiO&#8322; 1,0 fuer &gt;6h</td></tr>
+              <tr><td>Hyperkapnisches Versagen</td><td>pH &lt;7,20 mit pCO&#8322; &gt;80 trotz AF 35 + Pplat 30</td></tr>
+              <tr><td>Murray-Score</td><td>&ge;3,0</td></tr>
+              <tr><td>Bridge to Transplant</td><td>Gelistete Patienten mit akutem Versagen</td></tr>
+            </table>
+            <h3 style="margin-top: 12px;">VA-ECMO (Kreislaufversagen)</h3>
+            <table>
+              <tr><th>Indikation</th><th>Kriterien</th></tr>
+              <tr><td>Kardiogener Schock</td><td>SCAI D–E trotz Katecholamine + IABP/Impella</td></tr>
+              <tr><td>Refraktaerer Kreislaufstillstand</td><td>eCPR bei Zeugen-CPR + schockbarer Rhythmus + &lt;60 min</td></tr>
+              <tr><td>Post-Kardiotomie</td><td>Weaning von HLM nicht moeglich</td></tr>
+              <tr><td>Fulminante Myokarditis</td><td>Bridge to Recovery</td></tr>
+            </table>
+            <h3 style="margin-top: 12px;">Relative Kontraindikationen</h3>
+            <ul style="padding-left: 16px;">
+              <li>Irreversible Grunderkrankung (keine Therapieoption / kein Transplantkandidat)</li>
+              <li>Schwere irreversible Hirnschaedigung</li>
+              <li>Unkontrollierte Blutung / Heparin-Kontraindikation</li>
+              <li>Beatmung &gt;10–14d bei ARDS (relatives Kriterium)</li>
+              <li>Schwere Aortenklappeninsuffizienz (VA-ECMO KI!)</li>
+              <li>Aortendissektion (VA-ECMO KI!)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="score-card">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; ECMO-Komplikationen &amp; Troubleshooting</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <table>
+              <tr><th>Problem</th><th>Ursache</th><th>Massnahme</th></tr>
+              <tr><td><span class="ampel ampel-rot">Saugen / Chattering</span></td><td>Volumenmangel, Kanuelenposition, Pneumothorax</td><td>Volumen! Kanuelenlage pruefen (Echo/Roentgen). Drehzahl reduzieren.</td></tr>
+              <tr><td><span class="ampel ampel-rot">Oxygenator-Versagen</span></td><td>Thrombose, Plasma-Leakage</td><td>Post-Oxygenator pO&#8322; &lt;200 bei FdO&#8322; 1,0? &rarr; Oxygenator-Wechsel!</td></tr>
+              <tr><td><span class="ampel ampel-orange">Rezirkulation (VV)</span></td><td>Kanuelen zu nah, hoher Flow</td><td>SpO&#8322; pre-Membran &gt;80%? Kanuelenposition pruefen. Flow reduzieren.</td></tr>
+              <tr><td><span class="ampel ampel-orange">Harlequin (VA)</span></td><td>Erholung LV bei schlechter Lunge</td><td>Rechte Hand SpO&#8322; &lt;90%? &rarr; VV-Kanuele zuschalten (VAV) oder VV-Konversion</td></tr>
+              <tr><td><span class="ampel ampel-orange">LV-Distension (VA)</span></td><td>Afterload durch ECMO-Flow</td><td>IABP, Impella, LV-Venting, Inotropika. Echo: Aortenklappe oeffnet?</td></tr>
+              <tr><td><span class="ampel ampel-gelb">Haemolyse</span></td><td>Hohe Drehzahl, Thrombose, Kanuelenposition</td><td>fHb &gt;50 mg/dl? Drehzahl senken, System pruefen. Haptoglobin, LDH.</td></tr>
+              <tr><td><span class="ampel ampel-gelb">Thrombopenie</span></td><td>Verbrauch, HIT, Shear-Stress</td><td>Thrombozyten &gt;50 G/l halten. HIT ausschliessen. Antikoagulation anpassen.</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="score-card">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Antikoagulation unter ECMO</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <table>
+              <tr><th>Substanz</th><th>Dosierung</th><th>Monitoring</th><th>Ziel</th></tr>
+              <tr>
+                <td><strong>UFH</strong> (Standard)</td>
+                <td>Initial 50–80 IE/kg Bolus, dann 10–20 IE/kg/h</td>
+                <td>aPTT alle 6h (oder Anti-Xa)</td>
+                <td>aPTT 50–70s (oder Anti-Xa 0,3–0,5 IE/ml)</td>
+              </tr>
+              <tr>
+                <td>Argatroban (bei HIT)</td>
+                <td>0,2–0,5 &mu;g/kg/min (niedrig starten!)</td>
+                <td>aPTT alle 4–6h</td>
+                <td>aPTT 50–70s</td>
+              </tr>
+              <tr>
+                <td>Bivalirudin</td>
+                <td>0,05–0,1 mg/kg/h</td>
+                <td>aPTT oder ACT</td>
+                <td>Zunehmend verwendet, weniger Thrombopenie</td>
+              </tr>
+            </table>
+            <div class="hinweis hinweis-warnung" style="margin-top: 8px;">
+              <strong>Balance:</strong> Zu viel Antikoagulation = Blutung. Zu wenig = Oxygenator-/Kreislaufthrombose. Thrombozyten taeglich! fHb 2x/Woche. Bei aktiver Blutung: aPTT-Ziel senken oder pausieren.
+            </div>
+          </div>
+        </div>
+
+        <div class="score-card">
+          <div class="score-header" onclick="IntensivTools.toggleScore(this)">&blacktriangleright; Weaning-Kriterien &amp; Dekanuelierung</div>
+          <div class="score-body hidden" style="font-size: 0.85rem;">
+            <h3>VV-ECMO Weaning</h3>
+            <ul style="padding-left: 16px; margin-bottom: 8px;">
+              <li>Grunderkrankung gebessert (Roentgen, Compliance, FiO&#8322;-Bedarf)</li>
+              <li>Sweep auf 0–1 l/min reduzieren (CO&#8322;-Elimination testen)</li>
+              <li>FdO&#8322; auf 0,21 (Oxygenierung testen)</li>
+              <li>Beatmung: FiO&#8322; &le;0,5, PEEP &le;12, Pplat &le;28, PF-Ratio &gt;150</li>
+              <li>BGA stabil ueber 2–4h ohne ECMO-Unterstuetzung &rarr; Dekanuelierung</li>
+            </ul>
+            <h3>VA-ECMO Weaning</h3>
+            <ul style="padding-left: 16px;">
+              <li>Haemodynamik stabil bei Flow-Reduktion (0,5 l/min Schritte)</li>
+              <li>Echo: LVEF-Erholung, Aortenklappe oeffnet, VTI &gt;10 cm</li>
+              <li>Laktat normal, ScvO&#8322; &gt;65%</li>
+              <li>Katecholamine: niedrig dosiert (&lt;0,1 &mu;g/kg/min NE)</li>
+              <li>Trial: Flow auf 1,5 l/min fuer 1–4h unter Echo-Kontrolle</li>
+              <li>Cave: Nie Flow &lt;1,5 l/min ohne Antikoagulations-Eskalation (Thrombose!)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <!-- Export -->
       <div style="text-align: center; margin-top: 8px;">
         <button class="export-btn" onclick="IntensivTools.exportBefund('ards')">
@@ -3761,6 +3939,146 @@
       /* === HAMILTON MONITORING === */
 
       /* === SCHOCK-DIFFERENZIAL === */
+
+      /* === ECMO-MANAGER === */
+
+      calcECMO: function() {
+        var modus = document.getElementById('ecmo-modus').value;
+        var kg = parseFloat(document.getElementById('ecmo-kg').value);
+        var cm = parseFloat(document.getElementById('ecmo-cm').value);
+        var hb = parseFloat(document.getElementById('ecmo-hb').value);
+        var zielPao2 = parseFloat(document.getElementById('ecmo-pao2').value) || 70;
+        var zielPaco2 = parseFloat(document.getElementById('ecmo-paco2').value) || 40;
+        var flow = parseFloat(document.getElementById('ecmo-flow').value);
+        var sweep = parseFloat(document.getElementById('ecmo-sweep').value);
+        var fdo2 = parseFloat(document.getElementById('ecmo-fdo2').value);
+        var rpm = parseFloat(document.getElementById('ecmo-rpm').value);
+        var aktPao2 = parseFloat(document.getElementById('ecmo-akt-pao2').value);
+        var aktPaco2 = parseFloat(document.getElementById('ecmo-akt-paco2').value);
+        var spo2Pre = parseFloat(document.getElementById('ecmo-spo2-pre').value);
+        var spo2Post = parseFloat(document.getElementById('ecmo-spo2-post').value);
+
+        var el = document.getElementById('ecmo-ergebnis');
+        var settEl = document.getElementById('ecmo-einstellungen');
+        var self = this;
+
+        if (!modus || isNaN(kg)) {
+          el.innerHTML = '';
+          settEl.style.background = 'var(--bg)'; settEl.style.color = 'var(--text-muted)';
+          settEl.innerHTML = 'Bitte Modus und Gewicht eingeben';
+          return;
+        }
+
+        var results = [];
+        var settings = [];
+        var bsa = isNaN(cm) ? null : Math.round(Math.sqrt(cm * kg / 3600) * 100) / 100;
+
+        // === INITIALE EINSTELLUNGEN ===
+        if (modus === 'vv') {
+          results.push(self.ampel('rot', 'VV-ECMO — Respiratorische Unterstuetzung'));
+
+          // Blutfluss
+          var flowTarget = Math.round(kg * 0.06 * 10) / 10; // 60 ml/kg/min = ~4-6 l/min
+          var flowMin = Math.round(kg * 0.05 * 10) / 10;
+          var flowMax = Math.round(kg * 0.07 * 10) / 10;
+          settings.push('<strong>Blutfluss-Ziel:</strong> ' + flowMin + '–' + flowMax + ' l/min (50–70 ml/kg/min = ' + Math.round(kg*50/1000*10)/10 + '–' + Math.round(kg*70/1000*10)/10 + ' l/min)');
+          settings.push('<strong>Sweep Gas Start:</strong> ' + flowTarget + ' l/min (1:1 mit Blutfluss, dann nach pCO\u2082 titrieren)');
+          settings.push('<strong>FdO\u2082:</strong> 1,0 initial, dann nach PaO\u2082 reduzieren (Ziel: ' + zielPao2 + ' mmHg)');
+          settings.push('<strong>Kanuelierung:</strong> Femoral-jugulär (23–25 Fr Drainage, 19–21 Fr Return) ODER bikavale Doppellumen-Kanuele (27–31 Fr, jugulär rechts)');
+
+          // Restbeatmung
+          settings.push('');
+          settings.push('<strong>Protektive Restbeatmung:</strong>');
+          settings.push('Vt: &le;4 ml/kg IBW, Pplat &le;25 cmH\u2082O, PEEP 10–15, AF 10–14, FiO\u2082 0,3–0,5');
+          settings.push('Ziel: "Lung Rest" — Lunge schonen, nicht beatmen!');
+        } else {
+          results.push(self.ampel('rot', 'VA-ECMO — Kardiale + Respiratorische Unterstuetzung'));
+
+          var flowTargetVA = Math.round(kg * 0.06 * 10) / 10;
+          settings.push('<strong>Blutfluss-Ziel:</strong> ' + Math.round(kg*50/1000*10)/10 + '–' + Math.round(kg*70/1000*10)/10 + ' l/min (CI 2,2–2,5 l/min/m\u00B2)');
+          settings.push('<strong>Sweep Gas:</strong> 1–3 l/min (CO\u2082-Elimination weniger kritisch als bei VV)');
+          settings.push('<strong>FdO\u2082:</strong> 0,6–1,0 (Oxygenierung primaer ueber Flow gesteuert)');
+          settings.push('<strong>Kanuelierung:</strong> Femoral arteriell (15–17 Fr) + femoral venoes (21–25 Fr). Beinperfusionskanuele obligat!');
+
+          settings.push('');
+          settings.push('<strong>Haemodynamik-Ziele:</strong>');
+          settings.push('MAP &ge;65 mmHg, Katecholamine minimieren, Pulsatilitaet erhalten');
+          settings.push('Echo taeglich: Oeffnet Aortenklappe? LV-Distension? Thrombus?');
+          settings.push('<span class="ampel ampel-rot">Cave LV-Distension:</span> Bei fehlender AK-Oeffnung &rarr; LV-Venting (Impella/IABP/chirurgisch)');
+        }
+
+        // === FEINEINSTELLUNG basierend auf aktuellen Werten ===
+        var adjustments = [];
+
+        if (!isNaN(aktPao2)) {
+          if (aktPao2 < zielPao2 - 10) {
+            if (modus === 'vv') {
+              adjustments.push(self.ampel('rot', 'PaO\u2082 ' + aktPao2 + ' zu niedrig (Ziel ' + zielPao2 + ')') + '<br><span style="font-size:0.82rem;">\u2192 <strong>Flow erhoehen</strong> (wichtigster Hebel fuer O\u2082 bei VV!). Wenn Flow max: Hb optimieren (&gt;8–10 g/dl), Rezirkulation pruefen, FdO\u2082 auf 1,0. Zweite Drainage-Kanuele erwaegen.</span>');
+            } else {
+              adjustments.push(self.ampel('rot', 'PaO\u2082 ' + aktPao2 + ' zu niedrig') + '<br><span style="font-size:0.82rem;">\u2192 Flow erhoehen. Achtung: bei VA rechte Hand-SpO\u2082 pruefen (Harlequin?). Restbeatmung optimieren (PEEP, FiO\u2082).</span>');
+            }
+          } else if (aktPao2 > 120) {
+            adjustments.push(self.ampel('gelb', 'PaO\u2082 ' + aktPao2 + ' — Hyperoxie') + '<br><span style="font-size:0.82rem;">\u2192 FdO\u2082 reduzieren (0,1-Schritte). Ziel PaO\u2082 ' + zielPao2 + '. Hyperoxie vermeiden (Radikalbildung)!</span>');
+          } else {
+            adjustments.push(self.ampel('gruen', 'PaO\u2082 ' + aktPao2 + ' im Zielbereich'));
+          }
+        }
+
+        if (!isNaN(aktPaco2)) {
+          if (aktPaco2 > zielPaco2 + 5) {
+            adjustments.push(self.ampel('orange', 'PaCO\u2082 ' + aktPaco2 + ' zu hoch (Ziel ' + zielPaco2 + ')') + '<br><span style="font-size:0.82rem;">\u2192 <strong>Sweep Gas erhoehen</strong> (wichtigster Hebel fuer CO\u2082!). Sweep = primaerer CO\u2082-Regler. 1 l/min Steigerung = ca. 5–10 mmHg pCO\u2082-Senkung.</span>');
+          } else if (aktPaco2 < zielPaco2 - 5) {
+            adjustments.push(self.ampel('gelb', 'PaCO\u2082 ' + aktPaco2 + ' zu niedrig') + '<br><span style="font-size:0.82rem;">\u2192 <strong>Sweep Gas reduzieren</strong>. Cave: zu schnelle CO\u2082-Senkung bei chron. Hyperkapnie &rarr; zerebrale Vasokonstriktion / Krampfanfall!</span>');
+          } else {
+            adjustments.push(self.ampel('gruen', 'PaCO\u2082 ' + aktPaco2 + ' im Zielbereich'));
+          }
+        }
+
+        // Rezirkulation (VV)
+        if (modus === 'vv' && !isNaN(spo2Pre)) {
+          if (spo2Pre > 80) {
+            adjustments.push(self.ampel('rot', 'SpO\u2082 pre-Membran ' + spo2Pre + '% — Rezirkulation!') + '<br><span style="font-size:0.82rem;">Bereits oxygeniertes Blut wird erneut drainiert. \u2192 Kanuelenlage pruefen (Echo!), Abstand Drainage/Return, Flow reduzieren versuchsweise, ggf. Repositionierung.</span>');
+          } else if (spo2Pre > 75) {
+            adjustments.push(self.ampel('gelb', 'SpO\u2082 pre-Membran ' + spo2Pre + '%') + ' <span style="font-size:0.82rem;">Grenzwertig — leichte Rezirkulation moeglich</span>');
+          } else {
+            adjustments.push(self.ampel('gruen', 'SpO\u2082 pre-Membran ' + spo2Pre + '%') + ' <span style="font-size:0.82rem;">Adaequat (Ziel 60–75%: gute Extraktion ohne Rezirkulation)</span>');
+          }
+        }
+
+        // Oxygenator-Funktion
+        if (!isNaN(spo2Post)) {
+          if (spo2Post < 95) {
+            adjustments.push(self.ampel('rot', 'SpO\u2082 post-Membran ' + spo2Post + '% — Oxygenator insuffizient!') + '<br><span style="font-size:0.82rem;">Post-Oxygenator pO\u2082 sollte &gt;200 mmHg bei FdO\u2082 1,0 sein. \u2192 Oxygenator-Wechsel erwaegen! Thrombose? Plasma-Leakage? \u0394P ueber Oxygenator pruefen.</span>');
+          }
+        }
+
+        // Hb
+        if (!isNaN(hb)) {
+          if (hb < 7) {
+            adjustments.push(self.ampel('rot', 'Hb ' + hb + ' g/dl — Transfundieren!') + ' <span style="font-size:0.82rem;">Unter ECMO Hb &ge;7 halten (&ge;8–10 bei unzureichender Oxygenierung, da Hb = O\u2082-Traeger)</span>');
+          } else if (hb < 8 && !isNaN(aktPao2) && aktPao2 < zielPao2) {
+            adjustments.push(self.ampel('orange', 'Hb ' + hb + ' g/dl bei unzureichendem PaO\u2082') + ' <span style="font-size:0.82rem;">Transfusion erwaegen — hoehere Hb = mehr O\u2082-Transport bei gleichem Flow</span>');
+          }
+        }
+
+        // Render
+        el.innerHTML = (adjustments.length > 0 ? '<h3 style="margin-bottom:8px;">Feineinstellung</h3>' : '') +
+          adjustments.map(function(r) {
+            return '<div style="padding:6px 0;border-bottom:1px solid var(--border);">' + r + '</div>';
+          }).join('');
+
+        settEl.style.background = 'var(--accent-light)';
+        settEl.style.color = 'var(--accent)';
+        settEl.innerHTML = '<h3 style="margin-bottom:8px;">' + (modus === 'vv' ? 'VV' : 'VA') + '-ECMO Einstellungen (' + kg + ' kg)</h3>' +
+          settings.map(function(s) { return s === '' ? '<br>' : '<div style="padding:3px 0;">' + s + '</div>'; }).join('') +
+          '<div style="margin-top:12px;padding:10px;background:var(--yellow-bg);border-radius:var(--radius);color:var(--yellow);font-size:0.82rem;">' +
+          '<strong>Steuerungsregeln:</strong><br>' +
+          '<strong>O\u2082 zu niedrig?</strong> \u2192 Flow \u2191 (VV), FdO\u2082 \u2191, Hb \u2191<br>' +
+          '<strong>CO\u2082 zu hoch?</strong> \u2192 Sweep \u2191<br>' +
+          '<strong>CO\u2082 zu niedrig?</strong> \u2192 Sweep \u2193<br>' +
+          '<strong>O\u2082 zu hoch?</strong> \u2192 FdO\u2082 \u2193 (dann Flow \u2193 wenn stabil)' +
+          '</div>';
+      },
 
       /* === BGA-INTERPRETER === */
 
